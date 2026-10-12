@@ -525,425 +525,523 @@
       "id": "ad-001",
       "objective": 0,
       "type": "single",
-      "stem": "A citizen developer and a system architect are building a claims case type. Most requirements are standard, but the business also needs an SLA that measures time using a business-days calendar and reassigns the case when the deadline passes. Which approach follows Pega best practice?",
+      "stem": "A citizen developer builds a Claims Case Type in App Studio. The Assess Damage step needs an SLA that uses a business-days calendar and holds the assignment with a delay timer before it is routed. Which approach follows Pega best practice?",
       "options": [
-        "Build the entire case type in Dev Studio, since one requirement needs Dev Studio and mixing studios causes conflicts.",
-        "Build the case type in App Studio and switch to Dev Studio only to configure the advanced SLA options App Studio does not expose.",
-        "Configure the SLA in Admin Studio, which manages runtime timing and escalations for all applications.",
-        "Build the case type in App Studio and model the business-day calendar with a decision table referenced from a calculated field."
+        "Configure the goal and deadline in App Studio, then add the advanced options to the generated SLA rule in Dev Studio.",
+        "Configure the business-days calendar and delay timer in the App Studio Goal & deadline settings.",
+        "Rebuild the whole Case Type in Dev Studio because one requirement needs it.",
+        "Configure the SLA in Admin Studio, where runtime timing is managed."
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "Best practice is to build in App Studio and use Dev Studio only for capabilities App Studio lacks; business-day calendars and escalation actions such as reassignment are advanced SLA options in Dev Studio. Building everything in Dev Studio discards the low-code benefits and the studios are designed to interoperate. Admin Studio is for runtime monitoring by IT, not SLA design. A decision table in a calculated field does not create SLA timing or escalation behavior.",
-      "difficulty": "medium"
+      "explanation": "Best practice is to build in App Studio and move to Dev Studio only for what App Studio does not expose. App Studio creates an SLA rule behind its Goal & deadline settings, and the business-days calendar and the initialization delay timer are Dev Studio options on that rule. App Studio does not offer either option. Rebuilding the whole Case Type in Dev Studio ignores the App Studio-first practice. Admin Studio is for runtime monitoring by IT system administrators, not for designing SLAs.",
+      "difficulty": "hard"
     },
     {
       "id": "ad-002",
       "objective": 0,
-      "type": "multi",
-      "stem": "A business architect reads App Studio documentation while a developer works in Dev Studio. Which two term mappings between App Studio and Dev Studio are correct? (Choose two.)",
+      "type": "single",
+      "stem": "A business architect asks a Dev Studio developer to add a new adjuster to the Claims team and to tighten the Goal & deadline on the Review step. Which two Dev Studio records hold these settings?",
       "options": [
-        "A Team in App Studio is a Work Group in Dev Studio.",
-        "A Field in App Studio is a Property in Dev Studio.",
-        "A User in App Studio is an Access Group in Dev Studio.",
-        "A Goal & deadline in App Studio is a When rule in Dev Studio.",
-        "A Process in App Studio is a Section rule in Dev Studio."
+        "An Access Group and a Service Level Agreement rule",
+        "A Work Group and a Service Level Agreement rule",
+        "A Work Group and a Decision table",
+        "An Access Role and a Flow rule"
       ],
       "answer": [
-        0,
         1
       ],
-      "explanation": "Team maps to Work Group and Field maps to Property. A User is an Operator (the access group is a separate record that grants authorization). Goal & deadline maps to an SLA rule, not a When rule. A Process becomes a Flow rule; Section rules come from Views.",
+      "explanation": "In Dev Studio terms, a Team is a Work Group and a Goal & deadline is an SLA (Service Level Agreement) rule, and the adjuster is an Operator (User). An Access Group controls authorization, not team membership. A Decision table holds conditional results, not service levels. An Access Role describes a job function's permissions, and a Flow rule models a Process, so neither one holds team membership or the step's timing.",
       "difficulty": "medium"
     },
     {
       "id": "ad-003",
       "objective": 1,
       "type": "single",
-      "stem": "An insurer runs one claims application in three countries. Authentication is shared across the company, the claims intake flow is shared across the claims division, and each country must apply its own regulatory rules. Using the Situational Layer Cake, where should the country-specific regulatory rules be placed?",
+      "stem": "A global insurer has three layers of shared logic: authentication used by every business line, a claims intake flow reused by its property and auto claims applications, and Germany-only regulatory checks for auto claims. In the Situational Layer Cake, where does the claims intake flow belong?",
       "options": [
-        "In the Enterprise layer, so every application in the company can evaluate the regulations.",
-        "In the Division layer, alongside the shared claims intake flow.",
-        "In the Implementation layer, as deployment-specific specializations for each country.",
-        "In the Application layer, using conditional logic in each rule that checks the country."
+        "Enterprise layer",
+        "Division layer",
+        "Application layer",
+        "Implementation layer"
       ],
       "answer": [
-        2
+        1
       ],
-      "explanation": "The Implementation layer holds deployment-specific customization such as regional regulation or localization; runtime chooses the most specific rule. The Enterprise layer is for organization-wide assets like authentication, not one country's rules. The Division layer holds assets reusable across the division, which regional rules are not. Putting if-then-else country checks inside shared rules is exactly the tangled logic the layer cake is designed to avoid.",
+      "explanation": "The claims intake flow is reused by several applications within one division (claims), so it belongs in the Division layer, which holds division-specific reusable assets. The Enterprise layer is for platform and company-wide assets such as authentication. The Application layer holds rules specific to one application, but this flow is shared by two applications. The Implementation layer holds deployment-specific variations such as the German regulatory checks.",
       "difficulty": "hard"
     },
     {
       "id": "ad-004",
       "objective": 1,
       "type": "multi",
-      "stem": "A Center of Excellence is deciding which work its professional developers do in Dev Studio versus what citizen developers do in App Studio. In Pega's studio interoperability model, which two activities belong in Dev Studio? (Choose two.)",
+      "stem": "A Center of Excellence is splitting work between professional developers and citizen developers. Under Pega's studio interoperability model, which two tasks belong in Dev Studio? (Choose Two)",
       "options": [
-        "Building reusable components and module applications",
-        "Creating automated unit tests",
-        "Configuring application behavior through Configuration Sets",
-        "Using AI-assisted development to generate case lifecycles",
-        "Assembling forms with prescriptive UI"
+        "Marking rules as relevant records for App Studio users",
+        "Building reusable modules and automated unit tests",
+        "Adjusting application behavior through Configuration Sets",
+        "Using relevant records while configuring prescriptive UI"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Dev Studio is where reusable components and modules, traditional UI and automated unit testing are built, and where rules are marked relevant. Configuration Sets, AI-assisted development and prescriptive UI are the App Studio side of interoperability, letting citizen developers consume Dev Studio work without code.",
+      "explanation": "Dev Studio is where developers build advanced applications, reusable components and modules, automated unit tests and traditional UI, and where they mark rules as relevant records. Configuration Sets are configured in App Studio (Settings tab > Configurations). Using relevant records while building with prescriptive UI is the App Studio side of the model: Dev Studio makes the records available, and App Studio uses them.",
       "difficulty": "hard"
     },
     {
       "id": "ad-005",
       "objective": 1,
       "type": "single",
-      "stem": "Leadership asks the reuse team to prove that the components published in the Reuse Library are worth the investment by showing how often each one is used and the return it produces. Which Reuse Library governance aspect addresses this?",
+      "stem": "Three applications at a bank each need the same meeting-scheduling feature. A developer proposes copying the rules into each application and adding if-then-else conditions for small differences. What is the better modular reuse approach?",
       "options": [
-        "Reuse catalog",
-        "Value measurement",
-        "Lifecycle management",
-        "Education and advocacy"
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "Value measurement covers usage and ROI dashboards. The reuse catalog is about tagging and searching so builders can find assets. Lifecycle management decides whether assets are governed centrally or federated. Education and advocacy promotes reuse but does not measure it.",
-      "difficulty": "medium"
-    },
-    {
-      "id": "ad-006",
-      "objective": 2,
-      "type": "single",
-      "stem": "A bank built its loan application using a center-out architecture. The customer system of record is moving from an on-premises database to a cloud service. What is the expected impact?",
-      "options": [
-        "The business logic remains unchanged because the data access layer insulates it; only the data connection needs updating.",
-        "Each channel's UI must be rebuilt because the presentation layer reads directly from the system of record.",
-        "The case lifecycle must be redesigned, since stages depend on where data is stored.",
-        "The business rules must be duplicated into the cloud service so both systems stay consistent."
+        "Package the feature as a module application and add it as a built-on application to each app.",
+        "Copy the rules into each application's Implementation layer so each team can edit them.",
+        "Mark the rules as relevant records in one application so the other two can see them.",
+        "Keep one copy in the first application and branch the logic with When rules for the others."
       ],
       "answer": [
         0
       ],
-      "explanation": "In center-out, the data access layer is insulated from the central business logic, so a system-of-record change does not change the logic. The presentation layer connects to central logic, not directly to the SOR, so channels are not rebuilt. Lifecycles are business logic and do not depend on data location. Duplicating logic into data systems is the bottom-up anti-pattern.",
+      "explanation": "Reusable features are delivered as module applications that are stacked as built-on applications, as with the Meeting module example. The Situational Layer Cake exists to avoid both duplicate applications and if-then-else spaghetti. Copying rules into each application duplicates logic. Relevant records make rules visible to App Studio users in an application's own class hierarchy, so they do not share rules across applications. Branching one copy with When rules is the condition-heavy design the Layer Cake avoids.",
       "difficulty": "hard"
     },
     {
-      "id": "ad-007",
+      "id": "ad-006",
       "objective": 2,
-      "type": "single",
-      "stem": "A retailer has separate web, mobile and chat applications, each with its own copy of the discount rules. A discount change took three releases to roll out. Which statement best describes the problem and the center-out remedy?",
+      "type": "multi",
+      "stem": "A bank built its loan application using center-out architecture. This year it moves the customer system of record from on-premises to the cloud and adds a chat channel. Which two outcomes does center-out architecture predict? (Choose Two)",
       "options": [
-        "It is a bottom-up problem; center-out fixes it by creating one data warehouse per channel.",
-        "It is a top-down problem; center-out fixes it by defining the discount logic once in the central layer so one change applies to all channels.",
-        "It is a top-down problem; center-out fixes it by moving discount logic into the presentation layer of each channel.",
-        "It is a bottom-up problem; center-out fixes it by having each channel query the system of record directly."
+        "The data access layer changes while the loan business logic stays the same.",
+        "The chat channel reuses the loan logic that is already defined once at the center.",
+        "The chat channel needs its own copy of the eligibility rules to respond correctly.",
+        "The business logic is rebuilt to fit the new cloud data structures."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "In center-out architecture, business logic sits in the middle. The data access layer is insulated, so a change of system of record, such as on-premises to cloud, needs no change to the logic. Channels connect from above and reuse the same logic, so it is defined once and the change applies everywhere. A separate copy of the rules per channel describes the top-down approach. Rebuilding logic around data structures reflects the data-centric bottom-up approach.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-007",
+      "objective": 3,
+      "type": "single",
+      "stem": "An organization runs 30 Constellation applications that must meet WCAG 2.1 and Section 508. A new accessibility requirement changes how a common input pattern behaves. Which approach requires the least effort?",
+      "options": [
+        "Update each View that uses the input in all 30 applications.",
+        "Update the central UI component so that the change reaches every application.",
+        "Save a new theme in each application's Implementation layer with accessible styles.",
+        "Run the Themes landing page check in each application and fix the screens it flags."
       ],
       "answer": [
         1
       ],
-      "explanation": "Channel-first (top-down) design duplicates logic in every channel. Center-out puts logic at the center, giving agility: one change applies everywhere. A data warehouse per channel would worsen silos (the bottom-up weakness). Moving logic into each presentation layer keeps duplication. Channels querying the SOR directly bypasses the insulated data layer and central logic.",
-      "difficulty": "medium"
+      "explanation": "Pega generates UI centrally from patterns, so accessibility is implemented once in the central components and propagates to all applications without per-screen changes. Editing each View in 30 applications is the per-screen work that model-driven UI avoids. A theme controls styling, and themes do not support inheritance, so a theme per application does not change how an input pattern behaves. The Themes landing page flags WCAG color-contrast failures only, not input behavior.",
+      "difficulty": "hard"
     },
     {
       "id": "ad-008",
-      "objective": 3,
+      "objective": 4,
       "type": "single",
-      "stem": "An organization runs 30 Constellation applications that must comply with WCAG 2.1 and Section 508. A new accessibility requirement affects how a common input pattern behaves. What approach minimizes effort?",
+      "stem": "During pre-sales, a team co-designed a Blueprint with the client. The deal is signed and a delivery team is formed. Who imports the Blueprint file and configures the functional and technical requirements?",
       "options": [
-        "Audit every view in each application and edit the affected fields individually.",
-        "Create a custom stylesheet per portal that overrides the input pattern.",
-        "Update the central UI component or pattern once so the change propagates to every application using it.",
-        "Enable the accessibility add-on on each view that contains the input pattern."
+        "Solutions Consultant",
+        "Lead System Architect",
+        "Business Architect",
+        "Product Owner"
       ],
       "answer": [
-        2
+        1
       ],
-      "explanation": "Pega generates UI from central patterns, so accessibility is implemented once and propagates everywhere. Per-view edits defeat that model and multiply effort. Per-portal custom styling duplicates work and diverges from the design system. Accessibility in Constellation is built in by default, not an add-on enabled per view.",
+      "explanation": "The Lead System Architect imports Blueprint files and configures the functional and technical requirements. The Solutions Consultant works in early sales and co-designs the Blueprint, then hands it to the delivery team. The Business Architect turns business needs into functional requirements, workflows, data models and UX, but does not import the Blueprint. The Product Owner is on the client side, defines scope and prioritizes requirements for each sprint.",
       "difficulty": "medium"
     },
     {
       "id": "ad-009",
       "objective": 4,
-      "type": "single",
-      "stem": "During a pre-sales engagement, a team co-designed a Blueprint with the client. The project is now won and a delivery team is assembled. Who is responsible for importing the Blueprint file and configuring the functional and technical requirements?",
+      "type": "multi",
+      "stem": "A new delivery team is writing its RACI chart. Which two role assignments are correct? (Choose Two)",
       "options": [
-        "The Solutions Consultant who co-designed the Blueprint",
-        "The Lead System Architect",
-        "The Business Architect",
-        "The Product Owner"
+        "Product Owner: prioritizes the requirements for each sprint",
+        "Quality Analyst: writes test scripts and scenario tests from user stories",
+        "Scrum Master: manages the project budget, schedule and scope",
+        "Business Architect: designs the class hierarchy and imports the Blueprint"
       ],
       "answer": [
+        0,
         1
       ],
-      "explanation": "The LSA imports Blueprint files and configures functional and technical requirements. The Solutions Consultant works in the sales phase and hands the Blueprint to delivery. The Business Architect translates needs into functional requirements but does not import the build. The Product Owner owns scope and priority on the client side.",
+      "explanation": "The Product Owner represents the client business, defines scope and prioritizes requirements for each sprint. Quality Analysts build test scripts and scenario tests from user stories. Budget, schedule and scope belong to the Project Manager, while the Scrum Master runs the Scrum ceremonies and removes impediments. Designing the class hierarchy and importing Blueprint files is Lead System Architect work. The Business Architect translates business needs into functional requirements.",
       "difficulty": "hard"
     },
     {
       "id": "ad-010",
-      "objective": 4,
+      "objective": 5,
       "type": "single",
-      "stem": "Midway through a sprint, developers are blocked waiting for test environment access, and backlog refinement keeps getting skipped. Which project role should address both issues?",
+      "stem": "Developer Maya configured a new View in her workspace for the Onboarding application. A teammate working on the same application cannot see the View. Which statement about Maya's change is correct?",
       "options": [
-        "Product Owner",
-        "Project Manager",
-        "Scrum Master",
-        "Quality Analyst"
+        "It stays private to Maya until she shares it to a Branch.",
+        "It is visible to every developer on the application as soon as it is saved.",
+        "It is merged into the application rulesets as soon as it is saved.",
+        "It is visible to other developers in the same Access Group."
       ],
       "answer": [
-        2
+        0
       ],
-      "explanation": "The Scrum Master runs Scrum ceremonies such as backlog refinement and removes impediments. The Product Owner prioritizes requirements but does not run ceremonies. The Project Manager handles governance, schedule, budget and scope at the delivery level, not day-to-day Scrum ceremonies. The Quality Analyst writes tests from user stories.",
+      "explanation": "A workspace is a private development space for one operator and one application. Changes stay private until they are shared (pushed) to a Branch, and the Branch is later merged into the application. Saving does not publish the change to other developers, and it does not skip the Branch and go straight into the application. Membership of an Access Group does not affect what can be seen in another operator's workspace.",
       "difficulty": "medium"
     },
     {
       "id": "ad-011",
       "objective": 5,
-      "type": "single",
-      "stem": "Two developers share an application. Developer A configured a new view in her workspace yesterday. Developer B, working in his own workspace, cannot see it. What is the most likely explanation?",
+      "type": "multi",
+      "stem": "A team lead is writing workspace guidance for new developers. Which two statements are accurate? (Choose Two)",
       "options": [
-        "Developer B must be added as a member of Developer A's workspace.",
-        "Workspaces are available only in Dev Studio, so the view was not saved.",
-        "Developer A has not yet shared (pushed) her workspace changes to a branch.",
-        "Developer A's changes must first be merged directly from the workspace into the locked base ruleset."
+        "A workspace is tied to one operator and one application.",
+        "An operator can create more than one workspace for the same application.",
+        "Each operator is limited to one workspace for each application.",
+        "Workspaces are available only in Dev Studio."
       ],
       "answer": [
-        2
+        0,
+        1
       ],
-      "explanation": "Workspace changes remain private until they are shared to a branch. A workspace is tied to a single operator, so there is no workspace membership to add. Workspaces exist in both App Studio and Dev Studio. The flow is Workspace to Branch to Application; changes are not merged straight from a workspace into locked rulesets.",
+      "explanation": "Each workspace belongs to exactly one operator with developer access and to one application. By default each operator has one workspace per application, and more can be created. The statement about a limit of one workspace per application confuses the default with a limit. Workspaces are available in both App Studio and Dev Studio, and they are switched on with the EnableWorkspace setting.",
       "difficulty": "hard"
     },
     {
       "id": "ad-012",
       "objective": 5,
       "type": "multi",
-      "stem": "A team lead reviews a feature branch before approving its merge. Which two items are reported as branch quality metrics? (Choose two.)",
+      "stem": "Before approving a merge, a team lead opens the quality metrics for the ClaimsIntake Branch. Which two metrics are reported? (Choose Two)",
       "options": [
-        "A weighted guardrail compliance score",
-        "The percentage of rules covered by tests and the test pass rate",
-        "The number of user stories completed in the sprint",
-        "The count of Tracer failures captured during development",
-        "Average page load time for views in the branch"
+        "The total number of merge conflicts",
+        "The percentage of rules covered and the unit test pass rate",
+        "An unweighted count of guardrail warnings",
+        "The number of locked ruleset versions in the stack"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Branch quality metrics include the guardrail score (weighted), merge conflicts, test coverage (rules covered and pass rate) and uncovered rules. User story counts are tracked in Agile Workbench, not branch quality. Tracer captures runtime events and is not a branch metric. Page load performance is not part of branch quality metrics.",
+      "explanation": "Branch quality metrics include the weighted guardrail score, the total number of merge conflicts, test coverage and unit test results (rules covered percentage and test pass rate), and the uncovered rules. The guardrail metric is a weighted score, not an unweighted count of warnings. Locked ruleset versions are a ruleset management practice, not a Branch quality metric.",
       "difficulty": "hard"
     },
     {
       "id": "ad-013",
-      "objective": 6,
+      "objective": 5,
       "type": "single",
-      "stem": "During a playback, a stakeholder notices that the Submit button on the address form saves an incorrect postal code. How should the team record this in Agile Workbench?",
+      "stem": "A team is building the Claims Intake feature and the Payment Calculation feature at the same time. Payment Calculation will take two more sprints. Which Branch strategy follows Pega guidance?",
       "options": [
-        "Create a Bug work item",
-        "Create a Feedback work item",
-        "Create a new Story under a new feature",
-        "Post the issue to Pulse and tag it #defect"
+        "Use one Branch for the sprint and merge everything at the end of each sprint.",
+        "Use one Branch per developer and merge each Branch daily.",
+        "Use one Branch per feature and merge each when it is complete, conflict-free and approved.",
+        "Use one Branch per feature and merge each as soon as any rule passes its unit tests."
       ],
       "answer": [
-        0
+        2
       ],
-      "explanation": "A defect in existing behavior is recorded as a Bug. Feedback is for comments or suggestions rather than defects. A Story represents new requirements, not broken functionality. Pulse is a collaboration feed; tags there do not create tracked work items.",
-      "difficulty": "medium"
+      "explanation": "Pega recommends one Branch per feature, merged only when the feature is complete, merge conflicts are resolved and the merge is approved. The system also checks for updated or missing rules before merging. A single sprint Branch would push the unfinished Payment Calculation work into the application. A Branch per developer does not separate work by feature. Merging when one rule passes its tests ignores the completion and approval criteria.",
+      "difficulty": "hard"
     },
     {
       "id": "ad-014",
       "objective": 6,
-      "type": "multi",
-      "stem": "A new Scrum team is adopting Agile Workbench. Which two statements about it are accurate? (Choose two.)",
+      "type": "single",
+      "stem": "During a playback session, one stakeholder says the worklist would be easier to use if it were sorted by due date. Another reports that Submit on the address form saves the wrong postal code. How should the team record these in Agile Workbench?",
       "options": [
-        "Creating a case type automatically creates a feature with the same name.",
-        "User stories can be bulk-uploaded from an Excel file.",
-        "It integrates only with Agile Studio.",
-        "Work items move through New, In Progress and Closed statuses.",
-        "It is opened from Admin Studio."
+        "As Feedback for the sorting suggestion and a Bug for the postal code",
+        "As Bugs for both, because both came from a playback session",
+        "As a user story for the postal code and a Bug for the sorting suggestion",
+        "As Feedback for both, because neither was reported in production"
       ],
       "answer": [
-        0,
-        1
+        0
       ],
-      "explanation": "A case type auto-creates a matching feature, and stories can be bulk-uploaded from Excel. Integration also covers Jira and CA Agile Central, not only Agile Studio. Statuses are To do, Doing and Done. Agile Workbench is part of App Studio (Application profile and Developer Assistant pane), not Admin Studio.",
+      "explanation": "Agile Workbench has three work item types: Stories, Bugs and Feedback. Playbacks are used to capture bugs and feedback from stakeholders. A suggestion about how the worklist should behave is Feedback, and a form that saves an incorrect value is a defect, so it is a Bug. Where an item was found does not decide its type. The postal code problem is not a new user story, and the sorting suggestion is not a defect.",
       "difficulty": "hard"
     },
     {
       "id": "ad-015",
-      "objective": 7,
+      "objective": 6,
       "type": "single",
-      "stem": "The latest version of ruleset ClaimsMain is 02-03-04 and it is locked. A defect in a calculation must be fixed with no new functionality. Which version should the fix go into?",
+      "stem": "A Product Owner has 80 user stories in a spreadsheet and wants the team to track them in Agile Workbench. Which statement is correct?",
       "options": [
-        "Unlock 02-03-04 and edit the rule in place",
-        "02-03-05",
-        "02-04-01",
-        "03-01-01"
+        "The stories can be bulk-uploaded from Excel and then tracked through To do, Doing and Done.",
+        "Agile Workbench stores only Bugs and Feedback, so the stories must stay in Jira.",
+        "Each story must be created by hand because Agile Workbench has no bulk upload.",
+        "The stories are imported through the Dev Studio Records explorer."
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "Bug fixes increment the patch segment, giving 02-03-05. Older versions should stay locked, so unlocking 02-03-04 is poor practice. 02-04-01 is a minor version for enhancements. 03-01-01 is a major version for substantial new functionality or major upgrades.",
-      "difficulty": "hard"
+      "explanation": "Agile Workbench, opened from the App Studio Application profile, supports bulk upload of user stories from Excel. Work items move through To do, Doing and Done, and you drag an item to change its status. Stories are one of its three work item types, and it integrates with Jira rather than relying on it. Bulk upload is supported. The Dev Studio Records explorer is not where Agile Workbench items are managed.",
+      "difficulty": "medium"
     },
     {
       "id": "ad-016",
       "objective": 7,
       "type": "single",
-      "stem": "A developer opens an existing decision table, clicks Save As, leaves every pre-filled value unchanged, and clicks Create and open. The system reports an error. What must the developer do?",
+      "stem": "The highest version of ruleset ClaimsMain is 02-03-04, and it is locked. A defect in a calculation must be fixed, with no new functionality. Where should the fix go?",
       "options": [
-        "Nothing; wait a second and retry so a new creation timestamp produces a unique key.",
-        "Change at least one of the identifier, the applies-to class or the ruleset.",
-        "Use the Create menu instead, because Save As cannot copy decision tables.",
-        "Change the rule type, because a copy cannot share the original's type."
+        "ClaimsMain:02-03-05",
+        "ClaimsMain:02-04-01",
+        "ClaimsMain:03-01-01",
+        "Unlock ClaimsMain:02-03-04 and fix it in place"
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "Save As pre-fills all values, and you must change the identifier, class or ruleset or an error occurs. Although the timestamp is part of .pzInsKey, retrying does not satisfy this requirement. Save As works for decision tables. Changing rule type is not how Save As works; a copy keeps the type.",
-      "difficulty": "hard"
+      "explanation": "Ruleset versions use the format major-minor-patch, and bug fixes increment the patch number, so the fix goes in 02-03-05. A minor increment such as 02-04-01 is for enhancements. A major increment such as 03-01-01 is for substantial new functionality or a major platform upgrade. Older versions should stay locked, so unlocking 02-03-04 to change it goes against best practice.",
+      "difficulty": "medium"
     },
     {
       "id": "ad-017",
       "objective": 7,
-      "type": "multi",
-      "stem": "A developer inspects the .pzInsKey of an SLA rule while troubleshooting. Which two values are part of that key? (Choose two.)",
+      "type": "single",
+      "stem": "A developer uses Save As on a Decision table, changes only the short description and clicks Create and open. The system shows an error. Which single change allows the copy to be created?",
       "options": [
-        "The rule's applies-to class",
-        "The rule's creation timestamp in GMT",
-        "The ruleset version that contains the rule",
-        "The operator ID of the rule's author",
-        "The name of the application"
+        "Make the short description longer so the label is unique.",
+        "Change the Apply to class to a child class.",
+        "Check out the original rule before using Save As.",
+        "Enable a delegation option on the Results tab."
       ],
       "answer": [
-        0,
         1
       ],
-      "explanation": "The .pzInsKey combines the rule type's internal name, the applies-to class, the identifier and the creation timestamp in GMT. The ruleset version, the author's operator ID and the application name are not components of the key.",
+      "explanation": "Save As pre-fills every key value, and it fails unless the identifier, the Apply to class or the ruleset is changed. Changing the class to a child class meets that requirement and specializes the rule. The short description is not part of the rule's key, so editing it does not help. Checking out the original and setting delegation options do not change the key, so the error remains.",
       "difficulty": "hard"
     },
     {
       "id": "ad-018",
       "objective": 7,
       "type": "multi",
-      "stem": "UPlus Telco is creating organization-level rulesets. Which two proposed names follow Pega naming best practices? (Choose two.)",
+      "stem": "While troubleshooting, a developer reads the `.pzInsKey` of an SLA rule. Which two values make up part of this key? (Choose Two)",
       "options": [
-        "UPlusTelcoContracts",
-        "UPlusTelcoBilling",
-        "UPTC",
-        "Pega-UPlusContracts",
-        "UPlus Telco Claims"
+        "The internal name of the rule type",
+        "The creation timestamp in GMT",
+        "The ruleset version that holds the rule",
+        "The operator ID of the rule's creator"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Organization rulesets should be meaningful, beginning with the company name plus purpose, with no spaces, no special characters and at most 32 characters. UPTC is an opaque abbreviation. Names must not start with Pega or Pega-, and the hyphen is a disallowed special character. Spaces are not allowed.",
-      "difficulty": "medium"
+      "explanation": "`.pzInsKey` combines the internal name of the rule type (such as RULE-OBJ-SERVICELEVEL), the applies-to class, the identifier and the creation timestamp in GMT. Some rule types add more keys, for example the Correspondence type. The ruleset version and the creator's operator ID are not part of the key.",
+      "difficulty": "hard"
     },
     {
       "id": "ad-019",
-      "objective": 8,
-      "type": "single",
-      "stem": "Class TGB-HR-Work-Relocation uses pattern inheritance and has Work-Cover- as its directed parent. A flow references property .pxCreateOpName, which is defined only in Work-Cover-. How does rule resolution find it?",
+      "objective": 7,
+      "type": "multi",
+      "stem": "An application's ruleset stack includes the entry ClaimsMain:02-03. Which two ruleset versions does Pega search through this entry? (Choose Two)",
       "options": [
-        "It searches Work-Cover- first because directed inheritance always takes precedence.",
-        "It searches the pattern parents TGB-HR-Work, TGB-HR and TGB first, then the directed parent Work-Cover-, where it finds the property.",
-        "It returns an error, because pattern inheritance cannot reach a class that does not share the TGB prefix.",
-        "It skips directly to @baseclass and then works downward to Work-Cover-."
+        "ClaimsMain:02-01-05",
+        "ClaimsMain:02-03-02",
+        "ClaimsMain:01-09-09",
+        "ClaimsMain:02-04-01"
       ],
       "answer": [
+        0,
         1
       ],
-      "explanation": "Pega checks pattern parents first, then the directed parent (and its pattern parents), repeating to @baseclass, so it finds the property in Work-Cover-. Directed is not searched first. Directed inheritance exists precisely to reach classes outside the prefix, so no error occurs. Search moves upward toward @baseclass, not downward from it.",
+      "explanation": "A ruleset stack entry includes the listed version and every lower minor and patch version within the same major version. That covers 02-03-02 and 02-01-05. Version 01-09-09 belongs to a different major version, so it is outside the entry even though its numbers look higher. Version 02-04-01 is higher than the listed 02-03, so it is not included.",
       "difficulty": "hard"
     },
     {
       "id": "ad-020",
-      "objective": 8,
+      "objective": 7,
       "type": "multi",
-      "stem": "A senior developer created an SLA rule in Dev Studio. A citizen developer configuring a step in App Studio cannot select it from the existing SLA dropdown. Which two statements are correct? (Choose two.)",
+      "stem": "In App Studio, a business architect creates the Employee Relocation Case Type, adds a Process named Pricing and configures a View for one of its steps. Which two Dev Studio rules does this create? (Choose Two)",
       "options": [
-        "Mark the SLA as a relevant record using Actions > Mark as relevant record in Dev Studio.",
-        "Confirm the SLA is guardrail-compliant before marking it.",
-        "Fields created in App Studio must also be marked manually before they appear.",
-        "Move the SLA to @baseclass so App Studio can find it.",
-        "Relevant records apply only to the exact class and never to its subclasses."
+        "A Flow rule for the Pricing Process",
+        "A pyDefault Case Type rule in the Case Type's work class",
+        "A Section rule in the Data-Portal class for the View",
+        "An Activity rule for each step in the Process"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "An existing Dev Studio SLA shows in App Studio only when marked relevant, which is done via Actions > Mark as relevant record after verifying guardrail compliance. App Studio-created fields are marked automatically. Moving the rule to @baseclass is not how App Studio visibility works. Relevant records inherit down the class hierarchy to subclasses.",
+      "explanation": "A new Case Type creates a work class (such as TGB-HRApps-Work-EmployeeRelocation) with a pyDefault Case Type rule, a data page and properties, and each Process becomes a Flow rule. A View does become a Section rule, but its class context is the case class. UI rules in the Data-Portal class come from adding a channel such as Mobile. Steps are not converted into Activity rules.",
       "difficulty": "hard"
     },
     {
       "id": "ad-021",
       "objective": 8,
       "type": "single",
-      "stem": "An LSA is designing the class hierarchy for a mid-size company with a single line of business. Which layer of the hierarchy should be added only when necessary?",
+      "stem": "Class TGB-HR-Work-Relocation uses pattern inheritance and has Work-Cover- as its directed parent. A When rule with the same name is defined in both TGB-HR-Work and Work-Cover-. Which version does rule resolution find first?",
       "options": [
-        "Organization",
-        "Division/Unit",
-        "Application",
-        "Work"
+        "The TGB-HR-Work version, because pattern parents are searched before the directed parent",
+        "The Work-Cover- version, because the directed parent is searched before pattern parents",
+        "The version created most recently, regardless of class",
+        "Neither, because the same name in two parent classes causes an error"
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "The Division/Unit layer is optional and used only when necessary. Organization, Application and Work are standard layers of the hierarchy; Work is where case type classes live and the organization layer anchors pattern inheritance.",
-      "difficulty": "medium"
-    },
-    {
-      "id": "ad-022",
-      "objective": 9,
-      "type": "single",
-      "stem": "A developer is debugging a Constellation application and wants Tracer to pause on a specific activity and track how a property value changes. What should the developer expect?",
-      "options": [
-        "Breakpoints and Watch work normally, but only from the App Studio runtime toolbar.",
-        "Breakpoints and Watch are not supported for Constellation applications, so the developer must rely on other events and tools such as request-ID grouping, browser tools or XRay.",
-        "Breakpoints work, but the thread stays paused indefinitely until the developer clicks Play.",
-        "Tracer cannot be used at all in Constellation; only Redux DevTools is available."
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "Breakpoints and Watch are not supported for Service rules or Constellation apps; Tracer still groups Constellation events by request ID, and front-end tools help. The toolbar used does not change that limitation. Where breakpoints are supported, they resume automatically after one hour, not indefinitely. Tracer is available for Constellation apps, just without breakpoints and watch.",
+      "explanation": "Rule resolution searches the pattern parents first (by class name prefix, so TGB-HR-Work), then the directed parent and its pattern parents, repeating up to @baseclass. The TGB-HR-Work version is found first. The directed parent comes after the pattern parents, not before. Creation date does not decide which class wins. A rule with the same name at two levels is normal specialization, not an error. An error happens only when no rule is found.",
       "difficulty": "hard"
     },
     {
-      "id": "ad-023",
-      "objective": 9,
+      "id": "ad-022",
+      "objective": 8,
       "type": "multi",
-      "stem": "A developer is reviewing a Tracer session. Which two statements are accurate? (Choose two.)",
+      "stem": "An LSA is explaining class inheritance to new developers. Which two statements are correct? (Choose Two)",
       "options": [
-        "Light blue rows represent database and cache events.",
-        "Only one Tracer can run per operator per node.",
-        "Orange rows represent activity events.",
-        "Tracer is the recommended tool for measuring application performance.",
-        "The last row marked Fail always contains the root cause."
+        "Pattern inheritance follows the class name prefix automatically.",
+        "Directed inheritance is set explicitly on the class rule form.",
+        "Directed inheritance reuses rules based on business suitability.",
+        "The pattern search stops at the organization class."
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Light blue marks database and cache events, and one Tracer runs per operator per node. Activities are gray; orange is for flows, decisions and declaratives. Tracer has heavy impact and is meant for troubleshooting, not performance analysis. The root cause can occur earlier than the final failed step.",
+      "explanation": "Pattern inheritance is automatic and based on the class name prefix, with hyphens separating levels. Directed inheritance names a parent explicitly on the class rule form, for example to reuse Pega's Work- or Data- classes or rules from other applications. Business suitability describes pattern inheritance, while directed inheritance is about functional suitability. The search does not stop at the organization class: it continues through directed parents up to @baseclass.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-023",
+      "objective": 8,
+      "type": "multi",
+      "stem": "A senior developer created an SLA rule in Dev Studio. A citizen developer configuring a step in App Studio cannot find it in the list of existing SLAs. Which two statements are correct? (Choose Two)",
+      "options": [
+        "The SLA must be marked as a relevant record before App Studio lists it.",
+        "The developer should confirm the SLA is guardrail-compliant before marking it.",
+        "Only SLAs created in App Studio can appear in the App Studio list.",
+        "The SLA is marked as relevant from the SLA list in App Studio."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "An existing Dev Studio SLA appears in App Studio only when it is marked as a relevant record. A developer does this in Dev Studio with Actions > Mark as relevant record, after checking that the rule is guardrail-compliant. SLAs are one of the rule types that can be marked manually, so they are not limited to App Studio-created rules. Marking happens in Dev Studio, not from the App Studio list.",
       "difficulty": "hard"
     },
     {
       "id": "ad-024",
-      "objective": 10,
+      "objective": 8,
       "type": "single",
-      "stem": "A developer creates a configuration set named EmailControls to switch off outbound email until an integration is ready, but the set does not appear on the Configurations landing page. What is the most likely reason?",
+      "stem": "A developer marks a Decision table as a relevant record for class Insurance-Claims. Where can App Studio users see it as relevant?",
       "options": [
-        "Configuration sets are visible only in Dev Studio.",
-        "The set has no configuration settings yet, and a set is not shown until it contains at least one.",
-        "The product file was built without Include associated data.",
-        "The developer must first create a Dynamic System Setting with the same name."
+        "In Insurance-Claims and its child classes, such as Insurance-Claims-Auto and Insurance-Claims-Home",
+        "Only in Insurance-Claims, because each child class must mark it separately",
+        "In Insurance-Claims and its parent class Insurance",
+        "In every class of the application, whatever the hierarchy"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Relevant records inherit down the class hierarchy, so a record marked for Insurance-Claims is relevant in Insurance-Claims-Auto and Insurance-Claims-Home too. Child classes do not need to mark it again. Inheritance runs down the hierarchy, not up to the parent class Insurance. It does not cover classes outside that branch of the hierarchy.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-025",
+      "objective": 8,
+      "type": "single",
+      "stem": "Application TGB-IT has the Case Types TGB-IT-Work-ITTicket and TGB-IT-Work-LaptopRequest. A developer needs a Data Transform that every Case Type in the application can reuse. In which class should it be created?",
+      "options": [
+        "TGB-IT-Work-ITTicket",
+        "TGB-IT-Work",
+        "TGB-IT-Data-Asset",
+        "@baseclass"
       ],
       "answer": [
         1
       ],
-      "explanation": "A configuration set is not displayed until it has at least one setting. Sets are managed in App Studio on the Settings tab Configurations landing page. Include associated data affects packaging for deployment, not visibility in the development system. Configuration settings replace Dynamic System Settings, so no matching DSS is required.",
+      "explanation": "Reusable rules should sit as high in the hierarchy as their use allows. TGB-IT-Work is the parent of every Case Type class in the application, so all of them inherit it through pattern inheritance. TGB-IT-Work-ITTicket is a single Case Type, and LaptopRequest is a separate Case Type that does not inherit from it. A Data class holds data types, not case processing. @baseclass is Pega's ultimate base class, which is far too general for application logic.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-026",
+      "objective": 9,
+      "type": "single",
+      "stem": "A developer is debugging a Constellation application. She wants Tracer to pause on a specific activity and to show how a property value changes. What should she expect?",
+      "options": [
+        "Breakpoints and Watch are not supported, and events are grouped by request ID.",
+        "A Breakpoint pauses the thread until she clicks Play or one hour passes.",
+        "Watch highlights the old and current values in yellow in the Property Inspector.",
+        "Tracer cannot be used with Constellation applications."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Breakpoints and Watch are not supported for Constellation applications or Service rules. Tracer still works, and because the DX API is stateless it groups Constellation events by request ID. The pause-until-Play-or-one-hour behavior and the yellow Old/Current highlighting in the Property Inspector are real features, but they apply only where Breakpoints and Watch are supported. Tracer can still trace Constellation applications.",
       "difficulty": "hard"
+    },
+    {
+      "id": "ad-027",
+      "objective": 9,
+      "type": "multi",
+      "stem": "A developer is reviewing a Tracer session after a case fails to advance. Which two statements are accurate? (Choose Two)",
+      "options": [
+        "Light blue events show database and cache operations.",
+        "The root cause can appear in an event before the last failed step.",
+        "Orange events show activities.",
+        "Tracer is the recommended tool for analyzing performance problems."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "In Tracer, light blue marks database and cache events. The root cause of a failure often appears earlier than the final event marked Fail. Gray marks activities, while orange marks flows, decisions and declaratives. Tracer is for troubleshooting runtime events and has a heavy performance impact, so it is not suited to performance analysis.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-028",
+      "objective": 9,
+      "type": "single",
+      "stem": "A developer opens the browser console while the application is running in the App Studio shell and runs `PCore.getDebugger().toggleXRay(true)`. The command fails because PCore is undefined. What should she do?",
+      "options": [
+        "Set the DebugPegaAPI setting to true and run the command again.",
+        "Launch the portal from Dev Studio and run the command there.",
+        "Set the pxEnableC11nDev When rule to true.",
+        "Turn on Tracer from the Runtime toolbar first."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "PCore and PConnect are not available in the App Studio shell, so the portal must be launched from Dev Studio before running XRay. Setting DebugPegaAPI to true gives verbose DX API logs, but PCore is still undefined. pxEnableC11nDev shows View rule metadata as JSON. Tracer is a separate tool and does not load PCore.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-029",
+      "objective": 9,
+      "type": "multi",
+      "stem": "A developer is troubleshooting a Constellation screen with browser and extension tools. Which two tool and purpose pairs are correct? (Choose Two)",
+      "options": [
+        "Browser Network tab: inspect DX API requests and payloads",
+        "Redux DevTools: inspect actions and state with time travel",
+        "Redux DevTools: inspect client-side data pages",
+        "React DevTools Network tab: inspect DX API payloads"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "The browser Network tab (Fetch/XHR) shows DX API calls and their payloads. Redux DevTools shows actions and state and supports time travel. Client-side data pages are held in a separate datastore, not in Redux, and are read with `PCore.getDataPageUtils()`. React DevTools is for inspecting components, for example through the Components tab, and has no Network tab for DX API traffic.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-030",
+      "objective": 10,
+      "type": "single",
+      "stem": "A manager with the WorkMgr4 role creates a new configuration set, but cannot change the value of an existing setting. What explains this?",
+      "options": [
+        "WorkMgr4 has full access to configuration sets but read-only access to settings.",
+        "Configuration settings can be changed only as Dynamic System Settings in Dev Studio.",
+        "A configuration set stays hidden until it contains at least one setting.",
+        "Only the User4 role can change configuration settings."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "WorkMgr4 can read, write and delete configuration sets, but can only read settings. SysAdm4 has full access to both, and User4 can only read both. Configuration settings replace Dynamic System Settings and are managed on the Configurations landing page. A set is hidden until it contains a setting, which is true but does not explain why a value cannot be changed. User4 is read-only.",
+      "difficulty": "medium"
     }
   ]
 }

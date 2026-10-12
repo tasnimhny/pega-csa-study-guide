@@ -5,6 +5,7 @@
   const DOMAINS = DATA.domains;
   const app = document.getElementById('app');
   const EXAM = { questions: 60, minutes: 90, pass: 65 };
+  const MISSION = { questions: 40, minutes: 60, pass: 80 };
   const LETTERS = 'ABCDEFGH';
 
   // ---------- storage (per-viewer convenience only) ----------
@@ -25,6 +26,13 @@
   const fmt = (t) => esc(t)
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Mission Test layout: scenario first, then the question on its own line.
+  const stemHTML = (stem) => {
+    const m = /^([\s\S]*?[.!])\s+((?:Which|What|Where|When|Who|How|Why|In which|Changes to)[^]*\?[^]*)$/.exec(stem);
+    return m
+      ? `<p class="stem scenario">${fmt(m[1])}</p><p class="stem">${fmt(m[2])}</p>`
+      : `<p class="stem">${fmt(stem)}</p>`;
+  };
   const allQuestions = () => DOMAINS.flatMap((d) => d.questions.map((q) => ({ ...q, domain: d.id, domainTitle: d.title, objectiveText: d.objectives[q.objective]?.objective })));
   const byId = Object.fromEntries(allQuestions().map((q) => [q.id, q]));
 
@@ -185,6 +193,7 @@
       <section class="hero"><h1>Mock exams</h1><p>${EXAM.questions} questions · ${EXAM.minutes} minutes · ${EXAM.pass}% to pass. Questions are spread across domains in the same proportions as the PEGACPSA25V1 blueprint. Answers stay hidden until you submit, then you get a domain-by-domain breakdown and a full review.</p></section>
       <div class="grid grid-3">
         ${examDefs.map((e) => `<div class="card set-card"><span class="pill" style="align-self:flex-start">Fixed form</span><h3>${e.title}</h3><div class="meta">Same questions every attempt, so you can measure progress.${scores[e.id] ? ` <span class="score-badge">Best ${scores[e.id].best}%</span>` : ''}</div><div class="btn-row"><a class="btn primary" href="#/exam/${e.id}">Start</a></div></div>`).join('')}
+        <div class="card set-card"><span class="pill" style="align-self:flex-start">Mission Test format</span><h3>Mission Test Simulation</h3><div class="meta">${MISSION.questions} questions · ${MISSION.minutes} minutes · ${MISSION.pass}% to pass, the same format as the Pega Academy Mission Test. Weighted random draw.${scores['mission-sim'] ? ` <span class="score-badge">Best ${scores['mission-sim'].best}%</span>` : ''}</div><div class="btn-row"><a class="btn primary" href="#/exam/mission-sim">Start</a></div></div>
         <div class="card set-card"><span class="pill hard" style="align-self:flex-start">Random</span><h3>Random Mock Exam</h3><div class="meta">A newly shuffled weighted draw every time.${scores['exam-random'] ? ` <span class="score-badge">Best ${scores['exam-random'].best}%</span>` : ''}</div><div class="btn-row"><a class="btn primary" href="#/exam/exam-random">Start</a></div></div>
       </div>
       <div class="section-title"><h2>Exam-day reminders</h2></div>
@@ -200,17 +209,17 @@
   let session = null;
   let timerHandle = null;
 
-  function startQuiz({ id, title, ids, mode }) {
+  function startQuiz({ id, title, ids, mode, cfg = EXAM }) {
     clearInterval(timerHandle);
     session = {
-      id, title, mode, ids,
+      id, title, mode, ids, cfg,
       i: 0,
       answers: {},     // qid -> [indices]
       checked: {},     // practice: qid -> true
       flagged: {},
       perm: Object.fromEntries(ids.map((qid) => [qid, shuffle(byId[qid].options.map((_, k) => k))])),
       done: false,
-      endsAt: mode === 'exam' ? Date.now() + EXAM.minutes * 60 * 1000 : null,
+      endsAt: mode === 'exam' ? Date.now() + cfg.minutes * 60 * 1000 : null,
     };
     if (mode === 'exam') timerHandle = setInterval(tick, 1000);
     renderQuiz();
@@ -288,11 +297,11 @@
       <div class="question card">
         <div class="q-meta">
           <span class="pill">${esc(q.domainTitle)}</span>
-          ${q.type === 'multi' ? `<span class="pill multi">Select ${need}</span>` : ''}
+          ${q.type === 'multi' ? `<span class="pill multi">Choose ${need}</span>` : ''}
           ${q.difficulty === 'hard' ? '<span class="pill hard">Hard</span>' : ''}
           ${revealed ? `<span>Objective: ${esc(q.objectiveText || '')}</span>` : ''}
         </div>
-        <p class="stem">${fmt(q.stem)}</p>
+        ${stemHTML(q.stem)}
         <ul class="options">${optHTML}</ul>
         ${explain}
         <div class="quiz-nav">
@@ -361,13 +370,13 @@
       return { d, n: rs.length, ok: rs.filter((r) => r.ok).length };
     }).filter((x) => x.n);
 
-    const pass = pct >= EXAM.pass;
+    const pass = pct >= s.cfg.pass;
     app.innerHTML = `
       <div class="card result-hero">
         <div class="muted">${esc(s.title)}</div>
         <div class="big">${pct}%</div>
         <div>${right} of ${qs.length} correct</div>
-        ${s.mode === 'exam' ? `<div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'BELOW PASSING'} · passing score ${EXAM.pass}%</div>` : ''}
+        ${s.mode === 'exam' ? `<div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'PASS' : 'BELOW PASSING'} · passing score ${s.cfg.pass}%</div>` : ''}
         <div class="btn-row" style="justify-content:center;margin-top:16px">
           <a class="btn" href="#/${s.mode === 'exam' ? 'exam' : 'practice'}">Back</a>
           <button class="btn primary" id="retry">Retry</button>
@@ -376,7 +385,7 @@
       </div>
       <div class="section-title"><h2>By domain</h2><span class="muted">Study sheet links open the domain</span></div>
       <div class="card weights breakdown">
-        ${byDomain.map(({ d, n, ok }) => { const p = Math.round((ok / n) * 100); const c = p >= 80 ? 'good' : p >= EXAM.pass ? 'mid' : 'bad'; return `<a class="weight-row" href="#/study/${d.id}"><span>${esc(d.title)}</span><span class="bar ${c}"><i style="width:${p}%"></i></span><span class="pct">${ok}/${n}</span></a>`; }).join('')}
+        ${byDomain.map(({ d, n, ok }) => { const p = Math.round((ok / n) * 100); const c = p >= 80 ? 'good' : p >= s.cfg.pass ? 'mid' : 'bad'; return `<a class="weight-row" href="#/study/${d.id}"><span>${esc(d.title)}</span><span class="bar ${c}"><i style="width:${p}%"></i></span><span class="pct">${ok}/${n}</span></a>`; }).join('')}
       </div>
       <div class="section-title"><h2>Review</h2></div>
       ${results.map(({ q, ok }, k) => {
@@ -408,6 +417,7 @@
     if (section === 'exam') {
       if (!sub) return viewExamList();
       setTab('exam');
+      if (sub === 'mission-sim') return startQuiz({ id: 'mission-sim', title: 'Mission Test Simulation', ids: weightedPick(MISSION.questions, Math.random), mode: 'exam', cfg: MISSION });
       const def = examDefs.find((e) => e.id === sub);
       const ids = def ? weightedPick(EXAM.questions, rng(def.seed)) : weightedPick(EXAM.questions, Math.random);
       return startQuiz({ id: def ? def.id : 'exam-random', title: def ? def.title : 'Random Mock Exam', ids, mode: 'exam' });

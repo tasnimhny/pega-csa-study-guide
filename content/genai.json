@@ -318,284 +318,348 @@
       "id": "ai-001",
       "objective": 0,
       "type": "single",
-      "stem": "A bank's service center wants representatives, and later its chatbot (IVA), to get instant answers to questions such as 'What documents are needed to close a deceased customer's account?' The answers must come from the bank's own procedure manuals and internal knowledge base. Which Pega GenAI capability best fits?",
+      "stem": "A bank's service representatives, and later its IVA chatbot, need instant answers such as which documents close a deceased customer's account. Answers must come from the bank's own procedure manuals. Which Pega GenAI capability fits best?",
       "options": [
-        "GenAI Coach",
         "Knowledge Buddy",
+        "GenAI Coach",
         "Autopilot",
-        "Pega GenAI Blueprint"
+        "A Connect Generative AI step with an Unstructured response"
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "Knowledge Buddy gives instant answers grounded in the client's own procedures and knowledge bases, and it can be enabled for IVA. GenAI Coach gives case-specific advice on the task the user is doing and is not the tool for answering from enterprise documents. Autopilot gives design-time suggestions to developers. Blueprint designs applications before or at the start of a build.",
-      "difficulty": "hard"
+      "explanation": "Knowledge Buddy answers from the client's own procedures, documents and knowledge bases, and it can be enabled for IVA. GenAI Coach gives case-specific advice on the task a user is working, not answers grounded in the bank's manuals across channels. Autopilot is a design-time assistant for developers. A Connect step runs a custom prompt inside a case process and is not a knowledge service for representatives and a chatbot.",
+      "difficulty": "medium"
     },
     {
       "id": "ai-002",
       "objective": 0,
       "type": "multi",
-      "stem": "Which two statements about Knowledge Buddy are correct? (Choose two.)",
+      "stem": "An insurer is evaluating Knowledge Buddy for its service operations. Which two statements about Knowledge Buddy are correct? (Choose Two)",
       "options": [
-        "It grounds its answers in the organization's own documents and knowledge bases",
-        "It generates case types and lifecycles from a functional description",
-        "It can be enabled for Intelligent Virtual Assistants",
-        "It is one of the response structures of a Connect Generative AI step",
-        "It must be created by importing a Blueprint file"
+        "It can be enabled for an Intelligent Virtual Assistant channel",
+        "Pega Community's Search Assistant is powered by it",
+        "It generates case lifecycles from uploaded process documents",
+        "It appears as a widget in the Full Page View utilities pane"
       ],
       "answer": [
         0,
-        2
+        1
       ],
-      "explanation": "Knowledge Buddy answers from client-specific content and can be enabled for IVA. Generating case types and lifecycles is the work of Blueprint and Autopilot. Connect response structures are Structured-Single, Structured-List and Unstructured. Blueprint import creates application assets such as case types, data objects and personas, not Knowledge Buddies.",
-      "difficulty": "medium"
+      "explanation": "Knowledge Buddy can be enabled for IVA, and Pega Community's Search Assistant is built on it. Uploading requirements documents to generate lifecycles is partly real, but that is Blueprint, which takes supporting assets during design. The GenAI Coach widget, not Knowledge Buddy, is the GenAI widget in the Full Page View utilities pane.",
+      "difficulty": "hard"
     },
     {
       "id": "ai-003",
       "objective": 1,
       "type": "single",
-      "stem": "A team is importing a Blueprint into a new application. Its 'Customer' data object duplicates a Customer data object already maintained in an enterprise application the new app will use. The team wants the new case types to use that existing object as is, without creating a Customer class in the new app. Which import option should they choose for the data object?",
+      "stem": "A team is importing a Blueprint. Its Customer data object duplicates a Customer data object already maintained in an enterprise application the new app is built on. The team wants to use that object as is, without creating a Customer class in the new app. Which import option fits?",
       "options": [
-        "Build",
-        "Inherit from existing",
         "Reuse existing",
+        "Inherit from existing",
+        "Build",
         "Skip"
       ],
       "answer": [
-        2
+        0
       ],
-      "explanation": "'Reuse existing' points the application at the existing data object without creating a class of its own. 'Inherit' creates a new class that inherits from the existing one, which is the extra class the team wants to avoid. 'Build' generates a brand-new data object, which creates the duplicate. 'Skip' leaves the object out, so the case types would have no link to the existing Customer object.",
+      "explanation": "Reuse existing uses the existing data object and creates no class of its own. Inherit from existing does create a new class, which inherits from the existing one, so it fails the no-new-class requirement. Build creates a new, separate Customer data object. Skip leaves the object out, so the case types would have no Customer data from the import.",
       "difficulty": "hard"
     },
     {
       "id": "ai-004",
       "objective": 1,
       "type": "multi",
-      "stem": "A lead system architect has just completed a Blueprint import in App Studio. Which two statements describe the resulting application? (Choose two.)",
+      "stem": "A lead system architect has just finished importing a Blueprint through App Studio's 'Build from a Blueprint' option. Which two statements describe the result? (Choose Two)",
       "options": [
-        "All generated assets except access roles are created in a branch",
-        "The base rulesets are locked, and the password provided must be stored securely",
-        "Access roles are created in the branch along with the other assets",
-        "The import requires PremBridge to be installed first",
-        "The application is built on Traditional UI with section-based views"
+        "The application is built on Pega Platform and uses Constellation UI",
+        "Case types, data objects and personas are created in a branch",
+        "Access roles are created in the branch together with the other assets",
+        "Base rulesets are left unlocked so the team can develop in them directly"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Import puts every asset except access roles into a branch and locks the base rulesets with a password you must keep safe. Access roles are the exception and are not created in the branch. PremBridge is not required for import. Blueprint apps are built on Pega Platform with Constellation UI, not Traditional UI.",
+      "explanation": "A Blueprint import builds on Pega Platform with Constellation UI, and the generated assets are created in a branch. Access roles are the one exception, because they are not created in the branch. Base rulesets are locked, and the password Pega provides must be stored securely, so the statement about unlocked rulesets is wrong.",
       "difficulty": "hard"
     },
     {
       "id": "ai-005",
       "objective": 1,
       "type": "single",
-      "stem": "Following the Blueprint checklist, a team is reviewing decision shapes, flow actions and locking strategies, and checking database mapping, data pages and property settings in the data model. Which checklist phase are they in?",
+      "stem": "Following the Blueprint checklist, a team is merging branches, updating rulesets and setting up a developer application. Which checklist phase are they in?",
       "options": [
-        "Pre-import",
-        "Import",
         "Post-import",
-        "Review"
+        "Review",
+        "Import",
+        "Common challenges"
       ],
       "answer": [
-        3
+        0
       ],
-      "explanation": "The Review phase covers decision shapes, flow actions, locking strategies and data model details such as DB mapping, data pages and property settings. Pre-import confirms the app name, case types, data objects, personas and organization details. Import decides between a new app and extending an existing one and watches for ruleset and class conflicts. Post-import merges branches, updates rulesets and sets up the developer application.",
-      "difficulty": "medium"
+      "explanation": "Merging branches, updating rulesets and setting up the developer application are Post-import tasks. Review covers decision shapes, flow actions, locking strategies and data model details such as database mapping and data pages. Import is where you choose a new application or extend an existing one and watch for overlaps. Common challenges lists areas such as alternate stages, approval steps, automation steps and child case management.",
+      "difficulty": "hard"
     },
     {
       "id": "ai-006",
       "objective": 1,
       "type": "multi",
-      "stem": "A solutions consultant wants to co-design an application with a prospect who has no Pega environment. Which two statements about Pega Blueprint support this? (Choose two.)",
+      "stem": "A solutions consultant wants to co-design an application with a prospect who has no Pega environment, and to reuse the prospect's requirements documents. Which two statements about Pega Blueprint support this? (Choose Two)",
       "options": [
-        "Blueprint runs as SaaS and needs no Pega instance or login",
-        "The design can be exported as a .blueprint file and later imported into Pega",
-        "Blueprint can generate applications only from pre-built industry templates",
-        "Blueprint replaces App Studio for all further configuration after import",
-        "A Blueprint can be imported only into an existing application, not a new one"
+        "It runs as SaaS at pega.com/blueprint without a Pega instance or login",
+        "Requirements documents can be uploaded as supporting assets",
+        "The exported file must go through PremBridge before it can be imported",
+        "It generates designs with GenAI only and offers no industry templates"
       ],
       "answer": [
         0,
         1
       ],
-      "explanation": "Blueprint is a free SaaS tool that needs no Pega instance or login, and it exports a .blueprint file (plus a PDF and revision history) that can be imported. It offers Pega GenAI solutions as well as pre-built templates. It supports App Studio rather than replacing it. Import can create a new application through 'Build from a Blueprint', and extending an existing app is a separate option.",
+      "explanation": "Blueprint is free SaaS that needs no Pega instance or login, and it accepts supporting assets such as requirements documents. PremBridge is not required to import a Blueprint file. For application purpose, Blueprint offers pre-built industry templates as well as Pega GenAI solutions, so it is not GenAI only.",
       "difficulty": "hard"
     },
     {
       "id": "ai-007",
-      "objective": 2,
+      "objective": 1,
       "type": "single",
-      "stem": "While creating a 'Purchase Request' case type with Autopilot, a developer accepts a suggested field 'Vendor' of type Data reference. No Vendor data object exists yet. What happens when the developer submits?",
+      "stem": "While designing in Blueprint, an analyst wants to record that the Approval step should route to finance managers and resolve within two days. What is the recommended way to capture this?",
       "options": [
-        "Submission fails until a Vendor data object is created manually",
-        "Autopilot creates the Vendor data object along with the field",
-        "The field is converted to Text (single line) because the reference cannot be resolved",
-        "The field becomes Embedded data stored only in the case"
+        "Add it to Notes so the delivery team configures it after import",
+        "Model it as a Calculated field in the Case Data Model",
+        "Give the finance persona a higher access level in the Personas step",
+        "Add an alternate stage named Finance Approval to the lifecycle"
       ],
       "answer": [
-        1
+        0
       ],
-      "explanation": "When Autopilot suggests a Data reference field, it also creates the data object behind it. Nothing has to be created by hand first, so submission does not fail. Autopilot does not quietly change the type to Text. Embedded data is a different relationship type that stores data inside the case, and Autopilot does not substitute it.",
-      "difficulty": "hard"
+      "explanation": "Blueprint best practice is to use Notes for routing, SLAs and conditions, so the details travel with the design for the delivery team. A Calculated field captures a derived value, not routing or a deadline. Persona access levels describe what a persona can do, not where a step goes or when it is due. An alternate stage changes the lifecycle structure without recording the routing rule or the two-day target.",
+      "difficulty": "medium"
     },
     {
       "id": "ai-008",
       "objective": 2,
       "type": "single",
-      "stem": "The external customer database is not integrated yet, but testers need about 50 realistic Customer records with valid-looking email addresses to test case flows. What is the fastest App Studio approach?",
+      "stem": "While creating a Purchase Request case type with Autopilot, a developer accepts a suggested field 'Vendor' of type Data reference. No Vendor data object exists yet. What happens when the developer submits?",
       "options": [
-        "Use 'Generate sample records with Autopilot' on the Customer data object's Records tab",
-        "Add a Connect Generative AI step to the case type to create customers at runtime",
-        "Re-import the Blueprint with the Customer data object set to Build",
-        "Use 'Fill form with AI' on the Customer data object's Full Page View"
+        "Autopilot creates the Vendor data object",
+        "Submission fails until a Vendor data object is created manually",
+        "Vendor is converted to an Embedded data field",
+        "Vendor is created as a Text (single line) field"
       ],
       "answer": [
         0
       ],
-      "explanation": "Autopilot can generate the number of sample records you choose on a data object's Records tab, with values that match each field type, such as email-formatted values for Email fields. It is meant to stand in for a system of record that is not yet integrated. A Connect step produces GenAI output inside a case, not a set of test data records. Re-importing a Blueprint creates rules, not populated records. 'Fill form with AI' fills one form during runtime testing; it does not create a batch of records.",
-      "difficulty": "medium"
+      "explanation": "When Autopilot suggests a Data reference field, Autopilot creates the referenced data object. Submission does not fail, and the field is not converted. Embedded data and Text (single line) are different field types with different behavior, and Autopilot keeps the type the developer accepted, Data reference.",
+      "difficulty": "hard"
     },
     {
       "id": "ai-009",
       "objective": 2,
-      "type": "multi",
-      "stem": "Which two capabilities are part of Pega GenAI Autopilot? (Choose two.)",
-      "options": [
-        "Suggesting personas, with descriptions, for the application",
-        "Filling in a form with AI while testing at runtime",
-        "Giving end users expert, case-specific advice while they work a task",
-        "Answering employee questions from the company's knowledge base",
-        "Mapping a GenAI response to an embedded data list through a response structure"
-      ],
-      "answer": [
-        0,
-        1
-      ],
-      "explanation": "Autopilot covers design-time GenAI help, including persona suggestions and 'Fill form with AI' during runtime testing. Case-specific advice for end users is GenAI Coach. Answering from the company knowledge base is Knowledge Buddy. Mapping output to an embedded data list is a Connect Generative AI Structured-List response.",
-      "difficulty": "hard"
-    },
-    {
-      "id": "ai-010",
-      "objective": 3,
       "type": "single",
-      "stem": "An accounts payable case receives a supplier invoice. A Connect Generative AI step must extract every line item (description, quantity, unit price) into the case's 'Invoice lines' field. Which response structure and target should be configured?",
+      "stem": "The external customer system is not integrated yet, but testers need 50 Customer records with realistic email addresses to test case flows. What is the fastest App Studio approach?",
       "options": [
-        "Structured-Single mapped to the Invoice lines field",
-        "Structured-List mapped to Invoice lines defined as an embedded data list",
-        "Unstructured mapped to Invoice lines defined as Text (paragraph)",
-        "Unstructured mapped to Invoice lines defined as an embedded data list"
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "Repeating structured items belong in a Structured-List response, which maps to an embedded data list. Structured-Single maps to one field, so it fits one discrete value, not many line items. Unstructured output maps to a Text (paragraph) field, which would leave the lines as free text with no structure. Unstructured cannot be mapped to an embedded data list.",
-      "difficulty": "hard"
-    },
-    {
-      "id": "ai-011",
-      "objective": 3,
-      "type": "single",
-      "stem": "A complaints case should show adjusters a free-form narrative summary of the customer's emails, created by a Connect Generative AI step. The step runs successfully, but adjusters never see the summary. The output is configured as Unstructured. What is the most likely missing configuration?",
-      "options": [
-        "The response structure must be Structured-Single for any output to be stored",
-        "A Text (paragraph) target field must be set and added to a view the adjusters use",
-        "The prompt must be rebuilt in Dev Studio, because App Studio prompts cannot return text",
-        "GenAI Coach must be enabled before Connect output can be displayed"
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "Unstructured output maps to a Text (paragraph) field, and that target field must be added to the UI before users can see it. Structured-Single is for one discrete value; free-form narrative belongs in an Unstructured response. Connect can use custom prompts or existing Dev Studio prompts, and App Studio's AI Designer is where Connect is built. GenAI Coach is a separate runtime advice widget and does not control Connect output.",
-      "difficulty": "medium"
-    },
-    {
-      "id": "ai-012",
-      "objective": 3,
-      "type": "multi",
-      "stem": "A system architect is designing a Connect Generative AI step that summarizes medical claim notes. Which two statements reflect how Connect works and the best practices for it? (Choose two.)",
-      "options": [
-        "The step starts from a prompt, either a custom prompt or an existing one from Dev Studio",
-        "Sensitive data such as patient identifiers should be masked",
-        "Connect calls the language model directly, bypassing the GenAI gateway",
-        "The response is shown automatically in the case without adding any field to a view",
-        "Connect steps can be configured only in Dev Studio"
-      ],
-      "answer": [
-        0,
-        1
-      ],
-      "explanation": "Every Connect starts from a prompt, either custom or reused from Dev Studio, and sensitive data should be masked. Connect calls go through the GenAI gateway rather than straight to a model. The output goes into a target field, and that field must be added to the UI to be seen. Connect is built in AI Designer in App Studio, where it is the 'Connect Generative AI' automation step.",
-      "difficulty": "hard"
-    },
-    {
-      "id": "ai-013",
-      "objective": 4,
-      "type": "single",
-      "stem": "New claims adjusters want expert guidance tailored to the specific claim they have open, such as advice on what to check next for this claim, while they work their assignments. Which capability fits best?",
-      "options": [
-        "Knowledge Buddy",
-        "GenAI Coach",
-        "Autopilot",
-        "A Connect Generative AI step with a Structured-Single response"
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "GenAI Coach gives runtime, expert advice on end-user tasks that is specific to the current case. Knowledge Buddy answers from the organization's documents rather than coaching the user through a particular case's task. Autopilot is design-time help for developers. A Connect step with a Structured-Single response writes one value into a field during an automation; it is not interactive coaching.",
-      "difficulty": "medium"
-    },
-    {
-      "id": "ai-014",
-      "objective": 4,
-      "type": "single",
-      "stem": "A product owner wants GenAI Coach available to case workers on every Service Request case. Where should the system architect make it available?",
-      "options": [
-        "Add a Connect Generative AI automation step to each stage",
-        "Add the GenAI Coach widget to the utilities pane of the case type's Full Page View",
-        "Add the GenAI Coach widget to the portal navigation in place of the To do widget",
-        "Enable Coach in Blueprint and re-import the application"
-      ],
-      "answer": [
-        1
-      ],
-      "explanation": "GenAI Coach is a utilities pane widget on the case's Full Page View, so adding it there makes it available on every case of that type. A Connect step is an automation that writes GenAI output to fields; it is not Coach. Portal navigation widgets are Pulse, To do and App announcement, and Coach is a case utility. Blueprint designs case types, data and personas and does not enable runtime widgets.",
-      "difficulty": "hard"
-    },
-    {
-      "id": "ai-015",
-      "objective": 5,
-      "type": "multi",
-      "stem": "A team is designing a GenAI agent to process incoming service requests conversationally. Which two actions can an agent take? (Choose two.)",
-      "options": [
-        "Start a case",
-        "Call another agent",
-        "Bypass Tool rule governance when a user grants consent in chat",
-        "Edit and lock application rulesets in production",
-        "Import a Blueprint file to create new case types"
-      ],
-      "answer": [
-        0,
-        1
-      ],
-      "explanation": "An agent can run an automation, start a case, call another agent or launch a user action. Tool rules exist to enforce governance, security and compliance, so bypassing them is not an agent capability. Editing and locking rulesets is a development and DevOps task, not an agent action. Blueprint import is done by a developer in App Studio's New Application wizard.",
-      "difficulty": "hard"
-    },
-    {
-      "id": "ai-016",
-      "objective": 5,
-      "type": "single",
-      "stem": "A compliance officer asks how the organization will control what its GenAI agents are permitted to use and do when processing cases. Which Pega element is designed for that purpose?",
-      "options": [
-        "Tool rules",
-        "Connect response structures",
-        "Data pages listed as agent context",
-        "The Blueprint pre-import checklist"
+        "Generate sample records with Autopilot on the Customer data object's Records tab",
+        "Use Fill form with AI fifty times on the Customer data object",
+        "Accept Autopilot persona suggestions under Users > User management",
+        "Configure a Connect Generative AI step that writes Customer records"
       ],
       "answer": [
         0
       ],
-      "explanation": "Tool rules provide the governance, security and compliance layer for agents. Connect response structures decide how GenAI output maps to fields, not what an agent may do. Data pages listed on an agent give it context but do not govern it. The Blueprint pre-import checklist covers application design before import and has nothing to do with runtime agent control.",
+      "explanation": "On the data object's Records tab, Autopilot can generate a chosen number of sample records, and values match the field types, so Email fields get email-style values. These records stand in for the system of record that is not yet integrated during testing. Fill form with AI fills in a form while you test at runtime and does not create a set of records. Persona suggestions are about user types, not data. A Connect step adds runtime GenAI behavior to a case, which is far more work than generating test data.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ai-010",
+      "objective": 2,
+      "type": "multi",
+      "stem": "A product owner asks which features the team will get by turning on Pega GenAI Autopilot in App Studio. Which two capabilities are part of Autopilot? (Choose Two)",
+      "options": [
+        "Suggesting picklist choices for a data model field",
+        "Creating an Insight from a natural-language request",
+        "Giving case workers case-specific expert advice during assignments",
+        "Extracting invoice line items into an embedded data list during processing"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Autopilot covers design-time GenAI features, including data model suggestions with picklist choices and Insights created from natural language. Case-specific expert advice for end users is GenAI Coach. Extracting line items into an embedded data list while a case runs is a Connect Generative AI step with a Structured-List response.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-011",
+      "objective": 2,
+      "type": "multi",
+      "stem": "A governance board is writing guidelines for Autopilot use on a Pega '24 project. Which two statements should the guidelines include? (Choose Two)",
+      "options": [
+        "Autopilot suggestions must be reviewed, because Pega is not responsible for generated content",
+        "Autopilot sample records replace an unintegrated source for testing, not for production",
+        "Autopilot is active by default, so no setup is needed on Pega '24",
+        "Accepted persona suggestions are added automatically to every case type's lifecycle"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Autopilot output is a suggestion that developers must review, and Pega is not responsible for the content. Sample records stand in for a system of record that is not yet integrated, so the real data source must still be configured. Autopilot is inactive by default in '23 and '24. Accepted personas still have to be added to a case type in the lifecycle's Personas and Channels section.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-012",
+      "objective": 2,
+      "type": "single",
+      "stem": "A developer accepts Autopilot's suggested 'Field Inspector' persona. The persona now needs to be part of the Inspection case type. Where does the developer add it?",
+      "options": [
+        "The Personas and Channels section of the Inspection lifecycle",
+        "Users > User management, where the suggestion was accepted",
+        "The Data model tab of the Inspection case type",
+        "The Channels landing page, by adding a channel interface"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Autopilot suggests personas under Users > User management, and a persona is then added to a case type in the Personas and Channels section of its lifecycle. User management is where the suggestion was accepted, but it does not attach the persona to a case type. The data model holds fields and data objects. The Channels landing page manages interfaces such as portals and conversational channels, not a case type's personas.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ai-013",
+      "objective": 3,
+      "type": "single",
+      "stem": "An accounts payable case receives supplier invoices. A Connect Generative AI step must extract every line item, with description, quantity and unit price, into the case. Which response structure and target fit?",
+      "options": [
+        "Structured-List mapped to an embedded data list",
+        "Structured-Single mapped to a Text (paragraph) field",
+        "Unstructured mapped to an embedded data list",
+        "Structured-List mapped to a Text (paragraph) field"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Many line items with the same fields form a list, and Structured-List maps to an embedded data list. Structured-Single maps to one field, which cannot hold many rows. Unstructured output is free text that maps to a Text (paragraph) field, not a list. A Structured-List response does not go into a single text field.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-014",
+      "objective": 3,
+      "type": "single",
+      "stem": "In a Complaints case, a Connect Generative AI step with an Unstructured response writes a summary of the customer's emails to a Text (paragraph) field. The step runs without errors, but handlers never see the summary. What is the most likely fix?",
+      "options": [
+        "Add the target field to a view that handlers see",
+        "Change the response structure to Structured-Single",
+        "Add the GenAI Coach widget to the utilities pane",
+        "Rewrite the prompt in Dev Studio instead of AI Designer"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "A Connect step needs a target field, and that field must be on a view for users to see the result. Here the step works, so the missing piece is the view. Structured-Single maps to one field but does not change visibility, and a free-form summary is Unstructured output. GenAI Coach is a separate runtime advice widget. Prompts can be custom or come from Dev Studio, and where the prompt lives has nothing to do with whether the output is displayed.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-015",
+      "objective": 3,
+      "type": "multi",
+      "stem": "A system architect is designing a Connect Generative AI step that summarizes medical claim notes for staff in several countries. Which two statements reflect how Connect works and its best practices? (Choose Two)",
+      "options": [
+        "Responses are returned in the language of the user's locale",
+        "Sensitive data such as member IDs should be masked",
+        "The step calls the model directly, bypassing the GenAI gateway",
+        "Existing Dev Studio prompts cannot be used, so every prompt must be new"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Connect responses come back in the language of the user's locale, and sensitive data should be masked. Connect calls go through the GenAI gateway, not directly to a model. A Connect step starts from a prompt that can be custom or an existing one from Dev Studio, so reuse is allowed.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-016",
+      "objective": 3,
+      "type": "multi",
+      "stem": "A team is mapping the outputs of several Connect Generative AI steps to case fields. Which two pairings of response structure and target are valid? (Choose Two)",
+      "options": [
+        "Structured-Single mapped to one field, such as Claim category",
+        "Unstructured mapped to a Text (paragraph) field",
+        "Structured-List mapped to a Text (paragraph) field",
+        "Structured-Single mapped to an embedded data list"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Structured-Single maps to a single field, and Unstructured maps to a Text (paragraph) field. Structured-List needs an embedded data list, not a text field. Structured-Single returns one value and does not populate a list.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-017",
+      "objective": 4,
+      "type": "single",
+      "stem": "New claims adjusters want advice on what to check next for the specific claim they have open, while they work their assignments. Which capability fits best?",
+      "options": [
+        "GenAI Coach",
+        "Knowledge Buddy",
+        "Autopilot",
+        "Blueprint"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "GenAI Coach gives runtime expert advice on end-user tasks, specific to the current case. Knowledge Buddy also works at runtime, but it answers from the client's own documents and knowledge bases rather than giving guidance on the open claim. Autopilot and Blueprint are design-time tools for building the application.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ai-018",
+      "objective": 4,
+      "type": "single",
+      "stem": "A product owner wants GenAI Coach available to case workers on every Service Request case. Where should the system architect make it available?",
+      "options": [
+        "Add the GenAI Coach widget to the utilities pane of the Full Page View",
+        "Add a Connect Generative AI automation step to each stage",
+        "Add GenAI Coach to the Details view in the summary panel",
+        "Add GenAI Coach to the To do widget in the portal"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "GenAI Coach is one of the widgets available in the utilities pane of the Full Page View, so adding it there makes it available on every case of the type. Connect Generative AI is an automation step for custom GenAI tasks, and Coach is not added as a step. The Details view shows primary fields, and To do is a portal widget that lists worklists and work queues.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-019",
+      "objective": 5,
+      "type": "multi",
+      "stem": "A team is designing a GenAI agent that handles incoming service requests conversationally. Which two actions can the agent take? (Choose Two)",
+      "options": [
+        "Launch a user action",
+        "Call another agent",
+        "Import a Blueprint file to gain context",
+        "Merge branches into the application ruleset"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Agent actions include running an automation, starting a case, calling another agent and launching a user action. Agents get context from the data pages and Knowledge Buddies listed for them, not from Blueprint files, which are imported at design time to build applications. Merging branches is a development and DevOps task, not something an agent does.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ai-020",
+      "objective": 5,
+      "type": "single",
+      "stem": "A compliance officer asks how the organization will govern what its GenAI agents may use and do when processing cases, for security and compliance. Which Pega element is designed for this?",
+      "options": [
+        "Tool rules",
+        "The data pages listed as agent context",
+        "A Structured-List response structure",
+        "A Knowledge Buddy grounded in compliance manuals"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Tool rules provide governance, security and compliance for agents. Data pages listed for an agent give it context, not control. Structured-List is a Connect response structure that maps output to an embedded data list. A Knowledge Buddy could answer questions about compliance policy, but it gives information and does not govern what an agent may do.",
       "difficulty": "hard"
     }
   ]
