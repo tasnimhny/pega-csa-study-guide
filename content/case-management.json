@@ -1,0 +1,1353 @@
+{
+  "id": "case-management",
+  "title": "Case Management",
+  "weight": 25,
+  "intro": "The largest exam domain: how a case type is modeled as a lifecycle and then made to move by itself through routing, SLAs, approvals, conditions, child cases, waits and automations. Expect scenario questions that ask which App Studio option (or which Dev Studio rule) satisfies a business requirement.",
+  "objectives": [
+    {
+      "objective": "Case lifecycle: stages, statuses, and instructions",
+      "modules": [
+        "Defining a Case Lifecycle",
+        "User guidance"
+      ],
+      "summary": [
+        "A case type is the reusable model of a repeatable business transaction, and a case is one running instance of it with its own ID. The lifecycle is organized as **Stages > Processes > Steps**. A stage is a business milestone named with a noun or gerund of no more than two words (it should read naturally in the sentence 'This case is in <Stage>'). Processes and steps are named verb + noun. Every step is either an **assignment** (a person does the work) or an **automation** (the system does the work). Stages can be primary (the happy path) or alternate (exceptions such as cancellation or investigation).",
+        "Stage behavior is set in the stage properties: whether the case advances automatically when the stage finishes or waits, and whether finishing the stage resolves the case. You cannot configure transitions on the Create stage. To jump out of sequence (for example into or out of an alternate stage) use a Change Stage automation. The default Create process is a multi-step form: one assignment, one user, several views, with Next/Previous navigation and Submit on the last view. The process option 'Allow users to go back to previous step' adds a Previous button. New processes start in **draft mode**, which lets them run while incomplete; draft mode must be off before production. App Studio clears it automatically when the case type saves without errors, and turning it off by hand is a Dev Studio task.",
+        "The case status tells users where a case stands. Standard values are New, Open, Pending-Approval, Pending-Fulfillment, Resolved-Completed, Resolved-Cancelled and Resolved-Rejected. Set a status on a stage (applied on entry; the final stage holds the resolution status) or on an individual step when you need more detail. Reuse existing statuses and keep to about ten or fewer per case type. Instructions belong on steps that need user input. The form shows the step's instructions by default, and you can replace them with custom text or hide them."
+      ],
+      "keyFacts": [
+        "Hierarchy: Case Type > Stages > Processes > Steps; a step is an Assignment (human) or an Automation (system).",
+        "Stage names: noun or gerund, at most 2 words. Process and step names: verb + noun.",
+        "Transitions cannot be configured on the **Create** stage.",
+        "The default Create process is a multi-step form: single assignment, single user, multiple views; navigation styles are horizontal, vertical or standard.",
+        "Processes are created in draft mode by default. Leaving draft mode on in production is a guardrail violation. App Studio clears it automatically on an error-free save; turning it off manually happens only in Dev Studio.",
+        "Standard statuses: New, Open, Pending-Approval, Pending-Fulfillment, Resolved-Completed, Resolved-Cancelled, Resolved-Rejected.",
+        "Best practice: no more than 10 statuses per case type, and reuse existing ones.",
+        "Status can be set on a Stage (on entry) or on a Step (more specific).",
+        "Form views show step instructions by default; override them with custom text or hide them.",
+        "In Dev Studio a new case type maps to a Work class and a pyDefault Case Type rule, and each process maps to a Flow rule."
+      ],
+      "table": {
+        "headers": [
+          "Element",
+          "Naming",
+          "Purpose"
+        ],
+        "rows": [
+          [
+            "Stage",
+            "Noun/gerund, at most 2 words",
+            "Business milestone; primary or alternate"
+          ],
+          [
+            "Process",
+            "Verb + noun",
+            "Group of steps; Flow rule in Dev Studio"
+          ],
+          [
+            "Step",
+            "Verb + noun",
+            "Assignment (user) or Automation (system)"
+          ],
+          [
+            "Status",
+            "Standard values such as Pending-Approval",
+            "Where the case stands; set on stage or step"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Stage names that are actions ('Review application') are wrong; actions belong to processes and steps.",
+        "You cannot set transitions, SLAs or escalations on the Create stage.",
+        "Draft mode is ON by default, not off. App Studio turns it off automatically; only Dev Studio turns it off manually.",
+        "Creating a new custom status when a standard one fits goes against best practice."
+      ]
+    },
+    {
+      "objective": "Service level agreements: urgency, goal, deadline, and passed deadline",
+      "modules": [
+        "Completing work on time",
+        "Escalating late work"
+      ],
+      "summary": [
+        "An SLA (called 'Goal & deadline' in App Studio) sets time milestones and raises urgency as each one passes. The **goal** is when the work should ideally be done, the **deadline** is when it becomes late, and the **passed deadline** repeats after the deadline, either a fixed number of times or until the work completes. Goal and deadline are measured from the start of the work and fire once each. Passed deadline can only be configured in Dev Studio on the SLA rule. Urgency ranges from 0 to 100. Each milestone can add 1 to 100. Once urgency reaches 100, further increments are ignored but escalation actions still run.",
+        "SLAs can sit at the case type level (from creation or reopening until resolution), the stage level (entry to exit), the process level (start until the last step finishes), and on assignment (Collect Information) and approval steps. You cannot put an SLA or escalation on the Create stage. In the case type Settings tab > Goal & deadline you choose Use SLA: Custom, Existing or Never, and Calculate time from start of: This Case, Parent Case or Top-level Case, with durations in days plus HH:MM:SS. App Studio creates a Dev Studio SLA rule behind the scenes. An existing SLA rule shows in the App Studio list only if it is marked as a relevant record.",
+        "Case urgency and assignment urgency are different values. A new assignment starts at the case urgency, and the initial case urgency is set on the case type Settings tab (default 10, set by the Work- pyDefault data transform). Stage and process SLAs change case urgency. Changing case urgency affects only assignments created afterward, not existing ones. Worklists and work queues are ordered by urgency, and Get Next Work picks the most urgent assignment. App Studio escalations can notify the case creator or participants. Dev Studio adds advanced options: initial urgency, delay timers, variable interval length, a business-day calendar, and escalation actions beyond notification such as reassigning the work or resolving the case."
+      ],
+      "keyFacts": [
+        "Urgency range is 0 to 100. Default initial case urgency is 10. Each milestone adds 1 to 100.",
+        "At urgency 100, further increments are ignored but escalation actions still run.",
+        "Goal and deadline fire once each. Passed deadline repeats a fixed number of times or until the work completes.",
+        "Passed deadline is configured **only in Dev Studio** on the SLA rule.",
+        "Example: start 10, goal +10 gives 20, deadline +10 gives 30.",
+        "SLA levels: case type, stage, process, assignment step, approval step. Not allowed on the Create stage.",
+        "Use SLA: Custom / Existing / Never. Calculate from: This Case / Parent Case / Top-level Case.",
+        "Changing case urgency affects only new assignments, not existing ones.",
+        "Get Next Work returns the highest-urgency assignment first.",
+        "Reassigning or resolving the case as an escalation action is a Dev Studio SLA option; App Studio escalations notify (creator or participants)."
+      ],
+      "table": {
+        "headers": [
+          "Milestone",
+          "Meaning",
+          "Fires",
+          "Where configured"
+        ],
+        "rows": [
+          [
+            "Goal",
+            "Desired completion time",
+            "Once, measured from start",
+            "App Studio or Dev Studio"
+          ],
+          [
+            "Deadline",
+            "Work is late after this",
+            "Once, measured from start",
+            "App Studio or Dev Studio"
+          ],
+          [
+            "Passed deadline",
+            "Continued lateness after the deadline",
+            "Repeats N times or until done",
+            "Dev Studio SLA rule only"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Urgency cannot go above 100, but escalations keep running after it gets there.",
+        "Raising case urgency does not re-rank assignments that already exist.",
+        "Passed deadline is not in the App Studio Goal & deadline panel.",
+        "'Calculate time from Parent/Top-level case' is how a child case SLA can be measured from an ancestor's start."
+      ]
+    },
+    {
+      "objective": "Routing assignments to users, work groups, work queues, and by business logic",
+      "modules": [
+        "Routing Assignments to users",
+        "Creating and managing teams of users"
+      ],
+      "summary": [
+        "Each assignment must be routed to someone. The options are the **current user**, a **specific user** (the assignment goes to that person's worklist), a **work queue** (a shared list for a team), or **business logic** (conditions pick the destination, for example sending recreational-vehicle loans to an RV underwriters queue). Worklists and work queues both list open assignments in urgency order. An assignment in a work queue stays there until a team member pulls it or a manager sends it to someone.",
+        "In App Studio a team is a work group, and in Dev Studio a user is an operator. A work group is a cross-functional team with a manager and exactly one work queue. A work queue needs a work group and a work group needs a work queue. The default queue is default@<org>. Every operator must belong to at least one work group and can belong to several. The work group manager is used for notifications, approvals, routing and escalations, and works from the Web Portal. **Authorized managers** can help transfer assignments and do not have to be work group members. They cannot perform approvals, and if they are outside the group they cannot complete its work-queue assignments. In Dev Studio a decision table can act as a router, and routing to a queue updates the Assign-Workbasket assignment."
+      ],
+      "keyFacts": [
+        "Four routing options: current user, specific user (worklist), work queue, business logic (conditions).",
+        "Worklist = an operator's own assignments. Work queue = shared assignments for a team.",
+        "Each work group has a manager and **exactly one** work queue; neither can exist without the other.",
+        "Default work queue: default@<org>.",
+        "An operator must belong to at least one work group and can belong to many.",
+        "Work-queue items stay until a member pulls them or a manager sends them.",
+        "Authorized managers can transfer assignments, need not be members, cannot approve, and cannot complete work-queue assignments if outside the group.",
+        "Terminology: Team = Work Group, User = Operator.",
+        "Best practice is to configure people in App Studio; use Dev Studio for advanced items such as permissions."
+      ],
+      "table": {
+        "headers": [
+          "Routing option",
+          "Use when"
+        ],
+        "rows": [
+          [
+            "Current user",
+            "The person doing the work continues"
+          ],
+          [
+            "Specific user (worklist)",
+            "One named person must do it"
+          ],
+          [
+            "Work queue",
+            "Any qualified team member can pick it up"
+          ],
+          [
+            "Business logic",
+            "The destination depends on case data"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Authorized managers are not approvers.",
+        "A work group has one work queue, not several.",
+        "Routing to a work queue does not put the work on anyone's worklist until it is pulled or sent."
+      ]
+    },
+    {
+      "objective": "Approvals, including cascading approvals with a reporting structure or an authority matrix",
+      "modules": [
+        "Designing an approval Process",
+        "Cascading approvals",
+        "Decision tables and trees"
+      ],
+      "summary": [
+        "The Approve/Reject step routes like any assignment (user, work queue or business logic) and supports email approval and mobile approval, so approvers can respond without opening the application. On **approve**, the case continues or changes to a specific stage, and you can optionally set a status. On **reject**, the case resolves (default status Resolved-Rejected), continues, or changes stage.",
+        "Choosing the Cascading option creates a chain of approvals. A **reporting structure** cascade reads the operator ID record and uses either the Reporting Manager or the Workgroup Manager. The number of approvers can be One, All (the whole hierarchy), or Custom (levels decided by When rules, for example amount thresholds). An **authority matrix** is more flexible and is the right choice when at least one approver is outside the reporting structure. Its approver list is filled by a decision table, data page, activity or data transform, and approvals run in list order. If you use a decision table it must be set to **Evaluate all rows**, otherwise it returns only one result. Among decision rules, only decision tables (not decision trees) can drive an authority matrix."
+      ],
+      "keyFacts": [
+        "Approve: continue, or change to a specific stage; optionally set a status.",
+        "Reject: resolve (default Resolved-Rejected), continue, or change stage.",
+        "Email approval and mobile approval let approvers act outside the application.",
+        "Reporting structure uses the operator record: Reporting Manager or Workgroup Manager.",
+        "Reporting structure approver count: One, All, or Custom (When rules and thresholds).",
+        "Authority matrix: use when at least one approver is outside the reporting chain.",
+        "Authority matrix sources: Decision table, Data Page, Activity, or Data Transform.",
+        "A decision table feeding an authority matrix must use Evaluate all rows; approvals happen in list order.",
+        "Decision trees cannot drive an authority matrix."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Reporting structure",
+          "Authority matrix"
+        ],
+        "rows": [
+          [
+            "Approvers come from",
+            "Operator record (Reporting Manager or Workgroup Manager)",
+            "A list built by a DT, data page, activity or data transform"
+          ],
+          [
+            "Best for",
+            "Approvals that go up the management chain",
+            "Approvers outside the chain (e.g. Legal, Finance)"
+          ],
+          [
+            "How many",
+            "One / All / Custom (When rules)",
+            "Every entry in the list, in order"
+          ],
+          [
+            "Key setting",
+            "Number of approvers",
+            "DT must Evaluate all rows"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Choosing authority matrix when every approver is in the manager chain; reporting structure is simpler.",
+        "Forgetting Evaluate all rows, so only one approver is returned.",
+        "Picking a decision tree for an authority matrix.",
+        "Assuming rejection always resolves the case; it can also continue or change stage."
+      ]
+    },
+    {
+      "objective": "Identifying and handling duplicate cases",
+      "modules": [
+        "Identifying duplicate Cases"
+      ],
+      "summary": [
+        "The **Search duplicate Cases** automation step compares the current case with existing cases in two passes. First, **basic conditions** filter candidates: a case must match ALL of them to be considered, and you can cap how many candidates are returned. Next, each candidate is scored with **weighted conditions**, each worth 1 to 100. If the total meets or exceeds the threshold, the case is a potential duplicate.",
+        "If potential duplicates are found, a user reviews them and either resolves the current case as a duplicate (status Resolved-Duplicate) or ignores the matches and continues. If nothing matches, the case continues automatically. For example: date of birth as a basic condition, four weighted conditions of 25 each, and a threshold of 50, so any two weighted matches on a same-birthdate case flag it."
+      ],
+      "keyFacts": [
+        "Implemented with the Search duplicate Cases automation step.",
+        "Basic conditions: ALL must match for a case to be a candidate; you can limit the number of candidates.",
+        "Weighted conditions: each weight is 1 to 100; candidate is a potential duplicate when the sum is at least the threshold.",
+        "Resolving as a duplicate sets the status to Resolved-Duplicate.",
+        "The user can also ignore the matches and continue.",
+        "No matches: the case simply continues."
+      ],
+      "table": {
+        "headers": [
+          "Condition type",
+          "Role",
+          "Rule"
+        ],
+        "rows": [
+          [
+            "Basic",
+            "Filter candidates",
+            "All must be true"
+          ],
+          [
+            "Weighted",
+            "Score candidates",
+            "Weights 1 to 100; sum compared with threshold"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A case that matches every weighted condition but fails a basic condition is never a candidate.",
+        "The threshold check is 'at least' the threshold, so equal counts as a match.",
+        "Duplicates are not resolved automatically; a user decides."
+      ]
+    },
+    {
+      "objective": "Optional actions in the case lifecycle and for data objects",
+      "modules": [
+        "Adding optional Actions to a workflow"
+      ],
+      "summary": [
+        "Optional actions are work users can start whenever they need to, outside the planned steps. A **user action** is a single step or screen, and an **optional process** is several steps. Either can be **case-wide** (available in every stage) or limited to one **stage**. Edit details and Change Stage are built-in case-wide actions. Configure them with the Optional Actions button in the upper-right of the Workflow tab; at runtime users open them from the Actions menu. Data objects also support an Update Details action so users can change only the information they need, with validation and pre/post-processing.",
+        "The **promoted action** appears as a button (on the case header, in the summary panel) so users do not have to open the Actions menu. It is the first stage-wide action other than Edit details, or if there is none, the first case-wide action. Only user actions can be promoted, not optional processes."
+      ],
+      "keyFacts": [
+        "User action = single step/screen. Optional process = multi-step.",
+        "Scope: case-wide or stage-only.",
+        "Built-in case-wide actions: Edit details and Change Stage.",
+        "Configured with the Optional Actions button (upper-right of the Workflow tab); run from the Actions menu.",
+        "Promoted action = first stage-wide action other than Edit details; otherwise the first case-wide action.",
+        "Only user actions can be promoted; optional processes cannot.",
+        "Data objects offer an Update Details action for targeted updates.",
+        "Change Stage is useful for moving into or out of alternate stages."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "User action",
+          "Optional process"
+        ],
+        "rows": [
+          [
+            "Size",
+            "One screen",
+            "Multiple steps"
+          ],
+          [
+            "Can be promoted",
+            "Yes",
+            "No"
+          ],
+          [
+            "Scope",
+            "Case-wide or stage",
+            "Case-wide or stage"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Adding the same step to every stage when a case-wide optional action does the job.",
+        "Expecting an optional process to show as the promoted button.",
+        "Edit details is skipped when the promoted action is chosen from the stage actions."
+      ]
+    },
+    {
+      "objective": "Using conditions to automate workflow decisions",
+      "modules": [
+        "Automating workflow decisions",
+        "Skipping a Process or a Stage"
+      ],
+      "summary": [
+        "Conditions let the case decide its own path from data. A condition is a field, a comparator and a value, and several conditions combine with AND. They are used in decision shapes (the orange diamond in the Process Modeler) to choose a branch, which can also leave the stage through Change Stage. They are also used in business-logic routing, custom approval levels, and stage and process skip rules. A When rule answers a single yes/no question. When several properties together determine an outcome, use a decision table. A decision shape that references a decision table automatically gets one connector per possible result.",
+        "Values that change often should not be hard-coded. Configuration settings (which replace Dynamic System Settings) can hold parameters such as an approval monetary limit and are referenced through the Condition Builder. Delegated decision tables let process owners make small production changes, such as lowering a threshold, without a developer."
+      ],
+      "keyFacts": [
+        "Condition = field + comparator + value; multiple conditions are ANDed.",
+        "Decision shape (orange diamond) creates conditional paths and can go to another stage via Change Stage.",
+        "When rule = yes/no; decision table = outcome depends on several properties.",
+        "A decision shape referencing a DT auto-adds one connector per result.",
+        "Configuration settings replace DSS and are referenced through the Condition Builder (for example an approval monetary limit).",
+        "Delegated decision tables let business owners change values in production (e.g. a threshold from $500 to $400).",
+        "Custom levels in reporting-structure approvals are decided with When rules."
+      ],
+      "examTraps": [
+        "Hard-coding a business threshold that the business wants to change itself.",
+        "Using a When rule where the result depends on many inputs and needs more than yes/no.",
+        "Choosing Dynamic System Settings; configuration settings are their replacement."
+      ]
+    },
+    {
+      "objective": "Purpose of Flow Actions",
+      "modules": [
+        "Automating workflow decisions"
+      ],
+      "summary": [
+        "A flow action defines what a user can do at a step. In App Studio flow actions are called user actions. A flow action is attached either to a connector or to an assignment shape. A **connector action** completes the assignment and moves the flow forward. A **local action** updates the assignment without advancing it, and is configured in the assignment properties.",
+        "Flow actions are also where step-level logic hooks in. Validate rules are assigned to flow actions. Pre- and post-processing can run data transforms (for example copying a shipping address to billing) or save a savable data page. A Validate rule can be qualified by flow action, so the same field can have different validation on different forms. Flow actions can be marked as relevant records so App Studio can reuse them."
+      ],
+      "keyFacts": [
+        "Flow action = what a user can do at an assignment; called a User action in App Studio.",
+        "Connector action: completes the assignment and advances the flow.",
+        "Local action: updates the assignment without advancing; configured in assignment properties.",
+        "Validate rules are assigned to flow actions.",
+        "Pre/post-processing on a flow action can run a data transform or trigger a savable data page.",
+        "Flow actions (user actions) are a relevant-record rule type."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Connector action",
+          "Local action"
+        ],
+        "rows": [
+          [
+            "Completes assignment",
+            "Yes",
+            "No"
+          ],
+          [
+            "Advances flow",
+            "Yes",
+            "No"
+          ],
+          [
+            "Configured on",
+            "Connector leaving the assignment",
+            "Assignment properties"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A local action never moves the case forward.",
+        "Validation for a single screen belongs to the flow action, not the property definition."
+      ]
+    },
+    {
+      "objective": "Pausing and resuming processing with wait steps",
+      "modules": [
+        "Pausing and resuming Case processing"
+      ],
+      "summary": [
+        "A Wait automation step pauses a process until something happens. A **Timer** wait resumes after a set date/time interval or at a date/time stored in a property. A **Case Dependency** wait makes a parent case wait until all or any child cases of a chosen type reach a status, or reach 'To be resolved' (any status starting with Resolved).",
+        "Case dependency options include whether to consider the child's current status or only changes made after the parent reaches the wait, and whether a user may cancel the wait. The child cases must already exist when the parent reaches the wait step; otherwise the wait is skipped. A wait step is different from a case simply sitting at an assignment until a user acts."
+      ],
+      "keyFacts": [
+        "Two wait types: Timer and Case Dependency (case status).",
+        "Timer: set a date/time interval, or reference a date/time property.",
+        "Case Dependency: all or any child cases of a type reach a status, or 'To be resolved'.",
+        "'To be resolved' = any status beginning with Resolved.",
+        "Options: consider current status vs only changes after reaching the wait; allow user to cancel the wait.",
+        "Children must be created before the wait step, otherwise the wait is skipped.",
+        "A wait step is not the same as waiting on a user assignment."
+      ],
+      "table": {
+        "headers": [
+          "Wait type",
+          "Resumes when"
+        ],
+        "rows": [
+          [
+            "Timer (interval)",
+            "A fixed time has passed"
+          ],
+          [
+            "Timer (reference property)",
+            "The date/time in a field is reached"
+          ],
+          [
+            "Case dependency",
+            "All/any child cases of a type reach a status or are resolved"
+          ]
+        ]
+      },
+      "examTraps": [
+        "If the children already resolved before the parent arrives and you chose only changes after reaching the wait, the parent may never resume.",
+        "Creating child cases after the wait step means the wait is skipped.",
+        "Using an SLA goal as a pause; SLAs raise urgency and escalate, they do not hold the flow."
+      ]
+    },
+    {
+      "objective": "Skipping a stage or process based on conditions",
+      "modules": [
+        "Skipping a Process or a Stage"
+      ],
+      "summary": [
+        "Stages and processes can be conditional, and their defaults are opposite. A **stage** is never skipped unless you add a 'Skip stage when' condition. A **process** always starts unless you add a 'Start process when' condition. Each condition is a field, comparator and value, and multiple conditions are combined with AND, so all must be true.",
+        "Use a skip rule when whole parts of the lifecycle do not apply to some cases, such as skipping an inspection stage for low-value claims or running a reference-check process only for senior hires. If you instead need to jump to a specific stage from the middle of a flow, use a Change Stage automation or a decision shape."
+      ],
+      "keyFacts": [
+        "Stage default: never skipped. Configure 'Skip stage when'.",
+        "Process default: always starts. Configure 'Start process when'.",
+        "Condition = field + comparator + value; multiple conditions are ANDed.",
+        "For a stage you describe when to SKIP; for a process you describe when to RUN.",
+        "Change Stage automation moves the case to a named stage out of sequence."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Stage",
+          "Process"
+        ],
+        "rows": [
+          [
+            "Default",
+            "Never skipped",
+            "Always starts"
+          ],
+          [
+            "Condition label",
+            "Skip stage when",
+            "Start process when"
+          ],
+          [
+            "Condition is true means",
+            "Stage is skipped",
+            "Process runs"
+          ]
+        ]
+      },
+      "examTraps": [
+        "The logic is inverted between stage (skip when) and process (start when).",
+        "Multiple conditions are AND, not OR."
+      ]
+    },
+    {
+      "objective": "Child cases",
+      "modules": [
+        "Creating a child Case"
+      ],
+      "summary": [
+        "A top-level case has no parent. A child case is work that must be completed to resolve the parent, and it lets work run in parallel. The parent cannot resolve until its children do. Use child cases when work is done by different parties, needs separate reporting, runs on a different time frame, or is common to several case types (for example a reusable Body Injury case). In the class hierarchy a child case type sits under the parent's work class.",
+        "Create children with the Create Case automation step. Dev Studio adds options such as creating a top-level case instead of a child and creating multiple child cases. When passing data, decide between a **snapshot copy** at creation (fine for data that won't change, such as accident details) and **referencing the parent's data** when it must stay in sync (such as a travel itinerary). Referencing is an advanced Dev Studio configuration. Related tools: the Wait step (case dependency), Update a Case (current case or all child/descendant cases), SLAs calculated from the Parent or Top-level case, and the Related Cases widget."
+      ],
+      "keyFacts": [
+        "Top-level case = no parent. A parent waits for its children before it resolves.",
+        "Reasons: different parties, separate reporting, different time frames, reuse across case types, parallel processing.",
+        "Created with the Create Case automation step.",
+        "Dev Studio options: top-level vs child, and multiple child cases.",
+        "Data propagation copies a snapshot at creation; referencing parent data keeps it synchronized (Dev Studio advanced).",
+        "The child case type class sits under the parent's class (e.g. Laptop Request under IT Ticket).",
+        "Update a Case automation can update the current case or all child/descendant cases."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Copy (propagation)",
+          "Reference parent data"
+        ],
+        "rows": [
+          [
+            "Data",
+            "Snapshot taken at child creation",
+            "Always reads the parent's current values"
+          ],
+          [
+            "Use for",
+            "Data that won't change (accident details)",
+            "Data that must stay synchronized (itinerary)"
+          ],
+          [
+            "Where",
+            "Create Case step",
+            "Dev Studio (advanced)"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Propagated data does not update in the child when the parent changes.",
+        "Child cases are for separate units of work, not just for grouping screens.",
+        "Parallel processing for a distinct unit of work suggests a child case, not more steps in the parent."
+      ]
+    },
+    {
+      "objective": "Automation shapes",
+      "modules": [
+        "Automation shapes in the Case Life Cycle",
+        "Sending emails during Case processing"
+      ],
+      "summary": [
+        "Automation steps let the system do work without a person, which saves time and reduces errors. Add them from a step with More > Automations, or in the Process Modeler with Add > Automations. App Studio automations include: Attach content, Change to a Stage, Change to next Stage, Change to previous Stage, Connect Generative AI, Create Case, Create PDF (needs a workaround in Constellation), Generate document, Persist Case (makes a temporary case permanent), Post to Pulse, Push notification, Run Data Transform, Send email, Send notification (multiple channels), Update a Case (current or all child/descendant cases), Search duplicate Cases, Wait (timer or case status), and Questionnaire. A Save Data Page step writes data back to a system of record.",
+        "In the Process Modeler, Start is a green circle, End a red circle, an assignment a green rectangle, a subprocess such as Approve/Reject a blue rectangle, an automation a yellow rectangle, and a decision an orange diamond. Automation steps do not get a form view; one is generated automatically only for user steps."
+      ],
+      "keyFacts": [
+        "Add via Step > More > Automations, or Process Modeler Add > Automations.",
+        "Persist Case turns a temporary case into a permanent one.",
+        "Run Data Transform copies or sets data (e.g. shipping address to billing).",
+        "Send notification targets multiple channels; Send email sends email only.",
+        "Update a Case works on the current case or all child/descendant cases.",
+        "Wait pauses on a timer or a case status.",
+        "Create PDF needs a workaround in Constellation.",
+        "Shapes: Start green circle, End red circle, Assignment green rectangle, Subprocess blue rectangle, Automation yellow rectangle, Decision orange diamond.",
+        "No form view is generated for automation steps."
+      ],
+      "examTraps": [
+        "Create Case makes a new (child) case; Persist Case keeps an existing temporary case.",
+        "Send email vs Send notification: only Send notification covers several channels.",
+        "Change to a Stage goes to a named stage; Change to next/previous Stage is relative."
+      ]
+    },
+    {
+      "objective": "Decision tables and decision trees",
+      "modules": [
+        "Calculating fields using Decision tables",
+        "Decision tables and trees"
+      ],
+      "summary": [
+        "A **decision table** checks the same set of properties across many combinations. Each column is a property or expression, and rows are evaluated top to bottom; the first row whose conditions are all true returns its result. An Otherwise row at the bottom guarantees a result. Setting **Evaluate all rows** (Results tab) returns every matching row instead, which an authority matrix needs, and disables 'Allowed to return values'. A table built in App Studio becomes a DT rule in the Work- class. A Dev Studio table must be marked as a relevant record before App Studio users can use it. Delegation lets process owners make small production changes, and delegation options on the Results tab control what they can change (for example add columns but not rows). Decision tables can also drive flow decision shapes and assignment routing.",
+        "A **decision tree** is a set of branches, each with a comparison value, operator and action (return, continue, or evaluate a nested branch), checked top-down with an otherwise value. Use a tree when different properties matter on different branches or when conditions depend on each other. Use a table when the same properties apply everywhere. The wrong choice shows up as a table full of empty cells or a tree full of repeated conditions. **Show conflicts** flags rows or branches that can never be reached (for example 'Score > 900' above 'Score > 1000'); conflicts appear as warnings on save and on the Guardrails landing page, and none are shown when Evaluate all rows is on. **Show completeness** adds rows for missing combinations, which can produce many rows that you decide whether to keep."
+      ],
+      "keyFacts": [
+        "DT rows are evaluated top to bottom; the first row with all conditions true wins.",
+        "An Otherwise result guarantees a return value.",
+        "Evaluate all rows returns all matches, disables 'Allowed to return values', and is required for an authority matrix.",
+        "Only decision tables (not trees) support authority-matrix cascading approvals.",
+        "Table = same properties in many combinations. Tree = different properties or nested, dependent conditions.",
+        "Show conflicts finds unreachable rows/branches; warnings appear on save and on the Guardrails landing page.",
+        "Show completeness adds rows for missing conditions.",
+        "App Studio DTs are created in the Work- class; Dev Studio DTs need relevant-record marking for App Studio use.",
+        "Delegation lets business owners change values in production; Results tab controls what they can change.",
+        "Trees can be referenced from flows, Declare Expressions, activities and routers."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Decision table",
+          "Decision tree"
+        ],
+        "rows": [
+          [
+            "Best for",
+            "Same properties, many combinations",
+            "Different properties per branch, nested logic"
+          ],
+          [
+            "Evaluation",
+            "Rows top to bottom, first full match",
+            "Branches top-down, nested"
+          ],
+          [
+            "Symptom of wrong choice",
+            "Many empty cells",
+            "Duplicated conditions"
+          ],
+          [
+            "Authority matrix",
+            "Supported (Evaluate all rows)",
+            "Not supported"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A broad condition placed above a narrower one hides it; Show conflicts flags the narrower row.",
+        "Show completeness adds rows; it does not remove conflicts.",
+        "Turning on Evaluate all rows suppresses conflict reporting.",
+        "A Dev Studio DT is invisible in App Studio until it is marked as a relevant record."
+      ]
+    },
+    {
+      "objective": "Personas",
+      "modules": [
+        "Inviting users to an application",
+        "Pega GenAI in Pega Platform"
+      ],
+      "summary": [
+        "A persona is the business view of a type of user, managed in App Studio under Users > User Management > Personas tab. The default persona is 'Users'. Creating a persona also creates default permissions, a work queue and an access group (creating an access group does not create a persona). Each persona maps to a role (configured in Dev Studio), but not every role has a persona. Users are invited by email and given a persona or a developer role, and generic shared accounts such as 'admin' should not be used. Autopilot can suggest personas.",
+        "In the lifecycle's Personas & Channels section you can draft which personas use which channels in each stage and plan them into releases. Drafting does not configure access: by default a persona can reach all pages. To restrict a portal, assign the persona when you configure the portal (for example a Manager Portal). Several personas can share one channel interface."
+      ],
+      "keyFacts": [
+        "Managed in App Studio: Users > User Management > Personas tab. Default persona: 'Users'.",
+        "Creating a persona creates default permissions, a work queue and an access group; not the reverse.",
+        "Each persona has a role, but not every role has a persona.",
+        "Persona and channel access can be set per stage; personas can share channels.",
+        "Drafting persona/channel mapping in the lifecycle does NOT restrict access; personas see all pages by default.",
+        "Restrict a portal by assigning personas when configuring the portal.",
+        "Users are invited by email with a persona or developer role; avoid generic accounts like admin."
+      ],
+      "examTraps": [
+        "Assuming the lifecycle Personas & Channels draft enforces security.",
+        "Thinking an access group created in Dev Studio creates a persona.",
+        "Persona = business alignment; role = specific permissions. They are not the same object."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "cm-001",
+      "objective": 0,
+      "type": "single",
+      "stem": "A business analyst is sketching the lifecycle for a mortgage case type and proposes four names for the second stage. Which name follows Pega's stage-naming guidance?",
+      "options": [
+        "Review the loan application",
+        "Step 2 - Credit check",
+        "Send application to underwriter for review",
+        "Underwriting"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Stages are milestones and should be a noun or gerund of no more than two words, so 'Underwriting' is correct ('This case is in Underwriting' reads naturally). 'Review the loan application' is a verb + noun action, which is how processes and steps are named. 'Send application to underwriter for review' is a long action phrase that describes a step. 'Step 2 - Credit check' uses step numbering and describes a task, not a milestone.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-002",
+      "objective": 0,
+      "type": "multi",
+      "stem": "A team has been testing several processes that still have unconfigured steps. The release manager asks what must happen with draft mode before the application goes to production. Which two statements are accurate? (Choose two.)",
+      "options": [
+        "Draft mode must be off before production; leaving it on is a guardrail violation.",
+        "Processes are created with draft mode off, so the team must have turned it on manually.",
+        "App Studio automatically turns off draft mode when the case type is saved without errors.",
+        "Draft mode can be turned off manually only in App Studio.",
+        "Processes in draft mode cannot run until every step is fully configured."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Draft mode must be turned off before production, and leaving it on causes a guardrail violation. App Studio clears draft mode automatically when the case type saves with no errors. Processes are created in draft mode by default, so it does not have to be turned on. Turning draft mode off manually is done in Dev Studio, not App Studio. The point of draft mode is that the process can run even when its configuration is incomplete.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-003",
+      "objective": 0,
+      "type": "single",
+      "stem": "In an order case, the Fulfillment stage has three steps. The case should show 'Open' for most of the stage, but while the 'Await warehouse pick' step is active the status must read Pending-Fulfillment. What should the system architect configure?",
+      "options": [
+        "Set the status Pending-Fulfillment on the Fulfillment stage.",
+        "Set the status Pending-Fulfillment on the 'Await warehouse pick' step.",
+        "Create a custom status 'Warehouse' and apply it to the case type Settings tab.",
+        "Add an alternate stage named Pending-Fulfillment and move the case into it with Change Stage."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A status set on a step is more specific than one set on a stage, so setting Pending-Fulfillment on the 'Await warehouse pick' step changes the status only while that step is active. Setting it on the stage would apply it from stage entry, for the whole stage. A custom status goes against the best practice of reusing standard statuses (Pending-Fulfillment already exists), and statuses are not set on the Settings tab. An alternate stage for a status is an over-built workaround that misuses stages, which represent milestones.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-004",
+      "objective": 1,
+      "type": "single",
+      "stem": "A case type's initial urgency is 10. Its SLA adds 15 at the goal and 20 at the deadline. In Dev Studio a passed-deadline interval adds 10 each day and repeats 3 times. If the case is never resolved, what is the highest urgency the SLA can produce?",
+      "options": [
+        "45",
+        "55",
+        "75",
+        "100"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Urgency increments are cumulative: 10 + 15 (goal) = 25, + 20 (deadline) = 45, then three passed-deadline increments of 10 = 75. 45 counts only the goal and deadline and ignores the passed deadline. 55 counts only one passed-deadline repetition. 100 is the maximum urgency, but this configuration never reaches it because the passed deadline repeats a fixed 3 times.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-005",
+      "objective": 1,
+      "type": "multi",
+      "stem": "A requirement says: 'After the review deadline is missed, keep escalating to the manager every day until the review is completed.' Which two statements about meeting this requirement are true? (Choose two.)",
+      "options": [
+        "The repeating escalation is a passed-deadline milestone, which is configured only in Dev Studio on the SLA rule.",
+        "The App Studio Goal & deadline panel has a passed-deadline section with repeat options.",
+        "A passed deadline can repeat a fixed number of times or until the work is complete.",
+        "The goal milestone can be set to repeat daily until the deadline.",
+        "Once urgency reaches 100, the passed-deadline escalation actions stop running."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Passed deadline is the milestone that repeats after the deadline, and it is configured only on the Dev Studio SLA rule. It can repeat a fixed number of times or until the work completes, which covers 'until completed'. App Studio Goal & deadline offers goal and deadline but not passed deadline. The goal fires only once. When urgency hits 100, further urgency increments are ignored but escalation actions keep running, so the escalation does not stop.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-006",
+      "objective": 1,
+      "type": "single",
+      "stem": "A case has an open assignment with urgency 20. A stage SLA then reaches its goal and raises the case urgency to 40. What happens to the urgency of assignments?",
+      "options": [
+        "The existing assignment is immediately raised to 40.",
+        "Assignment urgency is never related to case urgency.",
+        "Both the case and the existing assignment are reset to the default urgency of 10.",
+        "The existing assignment stays at 20; assignments created after the change start at the new case urgency."
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Changing case urgency affects only new assignments. A new assignment's initial urgency equals the case urgency, so later assignments start at 40 while the existing one stays at 20. The existing assignment is not re-ranked. Nothing resets urgency to 10; that is only the default initial case urgency. Assignment urgency is related to case urgency because new assignments inherit it.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-007",
+      "objective": 1,
+      "type": "single",
+      "stem": "A requirement says that if a claim review assignment misses its deadline, the system must automatically reassign it to a supervisor. In App Studio the architect sees only notification options for escalation. What should the architect do?",
+      "options": [
+        "Set the deadline urgency increment to 100, which automatically reassigns the assignment.",
+        "Configure the reassignment as an escalation action on the SLA rule in Dev Studio.",
+        "Add a Change to next Stage automation after the review step.",
+        "Configure a stage-only optional action called Reassign."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Dev Studio SLA rules offer advanced escalation actions beyond notifications, including reassigning the work or resolving the case, so this is configured on the SLA rule in Dev Studio. Reaching urgency 100 caps urgency but does not reassign anything. A Change to next Stage automation runs only after the review step completes, which does not happen when the deadline is missed. An optional action needs a user to start it, so it is not automatic.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-008",
+      "objective": 1,
+      "type": "single",
+      "stem": "A Policy case creates Claim child cases, and each Claim creates Payment child cases. The business requires every Payment's SLA to be measured from when the Policy case started. How should the Payment case type's Goal & deadline be configured?",
+      "options": [
+        "Use SLA: Never, and rely on the Policy case's SLA.",
+        "Calculate time from start of: This Case.",
+        "Calculate time from start of: Parent Case.",
+        "Calculate time from start of: Top-level Case."
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "The Policy case is the top-level case (it has no parent), so 'Top-level Case' measures the Payment's SLA from the Policy's start. 'Parent Case' would measure from the Claim, which is the Payment's direct parent. 'This Case' measures from the Payment's own start. 'Never' removes the Payment SLA, which does not meet the requirement for a Payment SLA.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-009",
+      "objective": 2,
+      "type": "single",
+      "stem": "Any of the eight adjusters on the Auto Claims team may handle the 'Assess damage' step, and adjusters should take the next item when they are free instead of having work pushed to them. How should the step be routed?",
+      "options": [
+        "To the current user",
+        "To a specific user's worklist",
+        "To the Auto Claims work queue",
+        "To the work group manager, who forwards each item"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "A work queue holds shared assignments that any team member can pull, which is exactly the requirement. Routing to the current user leaves the work with whoever created or advanced the case. A specific user's worklist ties the work to one named person. Sending everything to the manager adds a manual bottleneck; managers can send work, but the requirement is for adjusters to pull it.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-010",
+      "objective": 2,
+      "type": "multi",
+      "stem": "An architect is setting up teams for a new application. Which two statements about work groups and work queues are true? (Choose two.)",
+      "options": [
+        "A work group has a manager and exactly one work queue.",
+        "An operator can belong to only one work group.",
+        "An assignment in a work queue stays there until a team member pulls it or a manager sends it to someone.",
+        "A work queue can be created without a work group if it is only used for routing.",
+        "Authorized managers of a work group can perform approvals on its behalf."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Each work group has a manager and exactly one work queue, and a work-queue assignment waits until a member pulls it or a manager sends it. An operator must belong to at least one work group and can belong to many. A work queue requires a work group (and vice versa). Authorized managers can help transfer assignments but cannot perform approvals.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-011",
+      "objective": 2,
+      "type": "single",
+      "stem": "Priya, an operations lead, is not a member of the Billing work group but has been added as one of its authorized managers. What can Priya do?",
+      "options": [
+        "Approve cascading approval steps routed to the Billing manager.",
+        "Replace the work group's single work queue with a second one.",
+        "Help transfer Billing assignments to other users.",
+        "Complete assignments in the Billing work queue."
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Authorized managers help transfer assignments and do not have to be members of the work group. They cannot perform approvals. Because Priya is outside the work group, she cannot complete its work-queue assignments. A work group always has exactly one work queue, so adding a second one is not possible.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-012",
+      "objective": 3,
+      "type": "single",
+      "stem": "Expense reports under $5,000 need the requester's direct manager. From $5,000 to $25,000 the manager's manager must also approve, and above $25,000 one more level up the chain must approve. All approvers are in the requester's management chain. What should the architect configure?",
+      "options": [
+        "A cascading approval using an authority matrix populated by a decision tree",
+        "A cascading approval using the reporting structure with the number of approvers set to All",
+        "A cascading approval using the reporting structure with a Custom number of approvers driven by When rules",
+        "Three separate single-level Approve/Reject steps, each routed to a specific user"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Every approver is in the reporting chain and the number of levels depends on amount thresholds, which is what the reporting structure's Custom option (levels decided by When rules) provides. An authority matrix is meant for approvers outside the reporting structure, and decision trees cannot drive it. 'All' would send every expense through the entire hierarchy regardless of amount. Separate steps routed to specific users ignore each requester's own manager and are hard to maintain.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-013",
+      "objective": 3,
+      "type": "single",
+      "stem": "A vendor contract must be approved in sequence by the Procurement lead, the Legal counsel and the Finance controller. None of them is in the requester's reporting line, and which people are needed depends on contract type and value. Which approach fits best?",
+      "options": [
+        "Cascading approval using the reporting structure, Workgroup Manager",
+        "Cascading approval using an authority matrix built from a decision table set to Evaluate all rows",
+        "A single Approve/Reject step routed to a work queue shared by all three",
+        "Cascading approval using the reporting structure, number of approvers One"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "When approvers are outside the reporting structure and depend on case data, use an authority matrix. A decision table set to Evaluate all rows returns every matching approver, and approvals happen in list order. The reporting structure only walks the Reporting Manager or Workgroup Manager chain, so neither reporting-structure option can reach Legal and Finance. A single step routed to a shared queue gets one approval from whoever picks it up, not a sequence of three.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-014",
+      "objective": 3,
+      "type": "multi",
+      "stem": "An architect is building the decision rule behind an authority-matrix cascading approval. Which two statements are correct? (Choose two.)",
+      "options": [
+        "The decision table must be set to Evaluate all rows, otherwise only one approver is returned.",
+        "A decision tree with an otherwise branch can be used instead of a decision table.",
+        "Approvals are requested in the order the approvers appear in the list.",
+        "All approvers in the list receive the approval at the same time.",
+        "Each approver must have a Reporting Manager in their operator record."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "A decision table that is not set to Evaluate all rows stops at the first match and returns only one result, so Evaluate all rows is required. Authority-matrix approvals go in list order. Decision trees cannot drive an authority matrix; only decision tables can. Approvals are sequential, not simultaneous. The Reporting Manager field is used by the reporting-structure option, not by an authority matrix.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-015",
+      "objective": 3,
+      "type": "single",
+      "stem": "An architect adds an Approve/Reject step and keeps the default rejection behavior. What happens when the approver rejects the request?",
+      "options": [
+        "The case continues to the next step with status Pending-Approval.",
+        "The case is resolved with the status Resolved-Rejected.",
+        "The case moves to the previous stage for rework.",
+        "The case is resolved with the status Resolved-Cancelled."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "By default, rejection resolves the case with the status Resolved-Rejected. Continuing or changing stage are other choices you can configure, but they are not the default. Pending-Approval describes a case waiting for approval, not a rejected one. Resolved-Cancelled is a different standard resolution status.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-016",
+      "objective": 4,
+      "type": "single",
+      "stem": "A Search duplicate Cases step uses Date of birth as its only basic condition. It has four weighted conditions of 25 each (last name, phone, email, postal code) and a threshold of 50. Case A has the same DOB and matches last name and email. Case B has a different DOB and matches all four weighted conditions. Case C has the same DOB and matches only phone. Which cases are flagged as potential duplicates?",
+      "options": [
+        "Case A only",
+        "Case B only",
+        "Cases A and B",
+        "Cases A, B and C"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Only cases that match every basic condition become candidates, so Case B (different DOB) is excluded no matter how high its weighted score would be. Case A scores 25 + 25 = 50, which meets the threshold of 50, so it is flagged. Case C scores 25, which is below the threshold. So only Case A is a potential duplicate.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-017",
+      "objective": 4,
+      "type": "single",
+      "stem": "A Search duplicate Cases step finds a potential duplicate, and the reviewing user confirms that the new case really is a duplicate. What happens to the current case?",
+      "options": [
+        "It is merged into the matching case and deleted.",
+        "It is converted into a child case of the matching case.",
+        "It is resolved with the status Resolved-Cancelled.",
+        "It is resolved with the status Resolved-Duplicate."
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Confirming the duplicate resolves the current case with the status Resolved-Duplicate. Cases are not merged or deleted by this step. Resolved-Cancelled is a different status that is not used for duplicates. The step does not create parent-child relationships.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-018",
+      "objective": 4,
+      "type": "multi",
+      "stem": "Which two statements about configuring duplicate case detection are true? (Choose two.)",
+      "options": [
+        "A case must satisfy all basic conditions to be considered a candidate.",
+        "Each weighted condition is given a weight between 1 and 100.",
+        "Weighted conditions are evaluated first, and basic conditions are then used to break ties.",
+        "When no duplicate is found, the case is resolved automatically.",
+        "The total of the weighted conditions must equal exactly 100 for any case to be flagged."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Basic conditions filter candidates and all of them must match. Each weighted condition carries a weight from 1 to 100. Basic conditions run first, and weighted conditions then score the candidates, not the other way round. When there are no matches the case continues; it is not resolved. A candidate is flagged when its weighted sum reaches the configured threshold, which does not have to be 100.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-019",
+      "objective": 5,
+      "type": "single",
+      "stem": "Customer service agents must be able to update a customer's contact phone number at any point in the life of a service case, using one screen. What is the best design?",
+      "options": [
+        "Add an 'Update phone' step to the first process of every stage.",
+        "Add a case-wide optional user action.",
+        "Add a stage-only optional process to the first stage.",
+        "Add an alternate stage and move the case there with Change Stage."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A single-screen task that must be available in every stage is a case-wide user action. Adding a step to every stage forces every case through it and duplicates configuration. A stage-only optional process is limited to one stage, and a process is meant for multi-step work. An alternate stage changes the case's milestone just to edit one field, which is the wrong tool.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-020",
+      "objective": 5,
+      "type": "single",
+      "stem": "In the Review stage, the stage-only optional actions are listed in this order: the optional process 'Verify documents', then the user action 'Add note'. The case-wide actions are the built-in Edit details and Change Stage. Which action becomes the promoted action in the Review stage?",
+      "options": [
+        "Edit details",
+        "Verify documents",
+        "Add note",
+        "Change Stage"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The promoted action is the first stage-wide action other than Edit details, and only user actions (not optional processes) can be promoted. 'Verify documents' is an optional process, so it is skipped and 'Add note' becomes the promoted action. Case-wide actions such as Change Stage are used only when there is no eligible stage-wide action. Edit details is explicitly excluded from the stage-level choice.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-021",
+      "objective": 5,
+      "type": "multi",
+      "stem": "Which three statements about optional actions are true? (Choose three.)",
+      "options": [
+        "A user action is a single step, while an optional process can contain multiple steps.",
+        "Optional processes can be promoted as a button on the case.",
+        "At runtime, users start optional actions from the Actions menu.",
+        "Optional actions can be configured only in Dev Studio.",
+        "Edit details and Change Stage are built-in case-wide actions."
+      ],
+      "answer": [
+        0,
+        2,
+        4
+      ],
+      "explanation": "User actions are single-screen tasks and optional processes are multi-step. Users open optional actions from the Actions menu, and Edit details and Change Stage come built in as case-wide actions. Only user actions can be promoted, not optional processes. Optional actions are configured in App Studio with the Optional Actions button on the Workflow tab, so 'only in Dev Studio' is false.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-022",
+      "objective": 6,
+      "type": "single",
+      "stem": "After a 'Review claim' step, claims flagged as suspicious must go to an Investigation alternate stage. Claims under $1,000 go straight to payment, and all others need manager approval. How should the architect model this inside the process?",
+      "options": [
+        "Add a decision shape with conditional branches; the suspicious branch uses Change to a Stage to go to Investigation.",
+        "Set 'Skip stage when' on the Investigation stage so non-suspicious claims bypass it.",
+        "Create a child case for every claim and use a Wait step for its resolution.",
+        "Add a stage-only optional action that the reviewer runs when a claim looks suspicious."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "A decision shape sends the case down different paths based on conditions, and a branch can leave the stage with Change to a Stage, which is the way to reach an alternate stage. Alternate stages are not part of the primary sequence, so a skip condition on one does not route cases into it. Child cases with a wait add separate work items that the requirement does not need. An optional action depends on the user remembering to start it, so the decision is not automated.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-023",
+      "objective": 6,
+      "type": "multi",
+      "stem": "The business wants to change the auto-approval monetary limit several times a year without asking IT to change the process. Which two designs meet this requirement? (Choose two.)",
+      "options": [
+        "Store the limit in a configuration setting and reference it from the condition through the Condition Builder.",
+        "Hard-code the limit in the decision shape's condition and change it in each release.",
+        "Put the limit in a delegated decision table that the process owner can update in production.",
+        "Store the limit in a new Dynamic System Setting.",
+        "Set the limit in pySetFieldDefaults so it loads with every view."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Configuration settings hold parameters such as an approval monetary limit and are referenced through the Condition Builder. Delegated decision tables let process owners make small production changes such as adjusting a threshold. Hard-coding requires a developer release for every change. Configuration settings replace Dynamic System Settings, so a new DSS is not the recommended choice. pySetFieldDefaults is system-maintained and should not be modified.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-024",
+      "objective": 7,
+      "type": "single",
+      "stem": "While working on a 'Prepare quote' assignment, agents sometimes need to record a customer callback note. Doing so must not complete the assignment or move the case forward. How should the architect configure the note action?",
+      "options": [
+        "As a connector flow action leading to the next step",
+        "As a Send notification automation after the assignment",
+        "As a Change to next Stage automation",
+        "As a local flow action configured in the assignment properties"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "A local action updates the assignment without advancing it and is configured in the assignment properties, which matches the requirement. A connector action completes the assignment and advances the flow. Change to next Stage moves the case forward, which is the opposite of what is required. A notification automation runs only after the assignment completes and does not capture input.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-025",
+      "objective": 7,
+      "type": "multi",
+      "stem": "Which two statements about flow actions are correct? (Choose two.)",
+      "options": [
+        "Validate rules are assigned to flow actions, so validation can differ by screen.",
+        "A connector action completes the assignment and advances the flow.",
+        "A local action is defined on the connector that leaves the assignment.",
+        "Flow actions created in Dev Studio can never be reused in App Studio.",
+        "A flow action defines the SLA goal for the assignment it belongs to."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Validate rules are attached to flow actions, which lets the same field have different validation on different forms, and a connector action completes the assignment and moves the flow on. Local actions are configured in the assignment properties, not on a connector. Flow actions (user actions) can be marked as relevant records so App Studio can reuse them. SLAs are separate rules applied at case, stage, process or step level, not part of a flow action.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-026",
+      "objective": 8,
+      "type": "single",
+      "stem": "A Property Purchase case creates several Inspection child cases early in its lifecycle. In a later stage the parent must pause until every Inspection is resolved. Some inspections may already be Resolved-Completed before the parent reaches that point. How should the Wait step be configured?",
+      "options": [
+        "Case dependency on all Inspection children, status 'To be resolved', considering only changes after the parent reaches the wait",
+        "Case dependency on all Inspection children, status 'To be resolved', considering the children's current status",
+        "Case dependency on any Inspection child, status Resolved-Completed",
+        "Timer wait using a reference date/time property for the expected inspection date"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "'To be resolved' matches any status that starts with Resolved, 'all' waits for every Inspection, and considering current status counts children that resolved before the parent arrived. If only changes after the wait are considered, children that are already resolved never trigger again and the parent could wait forever. 'Any' resumes after the first child resolves, and Resolved-Completed alone misses other resolved statuses. A timer resumes at a date, not when the work is done.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-027",
+      "objective": 8,
+      "type": "single",
+      "stem": "A welcome-kit process must pause and resume three days after the date stored in the case field Policy Start Date. Which configuration should the architect use?",
+      "options": [
+        "A Wait step of type Timer that references a date/time property",
+        "A Wait step of type Case dependency",
+        "An SLA with a goal of three days",
+        "An assignment routed to a work queue that users process after three days"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "A Timer wait can resume at a date/time taken from a property, which is the right tool for 'relative to Policy Start Date'. A case-dependency wait waits on child case statuses, not dates. An SLA goal raises urgency and can escalate, but it does not pause the flow. Routing to a work queue depends on people remembering, which is not an automatic pause.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-028",
+      "objective": 8,
+      "type": "multi",
+      "stem": "Which two statements about Wait steps are true? (Choose two.)",
+      "options": [
+        "For a case-dependency wait, if the child cases have not been created before the case reaches the wait step, the wait is skipped.",
+        "A Wait step is the same as a case waiting at an assignment for a user to act.",
+        "A case-dependency wait can be configured to let a user cancel the wait.",
+        "A timer wait can be configured only in Dev Studio.",
+        "The 'To be resolved' option matches only the Resolved-Completed status."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Child cases must exist before the wait step, otherwise the wait is skipped, and a case-dependency wait can allow a user to cancel it. A wait step is a system pause, which is different from a case sitting at a user assignment. Wait (timer or case status) is an App Studio automation, so timers are not Dev Studio-only. 'To be resolved' matches any status beginning with Resolved, not just Resolved-Completed.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-029",
+      "objective": 9,
+      "type": "single",
+      "stem": "In a hiring case, the Background Check stage applies only to candidates with no previous employment at the company. Within the Review stage, a Reference Check process should run only for senior roles. What should the architect configure?",
+      "options": [
+        "'Start process when' on Background Check, and 'Skip stage when' on Reference Check",
+        "'Skip stage when' on Background Check (condition: has previous employment), and 'Start process when' on Reference Check (condition: role is senior)",
+        "'Skip stage when' on Background Check (condition: no previous employment), and 'Start process when' on Reference Check (condition: role is not senior)",
+        "A decision shape in the Create stage that resolves the case for returning employees"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Stages use 'Skip stage when' and processes use 'Start process when'. To skip Background Check for returning employees the condition is 'has previous employment', and to run Reference Check for senior roles the condition is 'role is senior'. The first option puts the condition types on the wrong elements. The third option has the logic inverted, so it would skip the check for new hires and run references for junior roles. Resolving the case is not the requirement; returning employees still continue through the other stages.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-030",
+      "objective": 9,
+      "type": "single",
+      "stem": "A stage has two 'Skip stage when' conditions: Order total < 100 and Customer tier = Gold. When is the stage skipped?",
+      "options": [
+        "When either condition is true",
+        "Only when both conditions are true",
+        "Never, because stages always run unless they have a single condition",
+        "Only when neither condition is true"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Multiple conditions are combined with AND, so the stage is skipped only when both are true. 'Either' describes OR logic, which is not how multiple conditions combine. Stages do support multiple conditions. 'Neither' inverts the logic.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-031",
+      "objective": 10,
+      "type": "multi",
+      "stem": "In which two situations is a child case the right design choice? (Choose two.)",
+      "options": [
+        "A medical review is done by a separate team in parallel with the main claim and has its own reporting.",
+        "Body-injury handling is identical across auto, home and travel claim case types and should be reused.",
+        "Agents need one screen to update a customer's address at any time.",
+        "The case must pause three days before sending a reminder.",
+        "A long form should be split into several screens for readability."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Child cases suit work done by a different party, in parallel, with separate reporting, and work common to several case types that should be reused. A one-screen update at any time is a case-wide optional user action. A three-day pause is a Timer wait step. Splitting a form into several screens is a multi-step form.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "cm-032",
+      "objective": 10,
+      "type": "single",
+      "stem": "A Business Trip parent case creates Hotel Booking child cases. The travel itinerary on the parent changes often, and every child must always show the current itinerary. Which approach should the architect use?",
+      "options": [
+        "Data propagation on the Create Case step, which copies the itinerary when the child is created",
+        "Have the child reference the parent's itinerary data, an advanced configuration in Dev Studio",
+        "A Run Data Transform automation in each child after it is created",
+        "A Wait step in each child that resumes when the parent changes status"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Data that must stay synchronized should be referenced from the parent; this is an advanced Dev Studio configuration. Data propagation copies a snapshot when the child is created, so later itinerary changes are not reflected. A data transform run once after creation is also a one-time copy. A Wait step pauses processing but does not keep data in sync.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-033",
+      "objective": 10,
+      "type": "single",
+      "stem": "An architect needs a Create Case step that starts a new top-level case instead of a child, or creates multiple child cases in one step. Where are these options configured?",
+      "options": [
+        "In App Studio, on the case type Settings tab",
+        "In the Optional Actions dialog of the Workflow tab",
+        "In the Personas & Channels section of the lifecycle",
+        "In Dev Studio"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "The Create Case automation adds child cases in App Studio, while Dev Studio provides the options to create a top-level case instead of a child and to create multiple child cases. The Settings tab manages case-level items such as urgency and goal & deadline. Personas & Channels drafts user access per stage. The Optional Actions dialog configures user-initiated actions, not case creation.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-034",
+      "objective": 11,
+      "type": "multi",
+      "stem": "After the 'Capture shipping details' step, the system must (1) copy the shipping address into the billing address, (2) tell the customer the order was accepted by email and by mobile push, and (3) move the case directly into the Fulfillment stage. Which three automation steps should the architect add? (Choose three.)",
+      "options": [
+        "Run Data Transform",
+        "Persist Case",
+        "Send notification",
+        "Change to a Stage",
+        "Questionnaire"
+      ],
+      "answer": [
+        0,
+        2,
+        3
+      ],
+      "explanation": "Run Data Transform copies data such as a shipping address into billing. Send notification can reach several channels at once, covering both email and push. Change to a Stage moves the case to a named stage. Persist Case turns a temporary case into a permanent one, which is not required here. Questionnaire collects answers to questions and does nothing to move data or notify.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-035",
+      "objective": 11,
+      "type": "single",
+      "stem": "A quick-quote case is created as a temporary case so abandoned quotes are not stored. If the customer accepts the quote, the case must be kept permanently. Which automation step achieves this?",
+      "options": [
+        "Create Case",
+        "Update a Case",
+        "Persist Case",
+        "Change to next Stage"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Persist Case turns a temporary case into a permanent one. Create Case starts a new case rather than keeping the current one. Update a Case changes field values in the current case or its descendants but does not change whether it is stored. Change to next Stage moves the lifecycle forward but leaves the case temporary.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-036",
+      "objective": 12,
+      "type": "single",
+      "stem": "A credit decision table has these rows in order: Row 1: Credit score > 900 returns 'Gold'. Row 2: Credit score > 1000 returns 'Platinum'. Otherwise returns 'Standard'. The architect clicks Show conflicts. What is reported?",
+      "options": [
+        "Row 2 can never be reached because any score over 1000 already matches Row 1.",
+        "Row 1 can never be reached because Row 2 is more specific.",
+        "The table is incomplete, and rows are added for scores of 900 or below.",
+        "No conflict, because the Otherwise result covers every score."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Rows are evaluated top to bottom and the first match wins. Any score over 1000 is also over 900, so it stops at Row 1 and Row 2 is unreachable, which is what Show conflicts reports. Row 1 is reachable (scores 901 to 1000). Adding missing rows is what Show completeness does, not Show conflicts. Otherwise guarantees a result but does not fix an unreachable row.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-037",
+      "objective": 12,
+      "type": "single",
+      "stem": "The discount rule works like this: for Gold customers the discount depends on region; for Silver customers it depends on the number of past orders; Bronze customers always get 0%. Modeled as a decision table, most cells would be empty. Which rule type fits better, and why?",
+      "options": [
+        "A decision table with Evaluate all rows, because it returns all matching discounts",
+        "A decision tree, because different properties matter on each branch and conditions are nested",
+        "A When rule, because the result is a single value",
+        "A decision table with Show completeness, to fill in the empty cells"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Decision trees suit logic where different properties are evaluated on different branches and conditions depend on earlier ones; a table full of empty cells is the warning sign of choosing the wrong rule. Evaluate all rows returns many results, but one discount is needed. A When rule returns only true or false. Show completeness adds rows for missing combinations, which would make the table bigger, not fix the design.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-038",
+      "objective": 12,
+      "type": "multi",
+      "stem": "Which two statements about decision tables are correct? (Choose two.)",
+      "options": [
+        "Rows are evaluated from top to bottom, and the first row whose conditions are all true returns its result.",
+        "An Otherwise result at the bottom makes sure the table always returns a value.",
+        "Show completeness removes rows that can never be reached.",
+        "Turning on Evaluate all rows makes conflict detection report more problems.",
+        "A decision table created in Dev Studio is automatically available in App Studio."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Decision tables return the first row that fully matches, evaluating top down, and Otherwise guarantees a result. Show completeness adds rows for missing conditions; Show conflicts is what finds unreachable rows. With Evaluate all rows on, no conflicts are shown. A Dev Studio decision table must be marked as a relevant record before App Studio users can use it.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-039",
+      "objective": 13,
+      "type": "single",
+      "stem": "In the lifecycle's Personas & Channels section, the architect drafted that the Manager persona uses only the Manager Portal. In testing, managers can still reach every page of the Web Portal. What explains this, and what is the fix?",
+      "options": [
+        "Drafting persona-channel mappings does not configure access; restrict the portal by assigning personas when configuring the portal.",
+        "The draft takes effect only after the case type leaves draft mode, so turn draft mode off.",
+        "Personas cannot be restricted; create a separate application for managers.",
+        "The Manager persona is missing a work queue; add one in Dev Studio."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Drafting persona and channel mappings in the lifecycle is a planning aid and does not set access. By default a persona can reach all pages, so access must be restricted by assigning personas when configuring the portal. Process draft mode is unrelated to persona access. Personas can be restricted, so a separate application is not needed. A work queue is created automatically with a persona and has nothing to do with portal visibility.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cm-040",
+      "objective": 13,
+      "type": "multi",
+      "stem": "An architect creates a new 'Claims Supervisor' persona in App Studio. Which two things are true? (Choose two.)",
+      "options": [
+        "Default permissions and a work queue are created for the persona.",
+        "An access group is created automatically for the persona.",
+        "If an access group had been created in Dev Studio instead, a matching persona would have been created automatically.",
+        "Every access role in the application must have a persona.",
+        "The new persona replaces the default persona, which is named Admin."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Creating a persona creates default permissions, a work queue and an access group. This does not work in reverse: creating an access group does not create a persona. Every persona has a role, but not every role has a persona. The default persona is 'Users', not Admin, and adding personas does not replace it; generic accounts such as admin are discouraged.",
+      "difficulty": "medium"
+    }
+  ]
+}

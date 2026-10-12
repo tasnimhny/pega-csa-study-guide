@@ -1,0 +1,634 @@
+{
+  "id": "user-experience",
+  "title": "User Experience",
+  "weight": 10,
+  "intro": "User Experience covers how Constellation turns your data model and rules into screens: the four view types, form layouts, field configuration, dynamic behavior, portals and channels, and the styling and localization that finish the job. Expect scenario questions where two answers both seem to work and only one matches Pega's prescribed default or best practice.",
+  "objectives": [
+    {
+      "objective": "Views and templates; Full Page View customization (summary panel, promoted action, utilities)",
+      "modules": [
+        "Application user interface design"
+      ],
+      "summary": [
+        "In Constellation, a view is a reusable arrangement of UI elements, and a form is the kind of view that collects input. Every view is rendered through a template, and the template handles layout, responsiveness, breakpoints, whitespace, wrapping and accessibility, so you pick a template and fill its regions instead of placing controls by hand. There are four view types: the Full Page View, Partial Views, List Views and Form Views. Pega creates form views for you, one per user step, and each one takes the step's name. Automation steps do not get a form view.",
+        "Pega adds the Full Page View automatically to every case type and data object, and each one has exactly one. It uses three panes: the summary panel on the left, tabs in the center, and the utilities pane on the right. You edit it on the UX tab, but the preview there only shows placeholders, so you need to run a case to see real data. The summary panel sits at the upper left at roughly mobile width, and when collapsed it switches to responsive mode. It holds the Details view, which shows the primary fields by default, and the Pulse view for posting and replying in the context of the case.",
+        "The promoted action is a single button in the case header. You never add a button component for it, because Pega picks it: the first stage-wide action other than Edit details, or if there is none, the first case-wide action. Only user actions can be promoted, never optional processes. The utilities pane holds widgets such as Attachments, Case operator, Tags, GenAI Coach, Followers, Prediction, Stakeholders and Related Cases, and it is hidden when no widgets are configured."
+      ],
+      "keyFacts": [
+        "Four Constellation view types: Full Page View, Partial View, List View and Form View. Only Form Views can be editable; the other three are read-only.",
+        "Each case type or data object has exactly **one** Full Page View, which Pega adds automatically. You edit it on the UX tab.",
+        "Full Page View panes: summary (left), center tabs, and utilities (right). The UX tab preview shows placeholders, so run a case to see data.",
+        "The summary panel contains the Details view (primary fields by default) and the Pulse view.",
+        "Promoted action: the first stage-wide action other than Edit details, otherwise the first case-wide action. Only user actions qualify, and no button component is needed.",
+        "Default templates: Form view uses Default form, List view uses Table, and Partial view uses Details (One/Two/Three column, Sub tabs, Narrow-wide, Wide-narrow) or Dynamic tabs for lists.",
+        "List views can use table, timeline or gallery layouts, but data objects do not support timeline.",
+        "A form view created on the UX tab under Other Views cannot be linked to a step directly. Embed it in the step's top-level form instead.",
+        "Best practice: build views from the lowest embedded level upward, and embed views rather than individual fields, which avoids similarly named views being auto-generated in the data class.",
+        "Constellation view changes save automatically in real time. There is no save, cancel or revert."
+      ],
+      "table": {
+        "headers": [
+          "View type",
+          "Purpose",
+          "Editable?",
+          "Notes"
+        ],
+        "rows": [
+          [
+            "Full Page View",
+            "Main interface for a case or data object",
+            "Read-only",
+            "One per case type/data object; 3 panes (summary, center tabs, utilities)"
+          ],
+          [
+            "Partial View",
+            "Reusable read-only fragment; defaults are Details and Preview",
+            "Read-only",
+            "Confirmation view when enabled; Details and Dynamic tabs templates"
+          ],
+          [
+            "List View",
+            "Shows records from a data source",
+            "Read-only",
+            "Table, timeline or gallery; default lists open cases with primary fields; no timeline for data objects"
+          ],
+          [
+            "Form View",
+            "Collects input at a step; default Create and Edit views",
+            "Editable and read-only",
+            "Auto-created per user step (not automation steps); Default form template"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A second Full Page View or a separate full page for each stage is never right. There is exactly one per case type or data object.",
+        "Adding a button component to the header to make a promoted action is wrong, because the platform derives it. An optional **process** can never be the promoted action.",
+        "Blank data in the UX tab preview is not a defect. The preview only shows placeholders.",
+        "Partial, List and Full Page views are read-only. If a question needs data entry, the answer is a Form View."
+      ]
+    },
+    {
+      "objective": "Default forms vs hierarchical forms (and multi-step forms)",
+      "modules": [
+        "Application user interface design",
+        "Defining a Case Lifecycle"
+      ],
+      "summary": [
+        "A form view normally uses the Default form template: one layout with one to three columns. Two columns is the recommended layout. Wide inputs such as Rich text, Text area, Radio group, Checkbox, Boolean and Attachment span both columns, and tab order runs left to right. Step instructions show on the form by default, and you can replace them with custom text or hide them.",
+        "A hierarchical form takes one form view and splits it into tabs called form groups. Use it when users can fill in the information in any order and you want less scrolling. Form groups are not independent or reusable views; they exist only inside that form. Do not use hierarchical forms inside a multi-step form, because tabs combined with Next and Previous buttons confuse users.",
+        "A multi-step form is still one assignment for one user, but it shows several views in sequence with Next and Previous, and Submit appears only on the last view. Navigation can be horizontal, vertical or standard. The default Create process is a multi-step form. The process option 'Allow users to go back to previous step' adds the Previous button."
+      ],
+      "keyFacts": [
+        "Default form: a single layout with 1 to 3 columns. Two columns is the best practice.",
+        "Wide controls (Rich text, Text area, Radio group, Checkbox, Boolean, Attachment) span two columns, and tab order runs left to right.",
+        "Hierarchical form: one form view split into tabs (form groups) for information that can be completed in any order, which reduces scrolling.",
+        "Form groups are **not** independent or reusable views.",
+        "Do not put a hierarchical form inside a multi-step form.",
+        "Multi-step form: one assignment, one user, several views. Next and Previous move between views, and Submit appears only on the last view.",
+        "Multi-step navigation styles are horizontal, vertical and standard. The default Create process is a multi-step form.",
+        "Step instructions display by default and can be overridden with custom text or hidden.",
+        "Forms are views that collect input and carry action controls (submit, cancel, navigate). Not every view is a form."
+      ],
+      "table": {
+        "headers": [
+          "Layout",
+          "Structure",
+          "Use when",
+          "Watch out"
+        ],
+        "rows": [
+          [
+            "Default form",
+            "Single layout, 1-3 columns",
+            "Most steps; a short to medium number of fields",
+            "2 columns recommended; wide inputs span 2 columns"
+          ],
+          [
+            "Hierarchical form",
+            "One form view split into tabs (form groups)",
+            "Fields can be completed in any order; long forms with a lot of scrolling",
+            "Form groups are not reusable views; not inside multi-step forms"
+          ],
+          [
+            "Multi-step form",
+            "One assignment showing several views in sequence",
+            "One user enters data in a guided order (for example, Create)",
+            "Submit only on the last view; still a single assignment"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A multi-step form does **not** create several assignments and cannot route views to different users.",
+        "Making form groups reusable in other case types is not possible. Reuse needs real views, such as embedded views.",
+        "Choosing a hierarchical form for an ordered, guided entry is a mistake, because tabs allow any order. Choose a multi-step form when the order matters."
+      ]
+    },
+    {
+      "objective": "Field settings, primary fields and field groups (model-driven controls)",
+      "modules": [
+        "Application user interface design"
+      ],
+      "summary": [
+        "When you select a field in a view, its settings cover the field type, label settings, editing options, additional helper text, form messages (warnings) and field behavior such as Required. Required can be always on or conditional. Because the UI is model-driven, the field type decides the control. Pega pairs each field with the best control automatically, such as autocomplete, checkbox, dropdown, link, rich text editor or text input.",
+        "Primary fields are the key fields of a case type or data object. Pega adds them automatically to the Create, Edit, Details and List views, so they appear in the Details view of the summary panel and in default lists. In a case type data model, Label and Description are primary fields by default, and you can also set primary fields on data objects. A field group puts related fields under a header with optional instructions. It can be collapsed, shows a vertical line at runtime, and can display an embedded list.",
+        "Picking the right field type is a UX decision. Use Currency for money, not Decimal. Use Text (single line) for numeric identifiers that never take part in arithmetic, because Integer strips leading zeros. A Picklist can show as a drop-down or radio buttons when the list is short, or as a search box when there are many records or you need several properties. In Constellation, a cascading dropdown is two Picklist fields where the second is sourced from a data page that takes a parameter. Traditional UI used a section with On Change and an action set instead."
+      ],
+      "keyFacts": [
+        "Field settings: field type, label, editing options, helper text, form messages (warnings), and behavior such as Required (always or conditional).",
+        "Primary fields are added automatically to the Create, Edit, Details and List views.",
+        "Label and Description are primary fields by default in a case type data model. Data objects can have primary fields too.",
+        "Field group: a header, optional instructions, collapsible, a vertical line at runtime, and it can display an embedded list.",
+        "Picklist display: Drop-down or Radio buttons for short lists, Search box for many records or when several properties are needed.",
+        "Constellation cascading dropdown: two Picklist fields plus a parameterized data page.",
+        "Use Currency (currency codes and separators) for money. Use Text (single line) for IDs and zip codes, because Integer strips leading zeros.",
+        "Embedded data lists show as a Table (editable or read-only) or a Field Group (for complex records). Case reference can show as Autocomplete, Dropdown or Table.",
+        "Data reference modes are Single, List and Many to Many. List displays are Table, Simple table, Combobox and Checkbox group.",
+        "Location shows a Google Map. Email and URL include built-in validation and render as action links."
+      ],
+      "table": {
+        "headers": [
+          "Field type",
+          "UI display options"
+        ],
+        "rows": [
+          [
+            "Picklist",
+            "Drop-down (short list), Radio buttons (short list), Search box (many records or several properties)"
+          ],
+          [
+            "Embedded data (list)",
+            "Table (editable or read-only), Field Group (complex records)"
+          ],
+          [
+            "Case reference",
+            "Autocomplete, Dropdown, Table"
+          ],
+          [
+            "Data reference (list)",
+            "Table, Simple table, Combobox, Checkbox group (modes: Single, List, Many to Many)"
+          ],
+          [
+            "Query",
+            "Read-only data from a parameterized data page outside the case"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Integer for an employee ID or zip code that keeps leading zeros is wrong. Use Text (single line).",
+        "Decimal for monetary amounts is wrong. Currency handles codes and separators.",
+        "A Constellation cascading dropdown does not use a section rule with an On Change action set. That is the Traditional UI approach.",
+        "Primary fields appear in views automatically. Adding them by hand to every Create and Details view is unnecessary."
+      ]
+    },
+    {
+      "objective": "Patterns, conditional expressions and when rules for dynamic UI behavior (visible, disabled, required)",
+      "modules": [
+        "Configuring UI elements",
+        "Application user interface design"
+      ],
+      "summary": [
+        "Constellation UI is model-driven. The data model and rules produce the UI through patterns, which are reusable templates for forms, lists, dashboards and case management screens. When the rules change, the UI adapts automatically and stays responsive. This follows the separation-of-concerns principle and the center-out approach: logic sits at the center and channels present it. Because UI generation is centralized, accessibility (WCAG 2.1 and Section 508) is built in by default. A fix to a central component reaches every application without editing each screen.",
+        "Dynamic behavior is set per field with three properties. Visible defaults to Always and can be set to Custom condition, When rule, If not blank or If not zero. Disabled defaults to Never and can be Always, Custom condition or When rule. Required defaults to Never and can be Always, Custom condition or When rule. A custom condition is an expression for one-off logic, while a When rule suits complex or reusable logic. Dynamic UI responds in real time, reduces clutter and avoids full-page refreshes.",
+        "A When rule built in Dev Studio can be used by App Studio authors only after it is marked as a relevant record. When rules are one of the rule types that can be marked relevant."
+      ],
+      "keyFacts": [
+        "Patterns are reusable UI templates (forms, lists, dashboards, case management screens) generated from the data model and rules.",
+        "The model-driven UI adapts automatically when rules change and is responsive by default.",
+        "Accessibility (WCAG 2.1, Section 508) is built in. Fix a central component once and every app inherits the fix.",
+        "Visible options: Always (default), Custom condition, When rule, If not blank, If not zero.",
+        "Disabled options: Never (default), Always, Custom condition, When rule.",
+        "Required options: Never (default), Always, Custom condition, When rule.",
+        "Custom condition: a one-off expression. When rule: complex or reusable logic.",
+        "Benefits: real-time response, less clutter, fewer full-page refreshes.",
+        "Dev Studio When rules must be marked as relevant records before they appear in App Studio pickers."
+      ],
+      "table": {
+        "headers": [
+          "Property",
+          "Default",
+          "Other options"
+        ],
+        "rows": [
+          [
+            "Visible",
+            "Always",
+            "Custom condition, When rule, If not blank, If not zero"
+          ],
+          [
+            "Disabled",
+            "Never",
+            "Always, Custom condition, When rule"
+          ],
+          [
+            "Required",
+            "Never",
+            "Always, Custom condition, When rule"
+          ]
+        ]
+      },
+      "examTraps": [
+        "'If not blank' and 'If not zero' exist only for **Visible**, not for Disabled or Required.",
+        "Defaults differ: Visible starts as Always, while Disabled and Required start as Never.",
+        "Building a When rule for logic used on a single field is overkill. A custom condition is intended for one-off logic, and a When rule for reuse or complexity.",
+        "A Dev Studio When rule that does not appear in App Studio is usually missing its relevant-record flag. It is not a bug in the When rule."
+      ]
+    },
+    {
+      "objective": "Channels vs personas; portal templates",
+      "modules": [
+        "Configuring Portal content"
+      ],
+      "summary": [
+        "A persona is the business representation of a type of user. A channel is the interface those users work through: web portals, mobile, messaging and voice. Conversational channels include Facebook Messenger, WhatsApp, Apple Messages for Business, SMS/MMS through Twilio, embedded chat, Amazon Alexa and Email, supported by Intelligent Virtual Assistants (IVA) and Email Bots. Personas can share channels, and persona and channel access can be configured per stage. On the Channels landing page, a lock icon means the required component has not been added from Marketplace.",
+        "Drafting personas and channels in the case lifecycle, for example assigning them to a release such as MLP1, is a planning step. It does **not** configure channel access. By default a persona can reach every page. To limit a portal to certain users, assign the persona when you configure that portal, for example a Manager Portal. Creating a persona also creates a default permission set, a work queue and an access group. Creating an access group does not create a persona.",
+        "A portal is the UI of an application, and it is built from landing pages. Constellation has two portal families. Standard work portals serve professionals doing complex, recurring work. Self-service portals provide a minimal, guided experience for occasional tasks done by customers or employees. The default portal is the Web Portal. You can run one portal with visibility based on persona or several portals. Portal templates are responsive and include a mobile-only layout."
+      ],
+      "keyFacts": [
+        "Persona = who (a business user type). Channel = how they interact (web, mobile, messaging, voice).",
+        "The default persona is 'Users'. A new persona creates default permissions, a work queue and an access group.",
+        "Personas can share channels. Persona and channel access can be set per stage.",
+        "Drafting personas and channels in the lifecycle for a release does **not** restrict access. By default a persona can reach all pages.",
+        "To restrict a portal, assign the persona while configuring that portal.",
+        "A lock icon on the Channels landing page means the component has not been added (Marketplace).",
+        "'Add channel process' on a stage lists only channels that have already been added. It is used for channel-specific processes such as IVA.",
+        "Standard work portal: professional, complex and recurring work. Self-service portal: minimal, guided and occasional tasks.",
+        "The default portal is the Web Portal. Templates are responsive and include a mobile-only layout.",
+        "Every role has a default channel interface, such as Work Portal or a custom portal."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Standard work portal",
+          "Self-service portal"
+        ],
+        "rows": [
+          [
+            "Audience",
+            "Professional, internal case workers",
+            "Customers or employees doing occasional tasks"
+          ],
+          [
+            "Workflow style",
+            "Complex, recurring work",
+            "Minimal, guided, occasional"
+          ],
+          [
+            "Built from",
+            "Landing pages (Home, My Work, Dashboard, Explore Data)",
+            "Landing pages (Self-service Main page)"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Treating channels and personas as the same thing is a mistake. A persona is a user type, and a channel is an interface that several personas can share.",
+        "Assigning personas to channels in the lifecycle for a release is planning only. It is not access control.",
+        "A self-service portal is not the right choice for case workers who handle complex daily work.",
+        "Creating an access group does not create a persona. The reverse is true: a persona creates an access group."
+      ]
+    },
+    {
+      "objective": "Landing page templates, themes, widgets and localization best practices",
+      "modules": [
+        "Configuring Portal content",
+        "Localizing application content"
+      ],
+      "summary": [
+        "The ready-made landing pages are Dashboard, Home, Explore Data, My Work and the Self-service Main page. Custom landing pages use the Default page, Tabbed page, Dashboard page or Inline Dashboard page template. A default landing page can use a column layout, with or without a banner, or a dynamic layout where you drag, drop and resize. A dashboard is a landing page of widgets showing summaries and KPIs for each persona, organized as template, then regions, then widgets. New dashboards are Private by default and can be Shared (with all users or with your access group) or Public. A copy keeps the visibility of its source. Portal widgets include Pulse, To do (my worklist, team members' worklists, or a work queue) and App announcement (a message plus a link button). A developer must add the Pulse widget to the portal navigation.",
+        "The available themes are Pegasus (the default), Aries, Self-Service and Bootes. To customize one, save it under a new name. The Themes landing page flags colors that fail WCAG contrast. Themes do not support inheritance, so to specialize a theme you save a copy into a higher ruleset. Keep the design system (themes, fonts, icons, templates) in the enterprise or COE layer. Design tokens store styling centrally for consistency across platforms and can be changed per component.",
+        "For localization, Pega uses the browser locale first, and the locale on the operator profile overrides it. If a locale ruleset is missing, users get English. A language pack must match both the platform version and the UI architecture. A translation package bundles the application's text as JSON or Excel, can be pre-translated with GenAI, and is imported on the Localization landing page under App Studio Settings. Constellation cannot localize decision tables or trees, case statuses, or radio buttons and dropdowns inside a table. Picklist values are left out of the package, so you add them by editing the localization file in Dev Studio. Dynamic values need the pyMessages rule. Radio buttons and dropdowns sourced from data pages need values entered on the Additional text tab. Test by changing the locale on the operator record in Dev Studio; you may need to log in again."
+      ],
+      "keyFacts": [
+        "Ready-made landing pages: Dashboard, Home, Explore Data, My Work, Self-service Main page.",
+        "Custom landing page templates: Default page, Tabbed page, Dashboard page, Inline Dashboard page.",
+        "Dashboard visibility: Private (default for new dashboards), Shared (all users or your access group), Public. A copy keeps its source's visibility.",
+        "Portal widgets: Pulse, To do, App announcement. A developer must configure Pulse in the portal navigation.",
+        "Themes: Pegasus (default), Aries, Self-Service, Bootes. Customize with save-as. Themes have **no inheritance**, so save a copy into a higher ruleset.",
+        "The Themes landing page flags colors that fail WCAG contrast. Design tokens centralize styling.",
+        "Locale order: browser locale first, then the operator profile overrides it. A missing locale ruleset falls back to English.",
+        "A language pack must match the platform version **and** the UI architecture.",
+        "Constellation cannot localize decision tables or trees, case statuses, or radios and dropdowns inside a table.",
+        "Character encoding cannot be switched from UTF-8 to UTF-16 after installation."
+      ],
+      "table": {
+        "headers": [
+          "Localization gap",
+          "Fix"
+        ],
+        "rows": [
+          [
+            "Picklist values missing from the translation package",
+            "Add them manually by editing the localization file in Dev Studio"
+          ],
+          [
+            "Messages with dynamic values (for example {@P .userName})",
+            "Localize the pyMessages rule"
+          ],
+          [
+            "Paragraph rules such as step instructions",
+            "Translate manually; edit the paragraph files (base and translated folders) in the package"
+          ],
+          [
+            "Radio buttons or dropdowns sourced from a data page",
+            "Localization landing page, Additional text tab: enter values per row, rebuild and import"
+          ],
+          [
+            "Decision tables or trees, case statuses, radios or dropdowns in a table",
+            "Cannot be localized in Constellation"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Expecting a division theme to pick up enterprise theme changes through inheritance is wrong, because themes do not inherit.",
+        "A language pack that matches only the platform version is not enough. It must also match the UI architecture.",
+        "If the operator profile locale is set, it overrides the browser locale, not the other way around.",
+        "Dashboards are Private by default, not Public."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "ux-001",
+      "objective": 0,
+      "type": "single",
+      "stem": "A case type has two optional actions in its Review stage. 'Request information' is a user action and comes first, and 'Escalate review' is an optional process and comes second. Case-wide, it has Edit details and Change stage. Which action appears as the promoted action button while the case is in the Review stage?",
+      "options": [
+        "Edit details",
+        "Change stage",
+        "Request information",
+        "Escalate review"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Pega promotes the first stage-wide action other than Edit details and only falls back to case-wide actions when the stage has none. 'Request information' is a user action and is first in the stage list, so it is promoted. Edit details is explicitly excluded from promotion. Change stage is only the fallback when the stage has no eligible action. 'Escalate review' is an optional process, and only user actions can be promoted.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-002",
+      "objective": 0,
+      "type": "multi",
+      "stem": "A case manager wants users to see uploaded files and the list of related cases on the right side of every case without opening a tab. Which two widgets can be added to the utilities pane of the Full Page View for this? (Choose two.)",
+      "options": [
+        "Attachments",
+        "App announcement",
+        "Related Cases",
+        "To do",
+        "Explore Data"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Attachments and Related Cases are both utilities pane widgets, along with Case operator, Tags, GenAI Coach, Followers, Prediction and Stakeholders. App announcement and To do are portal widgets, not case utilities. Explore Data is a landing page for querying data, not a widget in the utilities pane.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ux-003",
+      "objective": 0,
+      "type": "single",
+      "stem": "A business architect built a form view called 'Shipping details' from the UX tab (Other Views). It needs to appear when users complete the 'Enter shipping' step, which already has its own auto-generated form view. What should the system architect do?",
+      "options": [
+        "Open the 'Shipping details' view settings and associate it directly with the 'Enter shipping' step",
+        "Embed 'Shipping details' inside the 'Enter shipping' step's top-level form view",
+        "Rename 'Shipping details' to 'Enter shipping' so the step picks it up automatically",
+        "Convert 'Shipping details' into a Partial view and add it to the summary panel"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A form created from the UX tab cannot be linked directly to a step. The supported approach is to embed it in the step's top-level form view, and embedding views is the recommended reuse pattern anyway. No setting links it directly to the step. Renaming a view does not rebind a step. A Partial view is read-only, so it cannot collect shipping input, and the summary panel is not where step data is entered.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-004",
+      "objective": 1,
+      "type": "single",
+      "stem": "A single 'Collect applicant details' step has about 40 fields covering personal, employment and financial information. Users complain about scrolling and say they often fill in the financial section before the employment section. The step is not part of a multi-step form. Which design best fits?",
+      "options": [
+        "Convert the step into a multi-step form with one view per section",
+        "Use a hierarchical form so each section is a form group shown as a tab",
+        "Switch the Default form template to three columns",
+        "Split the step into three assignments routed to the same user"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Hierarchical forms split one form view into tabbed form groups for information that can be completed in any order, and they cut down scrolling, which matches both complaints. A multi-step form forces a sequence with Next and Previous, which conflicts with users choosing their own order. Three columns does not address the ordering need, and two columns is the best practice anyway. Splitting the work into three assignments adds processing overhead and still imposes an order.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-005",
+      "objective": 1,
+      "type": "single",
+      "stem": "The Create stage uses the default multi-step form. A developer wants to turn its second view into a hierarchical form with three tabs. What should the system architect advise?",
+      "options": [
+        "Proceed, because hierarchical forms are intended for the views of a multi-step form",
+        "Proceed, but make each form group a reusable view so the other case types can share it",
+        "Avoid it, because tabs inside a multi-step form clash with the Next and Previous navigation and confuse users",
+        "Avoid it, because hierarchical forms can be used only in Partial views"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Pega advises against hierarchical forms inside multi-step forms because the tab navigation clashes with Next and Previous. They are not designed for multi-step views, so the first option is wrong. Form groups are not independent or reusable views, so the second option is wrong. Hierarchical forms are a form view layout; Partial views are read-only and are not where hierarchical forms are used.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-006",
+      "objective": 1,
+      "type": "multi",
+      "stem": "Which two statements about multi-step forms are correct? (Choose two.)",
+      "options": [
+        "The views are all part of a single assignment completed by one user",
+        "Each view creates its own assignment, so views can be routed to different users",
+        "The Submit button appears only on the last view",
+        "Navigation must be horizontal; vertical navigation needs a hierarchical form",
+        "A multi-step form cannot be used in the Create stage"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "A multi-step form is one assignment for one user with several views, and Submit appears only on the last view (Next and Previous appear before that). It does not create separate assignments or route views to different users. Horizontal, vertical and standard navigation styles are all available. The default Create process is itself a multi-step form.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ux-007",
+      "objective": 2,
+      "type": "single",
+      "stem": "Employee badge numbers look like '004512'. They are never used in calculations but must display exactly as issued. A tester reports that after submission the value shows as '4512'. What is the most likely cause and fix?",
+      "options": [
+        "The field is an Integer, which strips leading zeros; change it to Text (single line)",
+        "The field is Decimal; change it to Integer",
+        "The field is Text (single line); change it to Percentage",
+        "The view uses a Search box display; change it to a Drop-down"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Integer fields drop leading zeros, so identifiers with no arithmetic use belong in Text (single line). Moving from Decimal to Integer would still drop the zeros. Percentage changes how the value displays (0.5 becomes 50%) and is meant for ratios. Search box and Drop-down are Picklist display options and have nothing to do with leading zeros.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ux-008",
+      "objective": 2,
+      "type": "multi",
+      "stem": "On a Constellation form, the 'Model' dropdown should list only models for the 'Make' the user picked in the dropdown above it. Which two configurations are needed? (Choose two.)",
+      "options": [
+        "Configure Make and Model as two Picklist fields",
+        "Source the Model list from a data page that takes the selected Make as a parameter",
+        "Create a section rule with an On Change event and an action set that refreshes the Model list",
+        "Set Model to Visible: If not blank",
+        "Change Make to a Radio buttons display so it triggers a refresh"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "In Constellation, a cascading dropdown is two Picklist fields where the dependent list comes from a parameterized data page. A section rule with On Change and an action set is the Traditional UI technique. 'If not blank' only controls whether Model is visible, not which values it lists. Changing the display to radio buttons does not create the parameter link.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-009",
+      "objective": 2,
+      "type": "single",
+      "stem": "A developer marks 'Policy number' as a primary field in the case type data model. Where does the field appear without any further view configuration?",
+      "options": [
+        "Only in the case header next to the promoted action",
+        "In the Create, Edit, Details and List views",
+        "Only in the utilities pane of the Full Page View",
+        "Only in views of data objects that reference the case"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Primary fields are added automatically to the Create, Edit, Details and List views. Because the summary panel's Details view shows primary fields, they also appear there. The case header holds the promoted action, not primary fields. The utilities pane holds widgets such as Attachments and Tags. Data object views are not where case primary fields go automatically.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ux-010",
+      "objective": 3,
+      "type": "single",
+      "stem": "On one form, the 'Spouse name' field should appear only when 'Marital status' equals Married. No other view or rule needs this logic. Which configuration follows best practice?",
+      "options": [
+        "Visible: When rule, using a new When rule named IsMarried",
+        "Visible: Custom condition, Marital status equals Married",
+        "Visible: If not blank, applied to Marital status",
+        "Disabled: Custom condition, Marital status not equal to Married"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A custom condition is the expression option for one-off logic, which this is. A When rule is intended for complex or reusable logic, so creating one here adds an unneeded rule. 'If not blank' checks whether the field itself has a value; it cannot compare Marital status to Married. A disabled field is still shown, so the requirement to hide it is not met.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-011",
+      "objective": 3,
+      "type": "multi",
+      "stem": "A designer wants to reuse the same condition options across the Visible and Required settings of a field. Which two options can be chosen for Visible but are NOT available for Required? (Choose two.)",
+      "options": [
+        "If not blank",
+        "Custom condition",
+        "When rule",
+        "If not zero",
+        "Always"
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "explanation": "Visible offers Always, Custom condition, When rule, If not blank and If not zero. Required offers Never, Always, Custom condition and When rule. 'If not blank' and 'If not zero' are therefore Visible-only. Custom condition, When rule and Always are available for both settings.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-012",
+      "objective": 3,
+      "type": "single",
+      "stem": "A senior system architect created a When rule 'IsHighValueClaim' in Dev Studio in the claim case type's class. A business architect wants to make the 'Supervisor notes' field Required: When rule in App Studio, but IsHighValueClaim is not in the list. What is the most likely reason?",
+      "options": [
+        "When rules can be used only for Visible, not for Required",
+        "The When rule has not been marked as a relevant record",
+        "App Studio cannot reference rules created in Dev Studio under any circumstances",
+        "Required must first be set to Always before a When rule can be chosen"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Rules created in Dev Studio, When rules included, appear in App Studio pickers only after they are marked as relevant records. Required supports When rule as an option, so the first option is wrong. App Studio can use Dev Studio rules once they are relevant records, which is the purpose of that feature. No prerequisite of setting Always first exists.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-013",
+      "objective": 4,
+      "type": "single",
+      "stem": "In the case lifecycle's Personas and Channels section, a team drafted the Manager persona with the Manager Portal for release MLP1. In testing, users with the Manager persona can still open every portal page, and the requirement is that only the Manager Portal be available to them. What explains this, and what should the team do?",
+      "options": [
+        "Drafting in the lifecycle does not configure channel access; assign the Manager persona when configuring the Manager Portal",
+        "The release must be changed from MLP1 to the current release for the restriction to take effect",
+        "The Manager persona must be deleted and recreated as an access group",
+        "Channel access is set only per stage, so the team must add the Manager Portal to every stage"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Drafting personas and channels in the lifecycle is planning, and a persona can reach all pages by default. You restrict a portal by assigning the persona when configuring that portal. Changing the release target is still drafting and changes no access. Creating an access group does not create a persona; it works the other way round. Per-stage persona and channel settings are separate from limiting which portal a persona can open.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-014",
+      "objective": 4,
+      "type": "multi",
+      "stem": "An insurer needs a portal for policyholders who file a claim perhaps once a year. Which two characteristics support choosing a Constellation self-service portal over a standard work portal? (Choose two.)",
+      "options": [
+        "It provides a minimal, guided experience",
+        "It is aimed at occasional workflows performed by customers or employees",
+        "It is optimized for professionals handling complex, recurring workflows",
+        "It is the only portal type with a responsive, mobile-only layout",
+        "It is the default portal created for every new application"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Self-service portals are minimal and guided and are meant for occasional tasks done by customers or employees, which fits annual claim filing. Complex, recurring professional work describes a standard work portal. Responsive templates, including the mobile-only layout, are not unique to self-service portals. The default portal is the Web Portal.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ux-015",
+      "objective": 5,
+      "type": "single",
+      "stem": "A Constellation application imported a Spanish translation package. Spanish-locale users now see translated labels and buttons, but case statuses and the values returned by a decision table still appear in English. What is the best explanation?",
+      "options": [
+        "The language pack does not match the UI architecture",
+        "The browser locale is overriding the operator profile locale",
+        "Constellation does not localize case statuses or decision table and tree content",
+        "These values come from a data page and must be added on the Additional text tab"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Constellation cannot localize case statuses, decision tables or trees, or radio buttons and dropdowns inside a table, so this behavior is expected. A language pack mismatch would affect platform labels too, but labels are translating here. The operator profile locale overrides the browser locale, not the reverse, and labels are already correct for these users. The Additional text tab handles data-page-sourced radio buttons and dropdowns, not case statuses or decision table results.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ux-016",
+      "objective": 5,
+      "type": "multi",
+      "stem": "An enterprise Center of Excellence is creating a corporate theme from Pegasus, and two divisions each need small variations. Which two statements reflect correct Pega practice? (Choose two.)",
+      "options": [
+        "Customize Pegasus by saving it under a new name instead of editing it in place",
+        "Each division theme automatically inherits later enterprise theme changes through theme inheritance",
+        "To specialize the theme for a division, save a copy of it into a higher ruleset",
+        "The Themes landing page automatically corrects colors that fail WCAG contrast",
+        "Store the design system in the implementation layer so each deployment owns its own theme"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "You customize a theme by saving it under a new name, and because themes do not inherit, you specialize by saving a copy into a higher ruleset. For that same reason, division themes do not pick up enterprise changes automatically. The Themes landing page only flags contrast failures; it does not fix them. The design system belongs in the enterprise or COE layer, not the implementation layer.",
+      "difficulty": "hard"
+    }
+  ]
+}

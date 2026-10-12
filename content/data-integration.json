@@ -1,0 +1,940 @@
+{
+  "id": "data-integration",
+  "title": "Data and Integration",
+  "weight": 20,
+  "intro": "The second-largest domain: how Pega models data (fields, data objects, relationships), keeps it correct (calculations, validation, defaults), and connects it to systems of record through data pages, refresh strategies, savable data pages and simulation. Expect scenario questions that hinge on one configuration word such as Refer vs Copy, Thread vs Node, or Lookup vs Data Transform.",
+  "objectives": [
+    {
+      "objective": "Explain the data model and its levels (conceptual, logical, physical)",
+      "modules": [
+        "The Data Model"
+      ],
+      "summary": [
+        "A data model is a picture of the data an application needs and how the pieces connect. It pays off in reuse, easier maintenance and the ability to adapt and scale; in practice the Lead System Architect reviews it before any data objects are created. Pega describes three levels of refinement. The conceptual model is drafted by the Business Architect with stakeholders and names entities, their attributes and the relationships between them; it is a living document whose purpose is to cut rework later. The logical model translates that picture into Pega terms: entities become data objects and attributes become fields. The physical model decides how data is stored and accessed, which is where integration settings live.",
+        "In App Studio the Integration Designer is the single place to see data objects, data pages, their dependencies and the external systems behind them, with an optional Integration Map diagram on top. The physical level is visible there. Each data object also has a visual Data Model diagram where fields can be added, changed or removed. All of this supports the center-out idea: the data access layer is insulated from business logic, so moving a system of record (for example from on-premises to the cloud) does not force changes to the logic or the views."
+      ],
+      "keyFacts": [
+        "Conceptual model: owned by the Business Architect and stakeholders; entities, attributes, relationships; living document; reduces rework.",
+        "Logical model: Pega-specific refinement; entity maps to a data object, attribute maps to a field.",
+        "Physical model: storage and access details plus integration settings; surfaced in the Integration Designer.",
+        "The LSA verifies the data model before data objects are created.",
+        "Integration Designer (App Studio) = one place for data objects, data pages, dependencies and external systems; Integration Map is optional.",
+        "Data pages decouple integration from how the application uses data, so a source can change without changing views.",
+        "Center-out: data access layer insulated; changing the system of record does not require logic changes.",
+        "Benefits named for a data model: reuse, maintenance, adaptability/scalability."
+      ],
+      "table": {
+        "headers": [
+          "Level",
+          "Who / focus",
+          "Pega artifact"
+        ],
+        "rows": [
+          [
+            "Conceptual",
+            "Business Architect + stakeholders; entities, attributes, relationships",
+            "Living design document (no rules yet)"
+          ],
+          [
+            "Logical",
+            "Refined for Pega",
+            "Data objects (entities) and fields (attributes)"
+          ],
+          [
+            "Physical",
+            "How data is stored and accessed",
+            "Integration settings, data pages, external systems in Integration Designer"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Mapping entities to data objects is the logical level, not the conceptual one; the conceptual level is still tool-neutral.",
+        "Integration settings and storage choices belong to the physical model; do not pick 'logical' just because data objects are mentioned.",
+        "The conceptual model is not frozen after sign-off; it is described as a living document."
+      ]
+    },
+    {
+      "objective": "Describe data types, data objects, relationships, data records and field types",
+      "modules": [
+        "Capturing and presenting data",
+        "The Data Model",
+        "Creating a data relationship"
+      ],
+      "summary": [
+        "A field is a named, reusable element that holds one value per case (Dev Studio calls it a property). App Studio guesses the type from the name you type (default Text (single line); a name containing 'date' becomes Date only), so always check before submitting. Type choice matters: Integer drops leading zeros, so IDs and postal codes that are never used in arithmetic should be Text; money should be Currency (codes and separators) rather than Decimal; Date & time values are normalized to UTC/GMT; Email, Phone and URL render as action links and Email/URL include validation; Percentage shows .5 as 50%; Address adapts its fields to the selected country; User reference points at operators mapped to the app. Fancy types include Attachment and Location.",
+        "A data object is a template that groups related fields together with their views, rules and calculations, and can be reused across case types and even several times in one case (source and target account). Objects can inherit (Person-Customer) and can be sourced from a local Pega system of record, an external SOR, or nothing at all when the case captures the data. Best practice: use a standard object such as Address-Postal or Address-Email, extend one that partially fits (Person-Employee), and only then create a new one. A data object added from the workflow starts as a draft and must be made permanent on the Data objects and integrations page. A data record is one instance of a data object; locally it is a row in a database table shown on the Records tab. Changing records is a data change, while changing the fields is a process change. Records from an external source are not stored in Pega.",
+        "Relationships are containers that relate data without storing it themselves. Embedded data keeps user-entered data inside the case in a consistent format. Data reference reuses a data object that lives outside the case (local records or external SOR). Case reference pulls data from another case. Query is a read-only, parameterized lookup of external data. Each can be a single record or a list. Data reference supports Single, List and Many to Many modes."
+      ],
+      "keyFacts": [
+        "Default inferred field type is Text (single line); names containing 'date' become Date only.",
+        "Integer strips leading zeros; use Text (single line) for IDs and zip codes without arithmetic.",
+        "Use Currency, not Decimal, for money; Date & time is stored normalized to UTC/GMT.",
+        "Email, Phone and URL show as action links; Email and URL include built-in validation.",
+        "Data object sourcing: local Pega SOR, external SOR, or none (entered in the case).",
+        "Reuse order: standard object (Address-Postal, Address-Email) -> extend a partial fit (Person-Employee) -> create new.",
+        "Draft data objects created from the workflow must be made permanent on the Data objects and integrations page.",
+        "Editing records = data change; adding/changing fields = process change.",
+        "Embedded list UI: Table or Field Group; Case reference UI: Autocomplete, Dropdown, Table; Data reference list UI: Table, Simple table, Combobox, Checkbox group.",
+        "Query fields need a list or lookup data page, use external parameters, and do not store the key."
+      ],
+      "table": {
+        "headers": [
+          "Relationship field type",
+          "Where the data lives",
+          "Typical example"
+        ],
+        "rows": [
+          [
+            "Embedded data",
+            "Inside the case (entered by the user)",
+            "Payment information (single); Ordered items (list)"
+          ],
+          [
+            "Data reference",
+            "Outside the case: local records or external SOR",
+            "Ordering customer; Product selected in a line item"
+          ],
+          [
+            "Case reference",
+            "Another case",
+            "Related policy case shown in a claim"
+          ],
+          [
+            "Query",
+            "External, read-only, parameterized via a data page",
+            "Lookup that is displayed but not stored by key"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Numeric-looking identifiers (badge numbers, zip codes) are a trap for Integer: leading zeros are lost.",
+        "Embedded data copies values into the case; for shared catalog-style data that lives elsewhere, pick Data reference.",
+        "Query is read-only and does not store the key, so it is wrong when the user's selection must be saved.",
+        "Draft data objects are not automatically permanent."
+      ]
+    },
+    {
+      "objective": "Configure calculated values",
+      "modules": [
+        "Capturing and presenting data"
+      ],
+      "summary": [
+        "App Studio lets a field be calculated instead of entered, in either a case type's or a data object's data model. There are three calculation kinds. Functions iterate over a list and return the Sum, Average, Maximum or Minimum of a field; they only produce Decimal, Currency or Integer results. Expressions combine fields with the dot operator, arithmetic (+ - * /), parentheses and AND/OR, and can concatenate text with quoted literals; they can return any simple type except Email, Phone and Picklist. Decision tables map conditions to a result.",
+        "Calculated fields form a calculation network: when an input changes, every dependent field recalculates automatically. Creating a custom decision table from App Studio is only available in Constellation applications; a decision table built in Dev Studio can be selected in App Studio only after it is marked as a relevant record. Decision tables evaluate rows top to bottom, return the first row whose conditions are all true, and use an 'otherwise' result as a guaranteed fallback."
+      ],
+      "keyFacts": [
+        "Three calculation types in App Studio: Functions, Expressions, Decision tables.",
+        "Functions iterate a list: Sum of, Average of, Maximum of, Minimum of.",
+        "Function results limited to Decimal, Currency and Integer.",
+        "Expressions: dot operator, + - * /, parentheses, AND/OR, text concatenation with quotes.",
+        "Expressions can return any simple type except Email, Phone and Picklist.",
+        "Custom decision tables in App Studio: Constellation apps only.",
+        "Dev Studio decision tables must be marked relevant records to be used in App Studio.",
+        "The calculation network recalculates dependent fields automatically when inputs change.",
+        "Decision table: first matching row wins (top to bottom); 'otherwise' guarantees a result."
+      ],
+      "table": {
+        "headers": [
+          "Calculation type",
+          "Use it for",
+          "Restriction"
+        ],
+        "rows": [
+          [
+            "Function",
+            "Aggregate a list (sum, average, max, min)",
+            "Result must be Decimal, Currency or Integer"
+          ],
+          [
+            "Expression",
+            "Arithmetic/logic on fields; concatenation",
+            "Not for Email, Phone, Picklist results"
+          ],
+          [
+            "Decision table",
+            "Condition combinations mapped to a result",
+            "Custom DT in App Studio only for Constellation; Dev Studio DT must be relevant"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Totaling a field across an embedded list is a Function (Sum of), not an Expression.",
+        "A Picklist result cannot come from an Expression even though Text can.",
+        "In a Traditional UI app, a missing App Studio option to build a decision table is expected behaviour, not a permissions problem."
+      ]
+    },
+    {
+      "objective": "Apply validation rules and business logic to data",
+      "modules": [
+        "Validating data against business logic",
+        "Validating data in Dev Studio"
+      ],
+      "summary": [
+        "Validation answers three questions: is the value the right type (handled by field type and control), is it one of the allowed values (lists/picklists), and does it make business sense (conditions). A calendar control guarantees a real date, but not that the date is in the past; that needs a business condition. In App Studio, a validation condition describes the invalid case and produces an error that blocks progress until fixed. The comparison can be against a constant or another field. Validations attach to a specific step instance, so the same field can carry different rules on different forms (a previous job's start date must be past; a new hire's start date must be future).",
+        "App Studio offers two trigger points: on form submit, where the user can correct the value immediately, and on stage entry, configured in the case type's Data model, which stops the case from entering the stage. With stage-entry validation the developer must give the user a way out, such as going back to a previous stage or closing the case. In Dev Studio, Validate rules (Process category) are attached to flow actions and extend App Studio validations; their Input tab can qualify when they run by input property, proposed work status, flow action or stage (stage-based equals App Studio stage-entry validation). Edit Validate rules use Java pattern checks on a property and are a security risk because of custom Java; set on the property's Advanced tab they run client-side as soon as the value changes, or they can be called from a Validate rule to run on submit. A library of validation functions covers checks like 'date within the past N weeks' or 'attachment of a category is present'."
+      ],
+      "keyFacts": [
+        "Three validation needs: correct type, allowed values, business logic.",
+        "Calendar control ensures a valid date, not a past/future date.",
+        "App Studio validation conditions define the INVALID values.",
+        "Validations are tied to process step instances, so one field can have different validation per form.",
+        "Two App Studio trigger points: form submit and stage entry (stage entry configured in the case type Data model).",
+        "Stage-entry failures block entry; the designer must provide a recovery path.",
+        "Validate rules: Dev Studio, Process category, attached to flow actions; Input tab qualifies by property, proposed work status, flow action, stage.",
+        "Edit Validate rules: custom Java pattern checks (security risk); client-side immediately when set via 'Use Validate' on the property Advanced tab.",
+        "Validation function library: e.g., date within past N weeks, attachment of a category attached."
+      ],
+      "table": {
+        "headers": [
+          "Mechanism",
+          "When it fires",
+          "Configured in"
+        ],
+        "rows": [
+          [
+            "Form-submit validation",
+            "User submits the step's form",
+            "App Studio (step/view)"
+          ],
+          [
+            "Stage-entry validation",
+            "Case tries to enter the stage",
+            "App Studio case type Data model (stage-based Validate rule)"
+          ],
+          [
+            "Validate rule",
+            "Flow action submit, qualified on Input tab",
+            "Dev Studio"
+          ],
+          [
+            "Edit Validate on property",
+            "Client-side on value change",
+            "Dev Studio property Advanced tab"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Required = Always forces a value but does not check business meaning.",
+        "Stage-entry validation is not 'immediate feedback on the form' — that is form-submit validation.",
+        "Edit Validate rules are not best practice for general logic: custom Java weakens security."
+      ]
+    },
+    {
+      "objective": "Use data transforms and set default values (pyDefault, Data initialization, superclass)",
+      "modules": [
+        "Application data manipulation",
+        "Application data manipulation in Dev Studio"
+      ],
+      "summary": [
+        "Data transforms copy and convert data (for example a text 'December 4, 2021' into a date), move it, calculate values, format it, and set defaults. In App Studio they run from a Run Data Transform automation step or as pre- or post-processing on a step; a classic case is post-processing on a shipping-information step that copies the shipping address to billing. In Dev Studio a flow connector can apply a data transform (Set properties > Apply Data Transform), and transforms can loop through lists, for example copying only child items with quantity above zero to the parent.",
+        "Defaults are best set on the Data initialization page of the case type Settings tab, which writes into the pyDefault data transform; use pyDefault directly for complex logic. pyDefault runs when the case is created and calls pySetFieldDefaults. pySetFieldDefaults runs when a view loads and is maintained by the system, so do not edit it. Both are generated the first time you create a view. To read operator details such as pyFirstName in a Dev Studio transform, the OperatorID page must be declared on the Pages & Classes tab. Functions such as @CurrentDateTime() and @addCalendar(...) help compute values.",
+        "The superclass feature chains same-named transforms through the class hierarchy. When 'Call superclass data transform' is checked, the runtime finds each parent transform up to the highest class and runs them top-down, so the most specific class runs last and its values win. It is turned on automatically when App Studio created default fields. Work- pyDefault sets status, urgency 10 and organization info; a case type pyDefault can override, for example urgency 40."
+      ],
+      "keyFacts": [
+        "Data transform uses: copy/convert types, move data, calculate, format, set defaults.",
+        "App Studio entry points: Run Data Transform automation, step pre-/post-processing.",
+        "Dev Studio: apply a transform on a flow connector (Set properties > Apply Data Transform).",
+        "Best practice for simple defaults: Data initialization page (Settings tab) which updates pyDefault.",
+        "pyDefault runs at case creation and calls pySetFieldDefaults.",
+        "pySetFieldDefaults runs on view load, is system-maintained and should not be modified.",
+        "Both pyDefault and pySetFieldDefaults are created the first time a view is created.",
+        "OperatorID page must be on the Pages & Classes tab to reference pyFirstName/pyLastName.",
+        "Superclass chaining: parents run top-down, subclass values override; Work- pyDefault sets urgency 10.",
+        "For parent-child data, referencing avoids the synchronization issues of copying."
+      ],
+      "examTraps": [
+        "Do not customize pySetFieldDefaults for complex logic; use pyDefault.",
+        "With superclass enabled the subclass runs last, so its value (e.g., urgency 40) wins over Work- (10).",
+        "A reference to OperatorID failing in a transform is usually a missing Pages & Classes entry, not a relevant-record issue."
+      ]
+    },
+    {
+      "objective": "Configure sourced data: data pages, scope, sources, parameters, refresh strategies, refer vs copy, and populating UI controls",
+      "modules": [
+        "Accessing sourced data in a Case"
+      ],
+      "summary": [
+        "Data pages (prefix D_) retrieve and cache data and keep integration details out of the process; they also support persistence and services. They load on demand when referenced: the system checks the cache, queries the source if the page is missing or stale, and returns the result. A data object with a system of record gets three default pages: a list (D_xxxList), a single-record lookup (D_xxx) and a savable page (D_xxxSavable). The definition sets the structure (Page or List, with list items in pxResults), the object type (class), the edit mode (Read-Only, Editable, or Savable with a save plan) and the scope: Thread (per case/transaction), Requestor (per user session) or Node (shared by all users).",
+        "Sources include Data Transform, Activity, Connector, Report definition, Database lookup, Robotic Automation, Robotic desktop Automation, Lookup and Aggregate sources (several sources run in listed order). With multiple conditional sources the first true condition wins and the last is the Otherwise. Parameters narrow the content (lookup key, report filter) using D_Name[p1:v1,p2:v2]; each distinct parameter combination is its own instance unless 'Limit to a single data page' is set on the Load Management tab. Parameters have a name, data type, required flag and In/Out direction.",
+        "Refresh strategies are optional but strongly recommended; the page reloads if any configured condition is met, and never more than once per interaction. 'Reload once per interaction' works only for Thread or Requestor scope and cannot be combined with other options. 'Do not reload when' treats the page as current while its When condition is true. 'Reload if older than' marks the page stale after an interval, and it reloads on the next access. A property can Refer to a data page (always current, no copy held by the case, a parameter change points it at a new instance) or Copy data from it (a point-in-time snapshot stored in the case, re-retrieved only when parameters change). For list controls such as dropdowns, only the selected value is copied to the case, and it can differ from the displayed value."
+      ],
+      "keyFacts": [
+        "Default data pages for a data object with a SOR: D_xxxList, D_xxx (lookup), D_xxxSavable.",
+        "List structure stores rows in pxResults, e.g., D_X.pxResults(n).",
+        "Scope: Thread = per case/transaction; Requestor = per user session; Node = shared by all users.",
+        "Multiple sources: conditions evaluated in order, first true wins, last is Otherwise; Aggregate sources run in listed order.",
+        "Each parameter combination creates a separate instance unless 'Limit to a single data page' (Load Management tab).",
+        "Refresh: reload if ANY condition is met, never more than once per interaction.",
+        "'Reload once per interaction' is Thread/Requestor only and cannot be combined with other options.",
+        "'Reload if older than' does not reload in the background; it reloads on the next access after going stale.",
+        "Refer = always current, nothing stored in case; Copy = snapshot stored, refreshed only when parameters change.",
+        "List controls copy only the selected value; Constellation cascading dropdowns use two Picklist fields and a parameterized data page."
+      ],
+      "table": {
+        "headers": [
+          "Setting",
+          "Option",
+          "Behavior / example"
+        ],
+        "rows": [
+          [
+            "Scope",
+            "Thread",
+            "One per case/transaction (stock price for this transaction)"
+          ],
+          [
+            "Scope",
+            "Requestor",
+            "One per user session (this customer's shipping addresses)"
+          ],
+          [
+            "Scope",
+            "Node",
+            "Shared by all users (vehicle makes and models)"
+          ],
+          [
+            "Refresh",
+            "Reload once per interaction",
+            "Thread/Requestor only; cannot combine (flight seating)"
+          ],
+          [
+            "Refresh",
+            "Do not reload when",
+            "When true, page is current (stocks after market close)"
+          ],
+          [
+            "Refresh",
+            "Reload if older than",
+            "Stale after interval; reloads on next access"
+          ],
+          [
+            "Autopopulate",
+            "Refer to a data page",
+            "Always current; no copy in case"
+          ],
+          [
+            "Autopopulate",
+            "Copy data from a data page",
+            "Snapshot stored in case; re-fetch only when parameters change"
+          ]
+        ]
+      },
+      "examTraps": [
+        "'Reload once per interaction' on a Node-scoped page is invalid.",
+        "Refresh strategies are optional (though strongly recommended); a missing strategy is not a save error.",
+        "If the case must remember values as they were at a point in time, choose Copy, not Refer.",
+        "Parameterized pages create one instance per parameter set; this is expected, not a leak."
+      ]
+    },
+    {
+      "objective": "Save data to a system of record (savable data pages, save plans, Save Data Page automation)",
+      "modules": [
+        "Saving data to a system of record"
+      ],
+      "summary": [
+        "A savable data page writes a page or page list back to a system of record, inside Pega or external, in real time with transaction handling, so a failure rolls back both the case and the data save. The save plan lists save options, each with a When condition and an Otherwise: Database save (one page to one row, page structure only, transactional, mapped with a data transform), Database update, Database delete, Connector (REST only, not SOAP), Robotic automation (unattended RPA), Robotic desktop automation (RDA) and Activity (custom code; can call any connector including SOAP; not inherently transactional, so use sparingly).",
+        "The save is triggered by a Save Data Page automation step placed after the assignment, by post-processing on a flow action, or by the Save-DataPage method in an activity (which can choose the same or a separate transaction). In the Save Data Page step you either name the data page and its parameters explicitly or pick 'Use associated property' to take the page and parameters from an autopopulated property; one step per data source, and you can add an audit note. If a property is autopopulated from a savable data page, use Copy, not Refer, to avoid overwriting. To support both create and update, make the key parameter optional: when a key is supplied a Lookup source loads the existing record; when it is not, a Data Transform source initializes a new one. Best practice is to give savable pages used for creation an Index parameter (unless autopopulating by copy), which avoids a guardrail warning and allows multiple uses on one screen. Data objects also offer an Update Details action for changing only the needed information."
+      ],
+      "keyFacts": [
+        "Savable data pages save in real time with transaction handling; failures roll back case and data together.",
+        "Database save: single page to single row; page structure only; transactional.",
+        "Connector save option supports REST only; SOAP requires the Activity option.",
+        "Activity save option is not inherently transactional; limit its use.",
+        "Triggers: Save Data Page step (after the assignment), flow action post-processing, Save-DataPage activity method.",
+        "Save Data Page step: explicit page + parameters, or 'Use associated property'; one step per source; optional audit note.",
+        "Autopopulated property backed by a savable page: use Copy, not Refer.",
+        "Update existing: key present -> Lookup source. Create new: no key -> Data Transform source. Key optional for both.",
+        "Best practice: Index parameter on savable pages that create records (avoids guardrail, multiple uses on a screen)."
+      ],
+      "table": {
+        "headers": [
+          "Save option",
+          "Notes"
+        ],
+        "rows": [
+          [
+            "Database save",
+            "One page -> one row; page structure only; transactional; data transform mapping"
+          ],
+          [
+            "Database update / delete",
+            "Update or remove existing rows"
+          ],
+          [
+            "Connector",
+            "REST only"
+          ],
+          [
+            "Robotic automation / RDA",
+            "Unattended RPA / desktop automation"
+          ],
+          [
+            "Activity",
+            "Custom; any connector incl. SOAP; not inherently transactional"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Connector save option does not support SOAP.",
+        "Database save does not handle page lists into multiple rows; it is one page to one row.",
+        "Using Refer with a savable page risks overwriting user edits; Copy also helps avoid stale page errors.",
+        "Multiple target systems mean multiple Save Data Page steps, not one step with several sources."
+      ]
+    },
+    {
+      "objective": "Simulate data for development and testing",
+      "modules": [
+        "Accessing sourced data in a Case",
+        "The Data Model",
+        "Pega GenAI in Pega Platform"
+      ],
+      "summary": [
+        "When an external system is not available yet, has no data, or its API is still being built, a data page can use a simulated data source as a temporary stand-in. You need to know the expected request and response so the simulation matches reality. Simulation lets the UI team keep working and is useful for unit testing because you control the response. It must be replaced by the real source before production.",
+        "For local data, Autopilot can fill a data object with realistic sample records from the Records tab ('Generate sample records with Autopilot', choosing how many); values match the field types (an Email field gets email-shaped values). This is a good substitute for a system of record that is not integrated yet during testing."
+      ],
+      "keyFacts": [
+        "Simulate when the external system is unavailable, has no data, or the API is still in development.",
+        "Expected request and response structures must be known.",
+        "Simulation dictates responses, which helps unit testing; the UI team is not blocked.",
+        "Simulated data pages are temporary: configure the real source before production.",
+        "Autopilot generates sample records on a data object's Records tab; you choose the count and values match field types."
+      ],
+      "examTraps": [
+        "Simulation is never acceptable as the production source, even if responses look correct.",
+        "Autopilot sample records do not sync to the external system later; they are test data only."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "di-001",
+      "objective": 0,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "Before any rules exist, a Business Architect runs workshops with claims stakeholders to list entities such as Policy, Claimant and Vehicle, their key attributes, and how they relate. Which data model level is being produced?",
+      "options": [
+        "Integration Map",
+        "Conceptual data model",
+        "Logical data model",
+        "Physical data model"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "The conceptual model is created by the Business Architect with stakeholders and captures entities, attributes and relationships before anything Pega-specific is decided. The logical model is wrong because it is the step that maps those entities to Pega data objects and fields. The physical model is wrong because it concerns storage, access and integration settings. The Integration Map is wrong because it is an optional diagram in the Integration Designer, not a modeling level."
+    },
+    {
+      "id": "di-002",
+      "objective": 0,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "The Vehicle entity has already been mapped to a Vehicle data object with fields. The team now has to decide whether Vehicle records will be stored in a Pega table or retrieved from a state registry REST service, and configure the related integration settings. Which level of the data model is this, and where in App Studio would the team review the result?",
+      "options": [
+        "Logical level; reviewed on the case type's Data model tab",
+        "Conceptual level; reviewed in the Application profile",
+        "Physical level; reviewed in the Integration Designer",
+        "Physical level; reviewed in the Agile Workbench feature map"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Storage and access decisions, including integration settings, are the physical level, and the Integration Designer is the App Studio location that shows data objects, data pages, dependencies and external systems. Logical is wrong because the entity-to-data-object mapping is already done; that was the logical step. Conceptual is wrong because it is the tool-neutral stakeholder view, and the Application profile tracks features and stories rather than data sources. The Agile Workbench feature map is a backlog tool, not where integration settings are viewed."
+    },
+    {
+      "id": "di-003",
+      "objective": 0,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "An architect is explaining why the team should invest in a well-structured data model and data pages. Which statements are accurate? (Choose two.)",
+      "options": [
+        "Data pages separate integration from how the application uses data, so the source can be replaced without changing views.",
+        "Each channel should keep its own copy of the data model so that channels can evolve independently.",
+        "Because the data access layer is insulated, moving the system of record from on-premises to the cloud does not require changing business logic.",
+        "Once stakeholders approve the conceptual model, it becomes fixed and changes require a new application.",
+        "The physical data model must be completed before the conceptual model so that storage drives the design."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Center-out design insulates the data access layer, so a system of record can move without logic changes, and data pages decouple integration from views so a source can change underneath them. Per-channel copies of the data model describe the bottom-up/top-down problems (duplicate, siloed logic and data) that center-out avoids. The conceptual model is a living document meant to reduce rework, not a frozen artifact. The order is conceptual, then logical, then physical; storage does not come first."
+    },
+    {
+      "id": "di-004",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "An HR case captures an employee badge number such as 000731. The value is displayed and searched but never used in calculations. A developer accepted App Studio's suggestion of Integer for the field, and testers report that badges appear as 731. What is the best fix?",
+      "options": [
+        "Keep Integer and add an Edit Validate rule that pads the value with zeros",
+        "Change the field type to Text (single line)",
+        "Change the field type to Picklist and load all badge numbers into it",
+        "Change the field type to Decimal and set zero decimal places"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Integer strips leading zeros, so identifiers that need them and are never used in arithmetic should be Text (single line). Decimal is still numeric and has the same problem with leading zeros. An Edit Validate rule checks values with custom Java patterns; it does not reformat storage and adds security risk. A Picklist constrains choices to a list and is inappropriate for a unique identifier per employee."
+    },
+    {
+      "id": "di-005",
+      "objective": 1,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "In an Order case, a customer can order several items. For each item the user enters a quantity and selects a product from the company product catalog, which is maintained as a Product data object with its own records. How should the relationships be modeled? (Choose two.)",
+      "options": [
+        "Product (inside each ordered item) as an Embedded data field, single record, so catalog values are copied into the case",
+        "Product (inside each ordered item) as a Data reference field, single record",
+        "Product as a Query field so the selected product key is stored in each ordered item",
+        "Ordered items as a Case reference field, list of records",
+        "Ordered items as an Embedded data field, list of records"
+      ],
+      "answer": [
+        1,
+        4
+      ],
+      "explanation": "Ordered items are user-entered data that belong to this case, so they are an Embedded data list; each item points to an existing catalog product that lives outside the case, so Product is a single Data reference. Case reference is for data from another case, and line items are not cases. Embedding the product would duplicate catalog data instead of reusing the data object. A Query field is read-only and does not store the key, so it cannot record the user's product choice."
+    },
+    {
+      "id": "di-006",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A business user adds a new record, 'Platinum', to the Membership Tier data object. On the same day a developer adds a new field, 'Renewal date', to the same data object. How does Pega classify these two changes?",
+      "options": [
+        "Both are process changes because they touch the same data object",
+        "Adding the record is a data change that does not alter the process; adding the field is a process change",
+        "Adding the record is a process change; adding the field is only a data change",
+        "Both are data changes because neither modifies a flow rule"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Records are instances of a data object; adding or editing them changes data, not the application's process. Fields define the structure that views, rules and the process rely on, so changing fields is a process change. The other three options either treat both alike or reverse the classification."
+    },
+    {
+      "id": "di-007",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A team needs an Employee data object with name, contact details and a postal address. A Person data object already exists with most, but not all, of the needed fields, and Pega provides standard address objects. What is the recommended approach?",
+      "options": [
+        "Add Employee as a draft data object from the workflow and rely on it becoming permanent when the first case runs",
+        "Extend Person as Person-Employee and use the standard Address-Postal object for the address",
+        "Create a brand-new Employee object from scratch so it has no inherited fields to maintain",
+        "Add employee-specific fields directly to the standard Address-Postal object"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Best practice is to use standard objects such as Address-Postal, extend an object that partially fits (Person-Employee, following Parent-Child naming), and create a new object only when nothing fits. Creating from scratch discards available reuse. Putting employee fields into an address object breaks its purpose and reuse. Draft data objects added from the workflow must be made permanent on the Data objects and integrations page; they do not become permanent on their own."
+    },
+    {
+      "id": "di-008",
+      "objective": 2,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "An expense report case holds an embedded list of expense lines, each with a Currency field Amount. The case needs a Total amount field that stays correct as lines are added or edited. Which App Studio calculation should you use?",
+      "options": [
+        "A Decision table whose otherwise row returns the total",
+        "A Run Data Transform automation step at the end of the stage",
+        "An Expression that adds .ExpenseLines.Amount with the + operator",
+        "A Function using 'Sum of' over the expense lines' Amount"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Functions iterate over a list and support Sum, Average, Maximum and Minimum with Currency, Decimal or Integer results, and the calculation network recalculates the total whenever an input changes. Expressions work on individual fields with operators and do not aggregate a list. A decision table maps conditions to a result, not a list total. A data transform at the end of the stage would compute once at that point and would not keep the field current as lines change."
+    },
+    {
+      "id": "di-009",
+      "objective": 2,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "A developer wants to create several calculated fields using App Studio Expressions. For which result field types is an Expression NOT available? (Choose two.)",
+      "options": [
+        "Text (single line)",
+        "Picklist",
+        "Currency",
+        "Date only",
+        "Email"
+      ],
+      "answer": [
+        1,
+        4
+      ],
+      "explanation": "Expressions can return any simple field type except Email, Phone and Picklist, so Email and Picklist are the correct choices. Text (single line) is allowed and supports concatenation with quoted text. Date only and Currency are simple types that Expressions can produce."
+    },
+    {
+      "id": "di-010",
+      "objective": 2,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "In an application built on Traditional UI, a citizen developer wants a calculated Risk tier field driven by a decision table, but App Studio does not offer the option to create a custom decision table. What should the system architect do?",
+      "options": [
+        "Grant the citizen developer a role with permission to create decision tables in App Studio",
+        "Build the decision table in Dev Studio and mark it as a relevant record so it can be selected in App Studio",
+        "Turn on draft mode for the case type so that decision tables can be created",
+        "Replace the decision table with a Function, because Functions can evaluate conditions"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Creating a custom decision table from App Studio is only supported in Constellation applications. A decision table created in Dev Studio becomes selectable in App Studio once it is marked as a relevant record. The issue is architectural, not a permission, so changing roles does not help. Functions aggregate list values and do not evaluate condition combinations. Draft mode affects whether incomplete processes can run, not which rule types App Studio can create."
+    },
+    {
+      "id": "di-011",
+      "objective": 3,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A Date of birth field uses a calendar control. Users can still enter tomorrow's date. What is the right way to prevent this in App Studio?",
+      "options": [
+        "Change the field type to Date & time so future values are rejected",
+        "Set the field's Required behavior to Always",
+        "Add a validation condition on the step that flags the value as invalid when it is after today",
+        "Rely on the calendar control, because it already blocks dates in the future"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "A calendar control only guarantees that the entry is a valid date; business meaning such as 'must be in the past' needs a validation condition, and App Studio validation conditions describe the invalid values. Date & time is still a type check and also normalizes to UTC; it does not enforce past dates. Required ensures a value exists, not that it is sensible. The calendar control does not block future dates, which is exactly the gap described."
+    },
+    {
+      "id": "di-012",
+      "objective": 3,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "The same Start date field appears on a Job history step (it must be in the past) and on a New hire details step (it must be in the future). How should this be configured?",
+      "options": [
+        "Create two fields with different names because one field can only carry one validation",
+        "Use an Edit Validate rule on the property's Advanced tab with both conditions",
+        "Configure a separate validation on each step's form, because validations are tied to the step instance",
+        "Create one validation on the field in the data model so it applies wherever the field is used"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "App Studio validations are attached to process step instances, which is what lets one field have different validation on different forms. A single field-level validation would apply one rule everywhere and could not express opposite requirements. Duplicating the field is unnecessary and harms reuse. An Edit Validate on the property runs client-side whenever the value changes, with no knowledge of which step is active, and relies on custom Java, a security risk."
+    },
+    {
+      "id": "di-013",
+      "objective": 3,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "A loan case must not enter the Underwriting stage unless the Applicant income field is greater than zero. Which statements about configuring this as stage-entry validation are true? (Choose two.)",
+      "options": [
+        "The designer must give the user a way to resolve the error, such as returning to a previous stage or closing the case.",
+        "A failure automatically routes the case to the work group manager for correction.",
+        "It is configured in the case type's Data model and prevents the case from entering the stage when invalid.",
+        "It fires on submit of each form in the previous stage, so the user can fix the value on the same screen.",
+        "It can only be configured in Dev Studio as an Edit Validate rule."
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "Stage-entry validation is set in the case type Data model and blocks entry to the stage; because the case is stopped, the developer must provide a path to fix it (go back or close). Immediate correction on the same screen describes form-submit validation, the other App Studio trigger point. It is available in App Studio and corresponds to a stage-based Validate rule, not an Edit Validate rule. Nothing in the feature routes the case to a manager automatically."
+    },
+    {
+      "id": "di-014",
+      "objective": 3,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "In Dev Studio, a Validate rule checking Start date must run only when the Onboarding flow action is submitted, and a second check must run only when the proposed work status is Approved. Where are these conditions configured?",
+      "options": [
+        "On the Input tab of the Validate rule, using qualification by Flow Action and by Proposed work status",
+        "In the Validation functions library, by selecting a status-aware function",
+        "In a When rule referenced from the Pages & Classes tab of the Validate rule",
+        "On the Advanced tab of the Start date property, using 'Use Validate'"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Validate rules can be qualified on their Input tab by input property, proposed work status, flow action and stage, which covers both requirements. 'Use Validate' on the property Advanced tab attaches an Edit Validate that runs client-side whenever the value changes, regardless of flow action or status. Pages & Classes declares pages used by the rule; it is not where qualification happens. The validation functions library provides reusable checks (such as date within the past N weeks) but does not decide when a Validate rule applies."
+    },
+    {
+      "id": "di-015",
+      "objective": 4,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "When a Service request case is created, Priority should default to 'Normal' and Region should be copied from another field. Which approach follows best practice?",
+      "options": [
+        "Set default values in the Visible condition of each field",
+        "Add a Run Data Transform automation step at the start of the second stage",
+        "Set the values on the Data initialization page of the case type's Settings tab",
+        "Edit pySetFieldDefaults to set both values"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The Data initialization page on the Settings tab is the recommended place for simple defaults; it updates pyDefault, which runs at case creation, and supports exact values or values from another property. pySetFieldDefaults is system-maintained and should not be edited. A transform in the second stage runs too late to be a creation default. Visibility conditions control display, not values."
+    },
+    {
+      "id": "di-016",
+      "objective": 4,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which statements about pyDefault and pySetFieldDefaults are correct? (Choose two.)",
+      "options": [
+        "pyDefault runs when the case is created and calls pySetFieldDefaults.",
+        "Both rules are generated the first time a stage is added to the case lifecycle.",
+        "pyDefault runs every time a view is loaded.",
+        "pySetFieldDefaults is the recommended place to add complex default logic.",
+        "pySetFieldDefaults runs when a view loads and is maintained by the system."
+      ],
+      "answer": [
+        0,
+        4
+      ],
+      "explanation": "pyDefault runs at case creation and calls pySetFieldDefaults; pySetFieldDefaults runs when a view loads and is system-maintained. Complex defaults belong in pyDefault, not in the system-maintained rule. Both are generated the first time a view is created, not when a stage is added. Running on each view load describes pySetFieldDefaults, not pyDefault."
+    },
+    {
+      "id": "di-017",
+      "objective": 4,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "Work- pyDefault sets status, organization info and an urgency of 10. The Complaint case type's pyDefault sets urgency to 40 and has 'Call superclass data transform' checked. What is the result when a Complaint case is created?",
+      "options": [
+        "Urgency is 10, because the Work- transform runs last and overrides the case type",
+        "Urgency is 40, but status and organization info are not set because only the most specific transform runs",
+        "Urgency is 40, and status and organization info from Work- are still applied",
+        "Urgency is 50, because values from each level are added together"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "With the superclass option, the runtime locates same-named parent transforms up the hierarchy and runs them top-down, so Work- runs first and the case type runs last; its urgency of 40 overrides 10 while the other parent values remain. Work- does not run last. Transforms assign values; they do not sum them across levels. Only the most specific transform running would describe the behavior without the superclass option."
+    },
+    {
+      "id": "di-018",
+      "objective": 4,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A Dev Studio data transform sets .RequestorName from OperatorID.pyFirstName and OperatorID.pyLastName, but the rule reports a problem with the page reference. What is the most likely fix?",
+      "options": [
+        "Enable 'Call superclass data transform'",
+        "Mark the data transform as a relevant record",
+        "Move the logic into pySetFieldDefaults",
+        "Add the OperatorID page to the Pages & Classes tab of the data transform"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "To reference OperatorID properties such as pyFirstName in a data transform, the OperatorID page must be declared on the Pages & Classes tab. Marking a rule as relevant only exposes it in App Studio. The superclass option chains same-named transforms through the hierarchy and does not declare pages. pySetFieldDefaults is system-maintained and should not be modified."
+    },
+    {
+      "id": "di-019",
+      "objective": 5,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "An auto insurance application shows a list of vehicle makes and models. The list is identical for every user and changes only every month or two. Which data page scope fits best?",
+      "options": [
+        "Editable",
+        "Node",
+        "Requestor",
+        "Thread"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Node scope shares one page across all users, which suits reference data such as makes and models that is the same for everyone. Thread scope creates a page per case or transaction, which duplicates identical data. Requestor scope creates one per user session, again duplicating it. Editable is an edit mode, not a scope."
+    },
+    {
+      "id": "di-020",
+      "objective": 5,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which pairings of data page scope or refresh option with requirement are valid? (Choose two.)",
+      "options": [
+        "Thread scope cannot use 'Reload once per interaction', so use 'Reload if older than' instead",
+        "Thread scope for a stock price that applies to the current transaction",
+        "Requestor scope with 'Reload once per interaction' combined with 'Reload if older than 5 minutes'",
+        "Requestor scope for the logged-in customer's shipping addresses used throughout the session",
+        "Node scope with 'Reload once per interaction' for live seat availability"
+      ],
+      "answer": [
+        1,
+        3
+      ],
+      "explanation": "Thread scope fits per-transaction data like a stock price, and Requestor scope fits data tied to one user's session such as their shipping addresses. 'Reload once per interaction' is only for Thread or Requestor scope, so Node is invalid. It also cannot be combined with other refresh options, so the Requestor combination is invalid. Thread scope is one of the two scopes that does support 'Reload once per interaction', so the last statement is false."
+    },
+    {
+      "id": "di-021",
+      "objective": 5,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A data page has the refresh strategy 'Reload if older than 10 minutes'. It is first loaded at 12:00 and next referenced at 13:00. What happens?",
+      "options": [
+        "It becomes stale at 12:10 and reloads when it is accessed at 13:00",
+        "It does not reload at 13:00 because it already loaded once in this interaction",
+        "It reloads automatically in the background at 12:10, 12:20 and so on",
+        "It reloads at 12:10 and is then current at 13:00 without another reload"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "'Reload if older than' marks the page stale once the interval passes; the reload happens on the next access, which here is 13:00. There is no background reload every ten minutes. The 'never more than once per interaction' rule caps reloads within one interaction; the 13:00 reference is a new access after the page went stale. Reloading at 12:10 would require something to reference the page then."
+    },
+    {
+      "id": "di-022",
+      "objective": 5,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A brokerage data page returns quotes. Quotes should not be refreshed while the market is closed, and during trading hours they should be at most five minutes old. Which configuration is valid?",
+      "options": [
+        "Node scope with 'Reload once per interaction'",
+        "Thread scope with 'Do not reload when' (a When rule for market closed) and 'Reload if older than 5 minutes'",
+        "Requestor scope with 'Reload once per interaction' and 'Reload if older than 5 minutes'",
+        "Node scope with no refresh strategy, because data pages cannot save without one"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "'Do not reload when' treats the page as current while the When condition (market closed) is true, and 'Reload if older than' limits staleness during the day. 'Reload once per interaction' is unavailable for Node scope and cannot be combined with other options, which rules out both options that use it. Refresh strategies are optional though strongly recommended, so the claim that a page cannot save without one is false, and leaving it out would not meet the requirement anyway."
+    },
+    {
+      "id": "di-023",
+      "objective": 5,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "An Order case shows product details from a catalog data page. Finance requires that the order keep the price as it was when the order was placed, even if the catalog price changes later. How should the Product field be autopopulated?",
+      "options": [
+        "Copy data from a data page, so a snapshot is stored in the case",
+        "Refer to a Node-scoped data page with 'Reload once per interaction'",
+        "Refer to a data page, so the case always shows the current catalog price",
+        "Use a Query field, so the price is read on demand from the catalog"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Copy data from a data page stores a point-in-time snapshot in the case and only re-retrieves if parameters change, which preserves the original price. Refer keeps the case pointing at current data, so later price changes would show. Node scope cannot use 'Reload once per interaction', and referring would still show current prices. A Query field is read-only lookup data that is not stored, so it would also reflect current values."
+    },
+    {
+      "id": "di-024",
+      "objective": 5,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which statements about data page sources and parameters are correct? (Choose two.)",
+      "options": [
+        "A Query field stores the key of the retrieved record in the case so it can be reloaded later.",
+        "With several conditional sources, conditions are checked in order, the first true one is used, and the last source is the Otherwise.",
+        "Every data page parameter is required; optional parameters are not supported.",
+        "Each distinct parameter combination produces its own page instance unless 'Limit to a single data page' is set on the Load Management tab.",
+        "Aggregate sources call every source in parallel and keep whichever responds first."
+      ],
+      "answer": [
+        1,
+        3
+      ],
+      "explanation": "Conditional sources are evaluated in order with the final one acting as Otherwise, and parameterized pages create one instance per parameter combination unless limited on the Load Management tab. Aggregate sources combine multiple sources in the listed order, not in a race. Parameters carry a required flag, so they can be optional (savable pages rely on an optional key). A Query field does not store the key."
+    },
+    {
+      "id": "di-025",
+      "objective": 5,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A Country dropdown is sourced from a data page. Users must see the country name, but the case must store the two-letter country code. What is true about this configuration?",
+      "options": [
+        "Only the selected value is copied to the case, and it can be a different property from the one displayed",
+        "Dropdowns can only be sourced from local data objects, so the countries must be imported as records",
+        "The stored value must match the displayed value, so a separate calculated field is required to hold the code",
+        "The entire list page is copied into the case when the user makes a selection"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "List-based controls copy only the selected item's value into the case, and that value can differ from what is shown, such as storing the code while displaying the name. The full list is not copied. No extra calculated field is needed. Data page sources can be local or external, so importing records is not required."
+    },
+    {
+      "id": "di-026",
+      "objective": 6,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Customer changes must be written back to an external CRM that exposes only a SOAP service. The team is designing the save plan of D_CustomerSavable. Which statements are correct? (Choose two.)",
+      "options": [
+        "Robotic desktop automation is the recommended option for unattended background saves.",
+        "The Connector save option supports REST only, so the Activity save option is needed for SOAP.",
+        "The Activity save option is not inherently transactional, so its use should be limited.",
+        "Database save can write a page list as multiple rows in the CRM.",
+        "The Connector save option supports both REST and SOAP, so no activity is needed."
+      ],
+      "answer": [
+        1,
+        2
+      ],
+      "explanation": "The Connector save option is REST only, so a SOAP target needs the Activity option, which can call any connector but is not inherently transactional and should be used sparingly. Database save writes a single page to a single row in a database; it neither handles page lists as multiple rows nor targets a SOAP service. Unattended background work maps to the Robotic automation option; RDA is desktop automation."
+    },
+    {
+      "id": "di-027",
+      "objective": 6,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "A case property .Customer is autopopulated from D_CustomerSavable. The user edits address details in an assignment, and the change must be saved to the system of record. Which configuration choices are correct? (Choose two.)",
+      "options": [
+        "Use one Save Data Page step to save to both the CRM and the local audit table",
+        "Place the Save Data Page step before the assignment so the record is saved before edits",
+        "Autopopulate .Customer with 'Copy data from a data page'",
+        "Add a Save Data Page step after the assignment and select 'Use associated property'",
+        "Autopopulate .Customer with 'Refer to a data page' so edits are always current"
+      ],
+      "answer": [
+        2,
+        3
+      ],
+      "explanation": "When a property is autopopulated from a savable data page, use Copy rather than Refer; Copy also helps avoid stale page errors. A Save Data Page step after the assignment with 'Use associated property' takes the data page and parameters from the property rule. Refer risks overwriting the user's changes. Saving before the assignment would save the old data. Each data source needs its own Save Data Page step."
+    },
+    {
+      "id": "di-028",
+      "objective": 6,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "One savable data page must support both creating new Supplier records and updating existing ones from the same case type. Which design follows the guidance?",
+      "options": [
+        "Make the key parameter optional; use a Lookup source when a key is supplied and a Data Transform source when no key is supplied",
+        "Make the key parameter required and use Database delete followed by Database save for updates",
+        "Create two savable data pages because one page cannot both create and update",
+        "Refer to the savable page from the case and rely on the refresh strategy to insert new records"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "With an optional key, a supplied key loads the existing record through a Lookup source for update, while no key lets a Data Transform source initialize a new record. Two pages are unnecessary. A required key would prevent the create path, and delete-then-save is not the described pattern. Refresh strategies control reloading, not inserting, and Refer is discouraged for savable pages."
+    },
+    {
+      "id": "di-029",
+      "objective": 7,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A credit bureau's API is still being built, but the UI team needs a working Credit report data page and testers want predictable responses. What should the system architect do?",
+      "options": [
+        "Build an Activity save option on the savable page to mimic the API",
+        "Leave the data page without a source; data pages return empty pages until the connector exists, which is sufficient for UI work",
+        "Generate Autopilot sample records and set them as the production source",
+        "Configure a simulated data source for the data page using the expected request and response, and replace it with the real source before production"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Simulation is designed for unavailable or unfinished external systems; it requires knowing the request and response, lets you dictate results for unit tests, unblocks the UI team, and must be replaced before production. An unsourced page gives no realistic data. Autopilot sample records are test data and are never a production source. A save option writes data back to a system of record; it does not supply simulated reads."
+    },
+    {
+      "id": "di-030",
+      "objective": 7,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which statements about simulating data and generating sample data are true? (Choose two.)",
+      "options": [
+        "Autopilot can generate a chosen number of sample records on a data object's Records tab with values that match the field types.",
+        "Simulation does not require knowledge of the request and response structure.",
+        "Autopilot sample records are synchronized to the external system of record once it is integrated.",
+        "Simulated sources let you dictate the response, which helps unit testing.",
+        "A simulated source may remain in production if its responses match the real system."
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "explanation": "Simulation lets you control responses, which is valuable for unit tests, and Autopilot can generate a chosen number of type-appropriate sample records from the Records tab. Simulated sources are temporary and must be replaced before production. Building a simulation requires knowing the expected request and response. Autopilot sample records are test data and are not pushed to the external system later."
+    }
+  ]
+}

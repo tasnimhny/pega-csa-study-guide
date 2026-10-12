@@ -1,0 +1,502 @@
+{
+  "id": "security",
+  "title": "Security",
+  "weight": 10,
+  "intro": "Covers who a user is (authentication), what they may do (authorization), the Security Checklist and security policies that harden an application before go-live, and the operator / access group / access role / persona chain behind role-based access control. Questions usually turn on precise distinctions: ARO 'No Access' vs Access Deny, most-permissive role wins, and production-level comparisons.",
+  "objectives": [
+    {
+      "objective": "Differentiate between authentication and authorization",
+      "modules": [
+        "Application security"
+      ],
+      "summary": [
+        "Authentication establishes who the user is and is the first line of defense. In Pega the operator ID (usually an email address) plus a password is the basic form, and enterprises add single sign-on with SAML 2.0, OpenID Connect or tokens, configured through an authentication service rule. Authorization decides what an authenticated user can do: which data and actions are available at runtime, which rules can be created, read, updated or deleted at design time, and which developer tools such as Tracer are usable.",
+        "Pega also separates application-level security, which keeps outsiders out (password rules, authentication, MFA, third-party tools), from feature security, which controls what authorized users can reach (roles for personas, RBAC, ABAC, CBAC). A payroll manager who can see salary data that other HR staff cannot is a feature-security concern. On the record side, the Operator ID record supports authentication, while the access group together with the application supports authorization."
+      ],
+      "keyFacts": [
+        "Authentication = who you are; authorization = what you can do.",
+        "Authentication is the first line of defense.",
+        "SSO options: SAML 2.0, OpenID Connect, tokens; configured via an authentication service rule.",
+        "Authorization covers runtime data/actions, design-time rule create/read/update/delete, and developer tools such as Tracer.",
+        "Application-level security protects against outsiders (passwords, authentication, MFA, third-party tools).",
+        "Feature security governs what authorized users can access (persona roles, RBAC, ABAC, CBAC).",
+        "Operator ID record -> authentication; access group + application -> authorization."
+      ],
+      "table": {
+        "headers": [
+          "Concern",
+          "Question answered",
+          "Examples"
+        ],
+        "rows": [
+          [
+            "Authentication",
+            "Who is this user?",
+            "Password login, SAML 2.0, OpenID Connect, MFA, authentication service rule"
+          ],
+          [
+            "Authorization",
+            "What may this user do?",
+            "Access roles, ARO, Access Deny, ABAC/CBAC, permission to use Tracer or edit rules"
+          ]
+        ]
+      },
+      "examTraps": [
+        "MFA and password policies strengthen authentication; they do not grant or restrict features.",
+        "Permission to use developer tools or edit rules is authorization, even though it applies to developers.",
+        "The Operator ID record alone does not determine what a user can do; the access group does."
+      ]
+    },
+    {
+      "objective": "Explain the benefits of the Security Checklist and security policies",
+      "modules": [
+        "Application security"
+      ],
+      "summary": [
+        "The Security Checklist guides a team through hardening an application and is installed as an application guideline rule for each application version. Tasks are grouped by timing (at the start, during development, before deployment) and by area (monitoring, authentication, authorization, auditing, production testing), and the checklist tracks status and completion so security is built in early instead of reworked late. Deployment Manager blocks a production deployment until the checklist is complete, which also supports IT security sign-off. Its four focus areas are data encryption (passwords, properties, BLOBs; sensitive values like SSNs and card numbers), authentication, authorization/access control (RBAC, ABAC, CBAC) and auditing/accountability (failed logins, password changes, rule and data changes). The goals map to the AIC triad: availability, integrity and confidentiality. Security is a shared responsibility of Pega and the client; not every task applies, and Pega Cloud completes some automatically. The most important practices are staying guardrail-compliant and avoiding custom code, which may bypass platform security.",
+        "Security policies are configurable controls. Password policy sets length, complexity and predictability rules. CAPTCHA can be the default or custom, shown on initial login or made more likely after failed logins. Lockout, when enabled, uses a failure threshold, an initial penalty in seconds that grows, and a failure log window in minutes; when disabled, a simpler attempts-before-lock and lock-minutes setting applies. Audit policy controls detail captured for login attempts. MFA sends a one-time password by email or SMS that must be used within an allowed time. Operator disablement disables accounts inactive for a set number of days, with an exclusion list. MFA factors are knowledge (password), possession (mobile number) and being (fingerprint); two-factor authentication is a subset of MFA."
+      ],
+      "keyFacts": [
+        "Checklist = application guideline rule per application version.",
+        "Deployment Manager blocks production deployment until the checklist is complete.",
+        "Four areas: data encryption, authentication, authorization/access control, auditing/accountability.",
+        "Tasks grouped by timing (start, during, before deployment) and area; status tracked to prevent rework.",
+        "AIC triad: Availability, Integrity, Confidentiality.",
+        "Shared responsibility; not all tasks required; Pega Cloud handles some automatically.",
+        "Top practices: guardrail compliance and avoiding custom code.",
+        "Lockout (enabled): threshold, increasing initial penalty in seconds, failure log window in minutes.",
+        "Operator disablement: inactive N days, with an exclusion list.",
+        "MFA: one-time password by email/SMS within an allowed time; factors knowledge, possession, being; 2FA is a subset."
+      ],
+      "table": {
+        "headers": [
+          "Policy",
+          "What it controls"
+        ],
+        "rows": [
+          [
+            "Password",
+            "Length, complexity, predictability"
+          ],
+          [
+            "CAPTCHA",
+            "Default or custom; on initial login; likelihood after failed logins"
+          ],
+          [
+            "Lockout",
+            "Enabled: threshold, growing penalty seconds, failure log minutes. Disabled: attempts before lock, lock minutes"
+          ],
+          [
+            "Audit",
+            "Level of detail recorded for login attempts"
+          ],
+          [
+            "MFA",
+            "One-time password via email or SMS within an allowed time"
+          ],
+          [
+            "Operator disablement",
+            "Disable after N inactive days; exclusion list"
+          ]
+        ]
+      },
+      "examTraps": [
+        "The checklist is not 'all tasks mandatory'; some do not apply and Pega Cloud covers some.",
+        "Security is not solely Pega's job on Pega Cloud; it is shared with the client.",
+        "Growing penalties after failed logins are Lockout, not CAPTCHA; CAPTCHA only becomes more likely.",
+        "Automatically disabling dormant accounts is Operator disablement, not Lockout."
+      ]
+    },
+    {
+      "objective": "Describe Operators, Access groups, Access roles and Personas",
+      "modules": [
+        "Managing application access",
+        "Inviting users to an application"
+      ],
+      "summary": [
+        "A persona is the business-facing description of a type of user, managed in App Studio under Users > User management > Personas (the default persona is 'Users'). An access role describes a job function and holds the permissions to perform specific tasks; every persona has an associated role, but not every role has a persona. Creating a persona automatically creates default permissions, a work queue and an access group; creating an access group does not create a persona. Each role has a default channel interface and is associated with studio channels (App, Admin, Dev Studio) and channel interfaces such as a Work Portal.",
+        "The operator ID record identifies a person and drives authentication; the access group, together with the application it references, drives authorization. An access group bundles privileges by referencing one or more access roles, which keeps security modular, and several access groups can point at the same application. If an operator's roles conflict, the most permissive permission wins. Users are invited by email and assigned a persona or developer role; generic shared accounts such as 'admin' should not be used. Drafting persona-to-channel associations in the lifecycle does not configure access; by default a persona can reach all pages, and a portal is restricted by assigning personas when the portal is configured."
+      ],
+      "keyFacts": [
+        "Persona = business representation; access role = job function with permissions.",
+        "Every persona has a role; not every role has a persona.",
+        "Creating a persona auto-creates default permissions, a work queue and an access group (not the reverse).",
+        "Operator ID -> authentication; access group + application -> authorization.",
+        "An access group references one or more roles; several access groups can reference one application.",
+        "Conflicting roles: the most permissive permission wins.",
+        "Default persona is 'Users'; avoid generic accounts such as admin.",
+        "Drafting personas against channels does not restrict access; restrict a portal by assigning personas on it.",
+        "Prediction Studio requires the pxPredictionStudio portal in the user's access group."
+      ],
+      "table": {
+        "headers": [
+          "Record",
+          "Purpose"
+        ],
+        "rows": [
+          [
+            "Operator ID",
+            "Identifies the user; supports authentication"
+          ],
+          [
+            "Access group",
+            "Links user to an application and one or more roles; supports authorization"
+          ],
+          [
+            "Access role",
+            "Job function; class-level permissions"
+          ],
+          [
+            "Persona",
+            "Business view of a user type in App Studio; linked to a role"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Most permissive wins, not most restrictive, when an operator has multiple roles.",
+        "Creating an access group in Dev Studio does not create a persona.",
+        "Listing a persona for a channel in the lifecycle draft does not limit portal access."
+      ]
+    },
+    {
+      "objective": "Configure role-based access control (RBAC) including ARO, Access Deny, Access Manager and production levels",
+      "modules": [
+        "Managing application access"
+      ],
+      "summary": [
+        "RBAC grants permissions through roles. Pega also supports attribute-based access control (ABAC), which compares attributes of a case, field or document with attributes of the user, and client-based access control (CBAC), which tracks and processes requests to view, update or remove a customer's personal data, as regulations such as GDPR require. Within RBAC, an Access of Role to Object (ARO) holds a role's permissions on a class; 'No Access' denies that permission for that role. An Access Deny rule is an explicit extra layer that blocks access regardless of what other roles grant, which is useful for regulatory requirements.",
+        "App Studio's User management landing page (select a persona) is the preferred place to manage access. Dev Studio's Access Manager (Configure > Org & Security > Access Manager) is needed for some permissions, such as deleting a case instance. Best practice is to use these tools instead of editing ARO or Access Deny forms directly. Permissions can be tied to production levels: 5 Production, 4 Staging, 3 QA, 2 Development, 1 Sandbox, 0 deny. Access is granted when the permission's value is greater than or equal to the system's production level. Access Manager only writes 0 or 5, so set other levels by opening the record. For example, a delete permission set to 2 gives full access on a development system (level 2) and no access in production (level 5). Access When rules can add conditions."
+      ],
+      "keyFacts": [
+        "ARO = a role's permissions on a class; 'No Access' denies for that role.",
+        "Access Deny = explicit deny that overrides grants; extra layer for regulations.",
+        "Prefer App Studio User management; Access Manager (Dev Studio) for advanced permissions such as deleting case instances.",
+        "Best practice: do not edit ARO/Access Deny forms directly; use the landing page or Access Manager.",
+        "Production levels: 5 Production, 4 Staging, 3 QA, 2 Development, 1 Sandbox, 0 deny.",
+        "Access granted when permission level >= system production level.",
+        "Access Manager writes only 0 or 5; open the record to set intermediate levels.",
+        "Access When rules provide conditional access.",
+        "ABAC compares object attributes (case, field, document) with user attributes.",
+        "CBAC handles requests about customers' personal data (view, update, remove), e.g., GDPR."
+      ],
+      "table": {
+        "headers": [
+          "Permission level set",
+          "Sandbox (1)",
+          "Development (2)",
+          "QA (3)",
+          "Staging (4)",
+          "Production (5)"
+        ],
+        "rows": [
+          [
+            "0",
+            "No",
+            "No",
+            "No",
+            "No",
+            "No"
+          ],
+          [
+            "2",
+            "Yes",
+            "Yes",
+            "No",
+            "No",
+            "No"
+          ],
+          [
+            "4",
+            "Yes",
+            "Yes",
+            "Yes",
+            "Yes",
+            "No"
+          ],
+          [
+            "5",
+            "Yes",
+            "Yes",
+            "Yes",
+            "Yes",
+            "Yes"
+          ]
+        ]
+      },
+      "examTraps": [
+        "'No Access' on one role's ARO can be outweighed by another role (most permissive wins); Access Deny cannot.",
+        "The comparison is permission level >= system level; a lower number means fewer environments.",
+        "Access Manager is in Dev Studio, not App Studio; it only writes 0 or 5.",
+        "Region- or attribute-matching rules are ABAC; personal-data requests are CBAC."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "sec-001",
+      "objective": 0,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A bank requires that employees sign in once to the corporate identity provider and reach the Pega application without a separate password, using SAML 2.0. Which security concern does this address, and which Pega rule is configured?",
+      "options": [
+        "Authorization; an access role",
+        "Authorization; an Access Deny rule",
+        "Authentication; an authentication service rule",
+        "Auditing; the Security Checklist guideline rule"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Single sign-on through SAML 2.0 establishes the user's identity, which is authentication, and it is configured with an authentication service rule. Access roles and Access Deny rules control what an already identified user can do, which is authorization. The Security Checklist tracks hardening tasks; it does not implement SSO, and auditing records events rather than identifying users."
+    },
+    {
+      "id": "sec-002",
+      "objective": 0,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which of the following are authorization concerns? (Choose two.)",
+      "options": [
+        "Requiring passwords to be at least a certain length",
+        "Whether a developer may use Tracer in the application",
+        "Requiring a one-time password sent by SMS",
+        "Whether an operator may update a decision table rule at design time",
+        "Verifying a user's identity through OpenID Connect"
+      ],
+      "answer": [
+        1,
+        3
+      ],
+      "explanation": "Authorization covers what an identified user can do, including design-time rule changes and access to developer tools such as Tracer. OpenID Connect, one-time passwords and password length rules all strengthen confirming who the user is, so they are authentication controls."
+    },
+    {
+      "id": "sec-003",
+      "objective": 0,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A security review lists two requirements: (1) MFA for every external login, and (2) only payroll managers can see salary fields that other HR users cannot. How are they classified?",
+      "options": [
+        "(1) application-level security; (2) feature security",
+        "Both are application-level security",
+        "(1) feature security; (2) application-level security",
+        "Both are completed automatically by the Security Checklist"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Application-level security keeps outsiders out with passwords, authentication and MFA, so (1) belongs there; feature security controls what authorized users can reach, such as the payroll manager's salary access. Calling both application-level ignores the authorized-user dimension of (2), and the reversed pairing swaps the definitions. The Security Checklist guides and tracks tasks but does not implement them automatically."
+    },
+    {
+      "id": "sec-004",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "A release pipeline in Deployment Manager stops before the production stage even though all tests pass. Security staff say the application has not finished its security preparation. What is the most likely cause?",
+      "options": [
+        "An Access Deny rule blocks the deployment operator",
+        "The Security Checklist for the application version has not been completed",
+        "The lockout policy threshold was reached during testing",
+        "The operator disablement policy has disabled the pipeline's account"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Deployment Manager prevents deployment to production until the Security Checklist is complete. Access Deny rules restrict access to classes for users, not pipeline stages. Operator disablement targets inactive accounts, and the scenario points to unfinished security tasks. Lockout responds to failed logins and has nothing to do with test results or security preparation."
+    },
+    {
+      "id": "sec-005",
+      "objective": 1,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which statements about the Security Checklist are true? (Choose two.)",
+      "options": [
+        "It is installed as an application guideline rule for each application version.",
+        "Adding custom code is recommended to strengthen the platform's built-in security.",
+        "On Pega Cloud, security is entirely Pega's responsibility, so the client can skip the checklist.",
+        "Every task is mandatory on every environment, including tasks Pega Cloud already performs.",
+        "Its tasks are organized by timing (start, during development, before deployment) and by area."
+      ],
+      "answer": [
+        0,
+        4
+      ],
+      "explanation": "The checklist is an application guideline rule per application version, and its tasks are grouped by timing and area with tracked status. Not every task is required and Pega Cloud performs some automatically. Security is a shared responsibility between Pega and the client. Avoiding custom code is one of the most important practices, because custom code may not enforce platform security features."
+    },
+    {
+      "id": "sec-006",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "After a threshold of failed logins, the user must wait a penalty measured in seconds, and the wait increases with each further failure. Failures are counted within a window measured in minutes. Which policy is this?",
+      "options": [
+        "CAPTCHA policy configured to appear after failed logins",
+        "Operator disablement policy",
+        "Audit policy for login attempts",
+        "Lockout policy with lockout enabled"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Enabled lockout uses a failure threshold, an initial penalty in seconds that increases, and a failure log window in minutes. CAPTCHA can become more likely after failed logins but does not impose growing time penalties. Operator disablement disables accounts after a number of inactive days. Audit policy controls how much detail is recorded about login attempts; it does not block users."
+    },
+    {
+      "id": "sec-007",
+      "objective": 1,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "Contractor accounts that have not been used for 90 days must be disabled automatically, but integration service accounts that rarely sign in must never be disabled. Which configuration meets both needs?",
+      "options": [
+        "MFA policy requiring a one-time password for contractors",
+        "Lockout policy with a low failed-attempt threshold",
+        "Password policy with high predictability restrictions",
+        "Operator disablement policy set to 90 inactive days with the service accounts on the exclusion list"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Operator disablement disables operators inactive for a configured number of days and supports an exclusion list for accounts that must stay active. Lockout responds to failed logins, not inactivity. MFA adds an extra authentication factor but disables nothing. Password policy controls password strength, not account dormancy."
+    },
+    {
+      "id": "sec-008",
+      "objective": 2,
+      "type": "single",
+      "difficulty": "medium",
+      "stem": "An administrator asks which records determine that Maria can sign in and which determine what she can do in the Claims application. Which answer is correct?",
+      "options": [
+        "Her work group handles sign-in; her work queue determines what she can do",
+        "Her access role handles sign-in; her persona determines what she can do",
+        "Her Operator ID record supports authentication; her access group, with the application it references, supports authorization",
+        "Her access group handles sign-in; her Operator ID record determines what she can do"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The Operator ID record identifies the user for authentication, and the access group, which references the application and one or more roles, drives authorization. Access roles hold permissions rather than identities. Work groups and work queues organize and route work; they are not security records. The final option reverses the two records' purposes."
+    },
+    {
+      "id": "sec-009",
+      "objective": 2,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "An operator's access group references two access roles. Role A grants Modify on the Claims class; role B gives no Modify permission on that class. Which statements are true? (Choose two.)",
+      "options": [
+        "Referencing several roles from one access group is a supported way to keep privileges modular.",
+        "Because two roles conflict, the application must be referenced by a second access group.",
+        "An access group can reference only one access role, so this configuration is invalid.",
+        "The operator can modify Claims, because the most permissive permission wins.",
+        "The operator cannot modify Claims, because the most restrictive permission wins."
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "explanation": "When roles conflict, Pega applies the most permissive permission, so the operator can modify Claims, and an access group can reference one or more roles to build modular privileges. Most restrictive is the wrong rule. Access groups are not limited to one role. Multiple access groups can reference the same application, but that is not required to resolve a role conflict; to override a grant you would need Access Deny."
+    },
+    {
+      "id": "sec-010",
+      "objective": 2,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A system architect creates a new persona named Auditor in App Studio. What is created automatically?",
+      "options": [
+        "A shared operator account named Auditor that all auditors sign in with",
+        "A new Dev Studio access role, and every existing role gets a matching persona",
+        "Default permissions, a work queue and an access group for the persona",
+        "Only the persona; access groups must be built separately in Dev Studio"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Creating a persona automatically creates default permissions, a work queue and an access group. The first option ignores this. Shared generic accounts are discouraged; users are invited individually and assigned a persona. Every persona has a role, but not every role has a persona, so personas are not generated for existing roles."
+    },
+    {
+      "id": "sec-011",
+      "objective": 2,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "In the case lifecycle, the team drafted that the Manager persona uses the Manager Portal for release MLP1. During testing, users with other personas can still open the Manager Portal. What explains this, and what is the fix?",
+      "options": [
+        "The other personas have an Access Deny rule that is being ignored; edit the Access Deny form directly",
+        "Drafting persona-channel associations does not configure access; by default a persona can reach all pages, so assign the Manager persona when configuring the Manager Portal",
+        "Lifecycle channel settings apply only to production; promote the application to see the restriction",
+        "Draft mode is still on for the case type; turning it off applies the channel restriction"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Persona and channel entries in the lifecycle are planning information; by default a persona has access to all pages, and a portal is restricted by assigning personas to it when it is configured. Draft mode controls whether incomplete processes can run, not portal access. An Access Deny rule would block, not allow, and editing such forms directly is against best practice. There is no rule that lifecycle channel drafts take effect only in production."
+    },
+    {
+      "id": "sec-012",
+      "objective": 3,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A role's Delete permission on the Order class is set to production level 2. The development system runs at level 2 and production at level 5. What happens?",
+      "options": [
+        "Delete is denied in development and allowed in production",
+        "Delete is allowed only on staging (4) and production (5)",
+        "Delete is allowed in both environments because 2 is a valid level",
+        "Delete is allowed on the development system and denied in production"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Access is granted when the permission's level is greater than or equal to the system's production level: 2 >= 2 on development grants it, and 2 < 5 in production denies it. The other options either ignore the comparison or reverse it; staging at 4 is also above 2, so delete is denied there too."
+    },
+    {
+      "id": "sec-013",
+      "objective": 3,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Which statements about managing access are true? (Choose three.)",
+      "options": [
+        "The User management landing page in App Studio is the preferred place to manage persona access.",
+        "Access Manager writes only the values 0 or 5; open the record to set intermediate production levels.",
+        "Access Manager is opened from the App Studio Users menu.",
+        "Some permissions, such as deleting a case instance, can only be set in Access Manager.",
+        "Editing ARO and Access Deny rule forms directly is the recommended practice."
+      ],
+      "answer": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "App Studio User management is the preferred tool; Access Manager is required for some permissions such as deleting case instances; and Access Manager writes only 0 or 5, so intermediate levels need the record itself. Best practice is to use the landing page or Access Manager rather than editing ARO or Access Deny forms directly. Access Manager is in Dev Studio under Configure > Org & Security."
+    },
+    {
+      "id": "sec-014",
+      "objective": 3,
+      "type": "single",
+      "difficulty": "hard",
+      "stem": "A regulation states that interns must never view Payroll instances, even if an intern is later given another role that grants read access. What should the architect use?",
+      "options": [
+        "An Access Deny rule for the Payroll class",
+        "Set Read to No Access on the Intern role's ARO for Payroll",
+        "Configure the lockout policy for intern operators",
+        "Remove the Payroll class from the application's relevant records"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Access Deny is an explicit deny that adds a layer beyond role grants, which suits regulatory requirements. 'No Access' on the Intern ARO only affects that role; since the most permissive role wins, another role granting read would override it. Relevant records control what App Studio shows designers, not runtime data access. Lockout responds to failed logins."
+    },
+    {
+      "id": "sec-015",
+      "objective": 3,
+      "type": "multi",
+      "difficulty": "hard",
+      "stem": "Match each requirement to the access control model. Which pairings are correct? (Choose two.)",
+      "options": [
+        "Handling a customer's request to view their personal data -> Access Deny",
+        "A customer asks the company to remove their personal data and the request must be tracked -> CBAC",
+        "Giving the Manager role Modify permission on the Claims class -> ABAC",
+        "Comparing a document's attributes with the user's attributes -> RBAC",
+        "Adjusters see only claims whose Region matches their own Region attribute -> ABAC"
+      ],
+      "answer": [
+        1,
+        4
+      ],
+      "explanation": "ABAC compares attributes of a case, field or document with user attributes, as in matching regions, and CBAC tracks and processes requests to view, update or remove a customer's personal data under rules such as GDPR. Granting a role permission on a class is RBAC, not ABAC. Comparing document and user attributes is ABAC, not RBAC. Access Deny blocks access; it does not handle personal-data requests."
+    }
+  ]
+}

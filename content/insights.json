@@ -1,0 +1,329 @@
+{
+  "id": "insights",
+  "title": "Insights",
+  "weight": 5,
+  "intro": "Insights are Pega's reporting building blocks in Constellation: queries built in Explore Data and saved as tables or charts that can be shared and placed on dashboards, portal landing pages and Full Page case views. Expect questions about where an Insight can and cannot go, simple value charts, and common troubleshooting fixes.",
+  "objectives": [
+    {
+      "objective": "Describe the benefits of using Insights",
+      "modules": [
+        "Exploring application data with Insights"
+      ],
+      "summary": [
+        "An **Insight** is a rule that turns a data query into a table or chart. Because it is a saved rule rather than a one-off query, it can be shared with other users and reused in several places, such as dashboards, portal landing pages and case pages. Insights come in table-based and chart-based forms.",
+        "Insights are built in the Explore Data landing page, which is the preferred reporting experience for Constellation applications. Pega GenAI Autopilot can also help create an Insight from a natural-language request."
+      ],
+      "keyFacts": [
+        "Insight = a rule that turns a query into a table or chart.",
+        "Insights are shareable and reusable across dashboards, portal landing pages and Full Page case views.",
+        "Two forms: table-based and chart-based.",
+        "Explore Data is the preferred place to build them for Constellation.",
+        "Autopilot can create an Insight from natural language."
+      ],
+      "examTraps": [
+        "An Insight is a saved rule, not a temporary query that disappears after the session.",
+        "Insights are a Constellation-oriented feature; Traditional UI apps need extra enablement (see Explore Data)."
+      ]
+    },
+    {
+      "objective": "Use the Explore Data landing page to create Insights",
+      "modules": [
+        "Exploring application data with Insights"
+      ],
+      "summary": [
+        "The **Explore Data** landing page lets users query, sort, filter and group application data and then save the result as an Insight. It is the preferred option for Constellation applications. Traditional UI applications must enable Constellation UI for landing pages before they can use it. Object names shown in Explore Data come from each class's short description.",
+        "A **simple value chart** displays a single headline number. It is produced when only Measures fields are used (no grouping dimensions). Layouts are Highlight, Highlight + summary, and Custom highlight + summary, and conditional formatting can color the value based on thresholds."
+      ],
+      "keyFacts": [
+        "Explore Data supports query, sort, filter and group, then save as Insight.",
+        "Traditional UI apps must enable Constellation UI for landing pages to use Explore Data.",
+        "Object names in Explore Data come from the class short description.",
+        "Simple value chart appears when only Measures fields are selected.",
+        "Simple value layouts: Highlight; Highlight + summary; Custom highlight + summary.",
+        "Simple value charts support conditional formatting."
+      ],
+      "table": {
+        "headers": [
+          "Simple value layout",
+          "Shows"
+        ],
+        "rows": [
+          [
+            "Highlight",
+            "The single measure value"
+          ],
+          [
+            "Highlight + summary",
+            "The value plus a summary"
+          ],
+          [
+            "Custom highlight + summary",
+            "A customized highlight plus a summary"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Adding a grouping/dimension field means it is no longer a simple value chart; only measures qualify.",
+        "Explore Data is not automatically available to Traditional UI apps.",
+        "Odd object names in Explore Data are fixed through the class short description, not the Insight."
+      ]
+    },
+    {
+      "objective": "Describe the relationship between Insights, Dashboards, the Dashboards landing page, Portal landing pages, and Full Page Case Views",
+      "modules": [
+        "Exploring application data with Insights",
+        "Configuring Portal content"
+      ],
+      "summary": [
+        "Insights can be placed in three kinds of location. On a **Full Page case view**, an Insight can only be added as a tab, not directly inside a View. On **portal landing pages**, public Insights can be added to a region. On **dashboards**, Insights are arranged in a template; dashboards have private, shared (users with access, either all users or your access group) or public visibility, and a promoted filter applies across all Insights on the dashboard.",
+        "The **Dashboards landing page** is available by default in App Studio and in work portals and is not configured through portal authoring; a default Work metrics dashboard is provided. Dashboards are landing pages made of widgets that summarize KPIs per persona, built from a template with regions (for example a two-column template with Region A and Region B). New dashboards are private by default, and a copy keeps the source dashboard's visibility. Out-of-the-box portal landing pages include Dashboard, Home, Explore Data, My Work and Self-service Main page."
+      ],
+      "keyFacts": [
+        "Full Page case view: Insights only as tabs, never directly inside a View.",
+        "Portal landing pages: only public Insights can be added to a region.",
+        "Dashboard visibility: private (default for new), shared, public.",
+        "A copied dashboard keeps the source's visibility.",
+        "A promoted filter applies to every Insight on a dashboard.",
+        "Dashboards landing page is available by default in App Studio and work portals; not set up through portal authoring.",
+        "A default Work metrics dashboard exists.",
+        "Explore Data and Dashboard are among the out-of-the-box portal landing pages."
+      ],
+      "table": {
+        "headers": [
+          "Location",
+          "How Insights appear",
+          "Key constraint"
+        ],
+        "rows": [
+          [
+            "Full Page case view",
+            "As a tab",
+            "Not directly inside a View"
+          ],
+          [
+            "Portal landing page",
+            "In a region",
+            "Public Insights only"
+          ],
+          [
+            "Dashboard",
+            "In a dashboard template",
+            "Visibility private/shared/public; promoted filter spans all Insights"
+          ],
+          [
+            "Dashboards landing page",
+            "Lists dashboards",
+            "Available by default in App Studio and work portals"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Insights cannot be embedded in a partial or form View; use a tab on the Full Page case view.",
+        "A private Insight cannot be placed on a portal landing page.",
+        "New dashboards default to private, not public.",
+        "Do not look for the Dashboards landing page in portal authoring."
+      ]
+    },
+    {
+      "objective": "Troubleshoot common Insights issues (supporting topic)",
+      "modules": [
+        "Exploring application data with Insights"
+      ],
+      "summary": [
+        "Common Insights problems have specific fixes. Repeated login prompts are addressed by adjusting the access token lifetime. Unwanted number separators in table columns are fixed by modifying the UI controls. Strange object names in Explore Data come from class short descriptions. A missing column usually means the backing property must be optimized for reporting (in the parent classes as well as the specific class) or marked as a relevant record.",
+        "Stale display issues can come from the browser cache: close pages, use an incognito window or clear session storage. If the Constellation portal or Explore Data fails to load, verify the application settings, alias and authentication types, and the OAuth 2.0 Client Registration rule."
+      ],
+      "keyFacts": [
+        "Repeated login prompts: adjust the access token lifetime.",
+        "Number separators in tables: modify the UI controls.",
+        "Explore Data object names: class short description.",
+        "Missing column: optimize the property for reporting in parent classes and the specific class, or mark it relevant.",
+        "Browser cache issues: close pages, use incognito, clear session storage.",
+        "Portal/Explore Data load failures: check application settings, alias, authentication types and the OAuth 2.0 Client Registration rule."
+      ],
+      "examTraps": [
+        "Optimizing a property only in the specific class may not be enough; parent classes matter too.",
+        "Login prompts are a token lifetime issue, not an access role issue.",
+        "Load failures point to app settings/auth/OAuth client registration, not to the Insight definition."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "in-001",
+      "objective": 0,
+      "type": "single",
+      "stem": "A regional manager rebuilds the same filtered, grouped list of overdue cases every Monday and emails screenshots to colleagues. What Insights capability best removes this rework?",
+      "options": [
+        "Save the query in Explore Data as an Insight so it is stored as a rule that can be shared and reused.",
+        "Export the list to Excel each week and store it in the Reuse Library.",
+        "Create a Pulse post every week with the results attached.",
+        "Ask a developer to add the list as a new field on the case type."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "An Insight is a rule that turns a query into a table or chart and can be shared and reused, so the manager builds it once. The Reuse Library holds reusable application assets, not weekly exports. Pulse posts are collaboration messages, not saved reports. A case field stores per-case data and does not produce an aggregated report.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "in-002",
+      "objective": 1,
+      "type": "single",
+      "stem": "A company has an older application built on Traditional UI. Business users want to use Explore Data to build their own Insights. What must happen first?",
+      "options": [
+        "Nothing; Explore Data is available to every application by default.",
+        "Enable Constellation UI for landing pages in the application.",
+        "Rebuild every case type from a Blueprint.",
+        "Grant each user the SysAdm4 role."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Explore Data is preferred for Constellation; Traditional UI apps must enable Constellation UI for landing pages to use it. It is therefore not available by default to Traditional UI apps. Rebuilding from a Blueprint is unnecessary. SysAdm4 relates to test suites and administration, not enabling Explore Data.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-003",
+      "objective": 1,
+      "type": "single",
+      "stem": "An analyst in Explore Data wants a tile showing only the total number of open claims as one large number. She selects the Count measure and also adds Region as a column, but the visualization does not offer a simple value chart. Why?",
+      "options": [
+        "Simple value charts require a table-based Insight first.",
+        "A simple value chart is produced only when the query uses Measures fields alone; adding Region as a dimension prevents it.",
+        "Simple value charts are only available on portal landing pages, not in Explore Data.",
+        "Count is not a valid measure for any chart."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A simple value chart is available only when the query contains just Measures fields; adding a grouping dimension like Region changes the visualization. A table-based Insight is not a prerequisite. Simple value charts are created in Explore Data and can then be placed elsewhere. Count is a valid measure.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-004",
+      "objective": 1,
+      "type": "multi",
+      "stem": "A dashboard designer is configuring a simple value chart. Which two layouts can she choose? (Choose two.)",
+      "options": [
+        "Highlight + summary",
+        "Custom highlight + summary",
+        "Highlight + trend line",
+        "Gauge",
+        "Stacked highlight"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Simple value charts support Highlight, Highlight + summary and Custom highlight + summary layouts, plus conditional formatting. Highlight + trend line, Gauge and Stacked highlight are not simple value layouts.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-005",
+      "objective": 2,
+      "type": "single",
+      "stem": "A developer wants case workers to see an Insight of related open cases directly on the case page. How should it be added?",
+      "options": [
+        "Embed the Insight inside the Details partial view.",
+        "Add the Insight to the Create form view so it shows on case creation.",
+        "Add the Insight as a tab on the case type's Full Page case view.",
+        "Add the Insight as a field in the case data model."
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "On case pages, Insights can only be placed as tabs of the Full Page case view, not directly inside a View, so partial and form views are not valid targets. An Insight is not a data model field.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-006",
+      "objective": 2,
+      "type": "multi",
+      "stem": "A team lead is setting up dashboards for their team. Which two statements are correct? (Choose two.)",
+      "options": [
+        "The Dashboards landing page is available by default in App Studio and work portals.",
+        "A promoted filter on a dashboard applies to all Insights on that dashboard.",
+        "New dashboards are public by default.",
+        "The Dashboards landing page must be added through portal authoring before users can see it.",
+        "Copying a dashboard always resets the copy to private."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "The Dashboards landing page is available by default in App Studio and work portals, and a promoted filter spans every Insight on the dashboard. New dashboards are private by default. The Dashboards landing page is not configured through portal authoring. A copy keeps the source dashboard's visibility.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-007",
+      "objective": 2,
+      "type": "single",
+      "stem": "While editing a portal landing page, a developer tries to add an Insight she created yesterday to a region, but it does not appear in the selection list. Other colleagues' Insights do appear. What is the most likely reason?",
+      "options": [
+        "Her Insight is not public; only public Insights can be added to portal landing pages.",
+        "Her Insight is chart-based; only table-based Insights can be added to regions.",
+        "Insights can only be added to Full Page case views.",
+        "The landing page uses a dashboard template that does not allow Insights."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Portal landing pages accept public Insights. Both chart-based and table-based Insights are valid Insights. Insights are not restricted to Full Page case views; portal landing pages and dashboards also host them. Dashboards exist specifically to arrange Insights, so a dashboard template would not block them.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "in-008",
+      "objective": 3,
+      "type": "single",
+      "stem": "A developer adds a new property to a case type, but it does not appear as a column option in Explore Data. Which action is most likely to resolve this?",
+      "options": [
+        "Clear the browser session storage.",
+        "Optimize the backing property for reporting in the parent classes and the specific class, or mark it as a relevant record.",
+        "Increase the access token lifetime.",
+        "Change the class short description."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A missing column is resolved by optimizing the property for reporting (including parent classes, not just the specific class) or marking it relevant. Clearing session storage addresses stale cached display, not missing properties. Token lifetime fixes repeated login prompts. The class short description controls object names, not available columns.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "in-009",
+      "objective": 3,
+      "type": "single",
+      "stem": "Users browsing Insights in the portal are repeatedly prompted to log in again after short periods. What should the administrator adjust?",
+      "options": [
+        "The access token lifetime",
+        "The UI controls for number columns",
+        "The class short description",
+        "The dashboard visibility setting"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Repeated login prompts are addressed by adjusting the access token lifetime. UI controls fix number separator formatting. The class short description affects object names in Explore Data. Dashboard visibility controls who can see a dashboard, not session prompts.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "in-010",
+      "objective": 3,
+      "type": "multi",
+      "stem": "After a configuration change, the Constellation portal and Explore Data fail to load for all users. Which two checks are appropriate? (Choose two.)",
+      "options": [
+        "Verify the application settings, alias and authentication types.",
+        "Verify the OAuth 2.0 Client Registration rule.",
+        "Modify the UI controls to remove number separators.",
+        "Change the class short descriptions of the case types.",
+        "Convert all chart-based Insights to table-based Insights."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Portal and Explore Data load failures are diagnosed by verifying the application settings, alias and authentication types, and the OAuth 2.0 Client Registration rule. Number separators are a display formatting issue. Class short descriptions only affect object names. Converting Insight types does not affect whether the portal loads.",
+      "difficulty": "hard"
+    }
+  ]
+}

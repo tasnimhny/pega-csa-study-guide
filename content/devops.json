@@ -1,0 +1,336 @@
+{
+  "id": "devops",
+  "title": "DevOps",
+  "weight": 5,
+  "intro": "A small but precise domain: how Pega applications move through a CI/CD pipeline with Deployment Manager, and which automated tests (unit tests, test cases, assertions, coverage) give confidence to deploy. Questions usually test pipeline stage names, assertion types and coverage roles.",
+  "objectives": [
+    {
+      "objective": "Explain Pega’s process of continuous development, integration, delivery, and deployment (CI/CD)",
+      "modules": [
+        "Application development management"
+      ],
+      "summary": [
+        "DevOps combines people, process and technology so that development, QA and operations work as one flow, covering development, testing and post-go-live support. **Continuous integration** means frequent check-ins with automated builds and tests: changes become ready to share, are integrated, and are published to a development repository. **Continuous delivery** adds automated regression and staging, then moves through ready to accept (acceptance criteria), ready to deploy (performance, scale and compatibility), and deployment (validate in pre-production, deploy to production, run post-deployment tests, roll back if needed). A typical setup pairs a Pega repository with an automation server such as Jenkins.",
+        "**Deployment Manager** is Pega's own CI/CD pipeline tool: it merges branches, packages and promotes applications. It is accessed in Admin Studio and integrates with App Studio, where Settings > Versions lets you publish to higher environments. Third-party tools such as Jenkins and Azure DevOps can also be used. Deployment Manager blocks a production deployment if the Security Checklist has not been completed.",
+        "CI best practices: test early and often (run Pega unit tests and critical integration tests before packaging and stop the pipeline on failure), automate merges and builds, keep the product rule (Rule-Admin-Product) current, and publish archives to a repository for version history. CD best practices: use test environments (for example Docker) for UAT and exploratory testing, run regression through UI and service layers, target specific ruleset versions for production, roll back the latest import on failure, and annotate a package as ready to deploy before manual or automatic deployment."
+      ],
+      "keyFacts": [
+        "CI stages: ready to share, integrate changes, publish to development repository.",
+        "CD stages: ready to accept (acceptance criteria), ready to deploy (performance, scale, compatibility), deploy.",
+        "Deploy includes pre-production validation, production deployment, post-deployment tests and rollback.",
+        "Deployment Manager = Pega's CI/CD tool for branch merge, packaging and promotion; opened in Admin Studio.",
+        "From App Studio, Settings > Versions publishes to higher environments through Deployment Manager.",
+        "Deployment Manager blocks production deployment when the Security Checklist is incomplete.",
+        "Stop the pipeline when unit or critical integration tests fail.",
+        "Keep Rule-Admin-Product up to date and publish archives to a repository.",
+        "On a failed production import, roll back the latest import.",
+        "Testing cycles: Pega unit, regression, performance, load."
+      ],
+      "table": {
+        "headers": [
+          "Pipeline checkpoint",
+          "Question it answers"
+        ],
+        "rows": [
+          [
+            "Ready to share",
+            "Is my change ready for others (CI)?"
+          ],
+          [
+            "Integrate changes",
+            "Does it merge and build cleanly with everyone else's work?"
+          ],
+          [
+            "Ready to accept",
+            "Does it meet acceptance criteria?"
+          ],
+          [
+            "Ready to deploy",
+            "Does it meet performance, scale and compatibility needs?"
+          ],
+          [
+            "Deploy",
+            "Validate in pre-production, deploy, post-deploy test, roll back if needed"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Performance, scale and compatibility belong to ready to deploy, not ready to accept.",
+        "Deployment Manager lives in Admin Studio, not Dev Studio.",
+        "Skipping tests to speed up the pipeline contradicts CI best practice.",
+        "A blocked production deployment can come from an incomplete Security Checklist even when tests pass."
+      ]
+    },
+    {
+      "objective": "Describe the tests required for successful deployment: unit tests, test cases, and assertions",
+      "modules": [
+        "DevOps in Pega Platform"
+      ],
+      "summary": [
+        "The smallest testable unit is an individual rule, so unit tests isolate where an error comes from (for example whether the decision tree or the data page is wrong). Rule resolution applies during tests. A unit test run can be converted into a reusable **test case** with assertions: Property (for example `pxUrgencyWork` equals 10), Decision result, Expected run time (for example within 3 seconds) and Page (for example a list data page has no errors). Test cases can be grouped into test suites and should run at least on every merge and check-in.",
+        "Automate first where results are predictable, tests run often, manual effort on complex logic is high, or the rule is widely used. Low-priority candidates are rules that change frequently, are easy to test manually, are too complex, or depend on database persistence. Good tests cover positive and negative paths and are maintainable (clear names, comments, modular test data).",
+        "Test case details: the Disable checkbox excludes a test from suites and REST runs so it can only be run manually; the Setup & Cleanup tab prepares and removes data with data transforms, activities and clipboard pages; the label becomes the immutable identifier. Flows and case types are recorded with Actions > Record test case; captured inputs go into a data transform, and the `pxCapturePropertyIgnore` data transform excludes properties from capture. Since 8.5, a process containing the Create stage of a new case type cannot be recorded. Strategy tests use componentName and pzRandomSeed parameters."
+      ],
+      "keyFacts": [
+        "Unit = individual rule; rule resolution still applies in tests.",
+        "Assertion types: Property, Decision result, Expected run time, Page.",
+        "Group test cases into test suites; run at least on every merge and check-in.",
+        "High automation priority: predictable, frequently run, complex manual effort, widely used.",
+        "Low automation priority: frequently changing, easy manually, too complex, database persistence.",
+        "Disabled test cases are excluded from suites and REST runs; manual run only.",
+        "Setup & Cleanup tab handles test data with data transforms, activities and clipboard pages.",
+        "Recorded flow inputs are stored in a data transform; exclude properties with pxCapturePropertyIgnore.",
+        "A test case label becomes its identifier, which cannot be changed."
+      ],
+      "table": {
+        "headers": [
+          "Assertion",
+          "Example check"
+        ],
+        "rows": [
+          [
+            "Property",
+            "pxUrgencyWork equals 10"
+          ],
+          [
+            "Decision result",
+            "A decision rule returns the expected result"
+          ],
+          [
+            "Expected run time",
+            "Rule completes within 3 seconds"
+          ],
+          [
+            "Page",
+            "A data page has no errors"
+          ]
+        ]
+      },
+      "examTraps": [
+        "A rule that changes frequently is a poor automation candidate, even if it is important.",
+        "Disabled does not mean deleted; the test can still be run manually.",
+        "Excluding a volatile property from a recording uses pxCapturePropertyIgnore, not the cleanup tab."
+      ]
+    },
+    {
+      "objective": "Describe the tests required for successful deployment: the test pyramid and test coverage",
+      "modules": [
+        "DevOps in Pega Platform"
+      ],
+      "summary": [
+        "The **test pyramid** puts unit tests at the base because they are cheap, fast and should be the most numerous; end-to-end tests sit at the top because they are expensive and should be few.",
+        "The **test coverage** tool reports which rules were exercised; an uncovered rule is one that was not tested. User-level reports cover one user's session and keep a coverage history. Application-level reports combine data from multiple users, appear in the Application Quality Dashboard, and can be merged. Running test suites requires SysAdm4; only operators with SysAdm4 or User4 contribute coverage data; starting application-level coverage needs the `pzStartOrStopMasterAppRuleCoverage` privilege. Coverage and pass rate also feed branch quality metrics."
+      ],
+      "keyFacts": [
+        "Pyramid: many unit tests at the base, few end-to-end tests at the top.",
+        "Uncovered rule = a rule not executed by any test.",
+        "User-level coverage: single user, coverage history.",
+        "Application-level coverage: multiple users, Application Quality Dashboard, reports can be merged.",
+        "SysAdm4 is required to run test suites.",
+        "Only SysAdm4 or User4 operators contribute coverage data.",
+        "Starting application-level coverage requires pzStartOrStopMasterAppRuleCoverage."
+      ],
+      "table": {
+        "headers": [
+          "Coverage report",
+          "Scope",
+          "Where/notes"
+        ],
+        "rows": [
+          [
+            "User-level",
+            "One user",
+            "Coverage history for that user"
+          ],
+          [
+            "Application-level",
+            "Multiple users",
+            "Application Quality Dashboard; reports can be merged"
+          ]
+        ]
+      },
+      "examTraps": [
+        "An uncovered rule is untested, not a rule whose test failed.",
+        "Application-level coverage cannot be started by any operator; it needs a specific privilege.",
+        "An inverted pyramid (mostly end-to-end tests) is slow and costly."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "do-001",
+      "objective": 0,
+      "type": "single",
+      "stem": "A release has passed acceptance testing. Before it can go to production, the operations team must confirm it performs under expected load, scales, and is compatible with the target environment. Which pipeline checkpoint does this describe?",
+      "options": [
+        "Ready to share",
+        "Integrate changes",
+        "Ready to accept",
+        "Ready to deploy"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Ready to deploy covers performance, scale and compatibility. Ready to share and integrate changes are continuous integration checkpoints about sharing and merging work. Ready to accept is about acceptance criteria, which the release has already passed.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-002",
+      "objective": 0,
+      "type": "single",
+      "stem": "A system architect working in App Studio wants to promote the current application version to higher environments through the organization's Deployment Manager pipeline. Where is this initiated in App Studio?",
+      "options": [
+        "Settings > Versions, then publish",
+        "The Agile Workbench feature map",
+        "The Reuse Library",
+        "The Configurations landing page"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Deployment Manager integrates with App Studio through Settings > Versions, where you publish to higher environments. The Agile Workbench feature map tracks features and work items. The Reuse Library stores reusable assets. The Configurations landing page manages configuration sets and settings.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "do-003",
+      "objective": 0,
+      "type": "multi",
+      "stem": "A team is tuning its continuous integration process to catch problems earlier. Which two practices align with Pega CI best practices? (Choose two.)",
+      "options": [
+        "Run Pega unit tests and critical integration tests before packaging, and stop the pipeline when they fail.",
+        "Keep the product rule (Rule-Admin-Product) up to date.",
+        "Package the application only after it has been deployed to production.",
+        "Skip automated tests on routine check-ins to keep builds fast.",
+        "Have developers merge branches manually instead of letting Deployment Manager do it."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "CI best practice is to test early and often, stopping the pipeline on failure, and to keep Rule-Admin-Product current. Packaging happens before deployment, not after production. Skipping tests contradicts testing early and often. Automation (Deployment Manager handling merges and builds) is preferred over manual merging.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-004",
+      "objective": 0,
+      "type": "single",
+      "stem": "All automated tests pass and the package is marked ready to deploy, yet Deployment Manager refuses to deploy the application to production. Which cause is most consistent with Pega's deployment controls?",
+      "options": [
+        "The application still has open Feedback items in Agile Workbench.",
+        "The Security Checklist for the application has not been completed.",
+        "A developer still has a Tracer session open on the development node.",
+        "The production target uses locked ruleset versions."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Deployment Manager blocks production deployments until the Security Checklist is complete. Open Feedback items are backlog tracking and do not gate deployment. A Tracer session on a development node has no bearing on promotion. Targeting specific locked ruleset versions for production is normal best practice, not a blocker.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-005",
+      "objective": 1,
+      "type": "single",
+      "stem": "A QA lead has budget to automate unit tests for only one more rule. Which candidate is the lowest priority for automation?",
+      "options": [
+        "A widely used decision table that returns predictable results",
+        "A complex calculation that is tedious to verify manually and runs on every check-in",
+        "A rule whose logic the business changes almost every sprint",
+        "A when rule reused across many case types with deterministic outcomes"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Frequently changing rules are low priority because their tests would need constant rework. Widely used rules, rules with predictable results, complex logic that is costly to test manually, and frequently run logic are all high-priority candidates for automation.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-006",
+      "objective": 1,
+      "type": "multi",
+      "stem": "A tester converts a unit test run into a test case. It must confirm that the case urgency equals 10 and that the rule completes within 3 seconds. Which two assertion types should be added? (Choose two.)",
+      "options": [
+        "Property",
+        "Expected run time",
+        "Page",
+        "Decision result"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "A Property assertion checks a value such as pxUrgencyWork equal to 10, and an Expected run time assertion checks duration. A Page assertion checks a page, such as a data page having no errors. A Decision result assertion checks what a decision rule returns, not urgency or timing.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-007",
+      "objective": 1,
+      "type": "single",
+      "stem": "A developer selects the Disable checkbox on a test case that is temporarily unreliable. What is the effect?",
+      "options": [
+        "The test case is deleted at the next branch merge.",
+        "The test case is excluded from test suites and REST-triggered runs but can still be run manually.",
+        "The test case still runs in suites but its result is ignored for coverage.",
+        "The test case can no longer be opened until it is re-enabled by a SysAdm4 operator."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Disabling excludes the test case from suites and REST execution; it can only be run manually. It is not deleted. It does not keep running in suites. It remains openable; disabling does not lock the record.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-008",
+      "objective": 1,
+      "type": "single",
+      "stem": "A QA analyst records a test case for a flow. The test fails on every rerun because a captured timestamp property differs each time. How should the analyst stop that property from being captured?",
+      "options": [
+        "Add a cleanup activity on the Setup & Cleanup tab.",
+        "Configure the pxCapturePropertyIgnore data transform to exclude the property.",
+        "Select the Disable checkbox on the test case.",
+        "Replace the assertions with an Expected run time assertion."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Recorded inputs are stored in a data transform, and pxCapturePropertyIgnore excludes properties from capture. The Setup & Cleanup tab prepares and removes test data, not capture rules. Disabling only removes the test from suites. Swapping to a run time assertion abandons the functional checks rather than fixing the capture.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "do-009",
+      "objective": 2,
+      "type": "multi",
+      "stem": "A quality manager wants a combined picture of rule coverage from testing done by several developers. Which two statements are correct? (Choose two.)",
+      "options": [
+        "Application-level coverage reports combine data from multiple users and are shown in the Application Quality Dashboard.",
+        "Only operators with the SysAdm4 or User4 role contribute coverage data.",
+        "User-level coverage automatically merges every developer's results into one report.",
+        "Any operator can start application-level coverage without a special privilege.",
+        "An uncovered rule is a rule whose unit test failed."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Application-level reports aggregate multiple users and appear in the Application Quality Dashboard, and only SysAdm4 or User4 operators contribute coverage data. User-level coverage covers one user. Starting application-level coverage requires pzStartOrStopMasterAppRuleCoverage. An uncovered rule is one that was not tested at all, not one that failed.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "do-010",
+      "objective": 2,
+      "type": "single",
+      "stem": "A team has 400 end-to-end UI tests and 20 unit tests. Builds take hours and failures are hard to localize. According to the test pyramid, what should they do?",
+      "options": [
+        "Add more end-to-end tests so every path is checked through the UI.",
+        "Shift effort toward many fast, cheap unit tests at the base and keep only a few end-to-end tests at the top.",
+        "Replace all automated tests with manual exploratory testing.",
+        "Keep the ratio but run end-to-end tests only in production."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "The pyramid places numerous cheap, fast unit tests at the base and few expensive end-to-end tests at the top; unit tests also isolate errors to a rule. Adding more end-to-end tests worsens cost and speed. Abandoning automation contradicts CI/CD practice. Running tests only in production delays feedback and adds risk.",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,949 @@
+{
+  "id": "app-development",
+  "title": "Application Development",
+  "weight": 15,
+  "intro": "This domain tests how Pega applications are structured and built: the studios and low-code approach, layered reuse, center-out design, team roles and collaboration tools, the rule/ruleset/class model behind every application, and how to debug what you build. Expect many questions that hinge on precise vocabulary (pattern vs directed, workspace vs branch, major vs patch).",
+  "objectives": [
+    {
+      "objective": "Evaluate the benefits of using Pega Platform for creating digital solutions",
+      "modules": [
+        "Low-code defined"
+      ],
+      "summary": [
+        "Pega is a low-code platform: instead of writing code, teams model applications visually and declaratively, so the platform effectively generates the software from the model. Business people and developers share one visual language, which shortens feedback loops, supports agile delivery, and lets one design serve many channels (web, mobile, chatbots, email, robots). Integrations are mapped visually and anything built once can be reused. Both citizen developers and professional developers benefit.",
+        "Work is split across studios aimed at different audiences. **App Studio** is the low-code workspace for case design, data and UX, used by business architects, citizen developers and system architects; best practice is to build there unless a feature is only available elsewhere. **Dev Studio** exposes the underlying rule forms for security, reuse, integration, class mapping and advanced SLA settings. **Prediction Studio** serves data scientists building adaptive, predictive and text models. **Admin Studio** is for IT system administrators monitoring the runtime. Every studio shares the same layout: header, navigation pane (explorers) and authoring space; the studio switcher is in the upper-left and a default studio opens at login.",
+        "Because App Studio uses business-friendly names, the same concept has two names. Rules are generated automatically behind App Studio configuration using these names."
+      ],
+      "keyFacts": [
+        "Low-code means visual and declarative modeling instead of hand-written programming.",
+        "Best practice: build in App Studio; move to Dev Studio only when App Studio does not expose the feature.",
+        "Dev Studio is needed for advanced SLA options such as initial urgency/delay timers, programmatic interval length, business-day calendars, and escalation actions beyond notifications (reassign, resolve).",
+        "Prediction Studio requires the `pxPredictionStudio` portal in the operator's access group.",
+        "Admin Studio is for runtime monitoring by IT system administrators.",
+        "App Studio navigation: Overview, Case Types, Data, Channels, Library (Reuse Library), Users.",
+        "The Application profile tracks features, user stories, bugs and feedback for traceability.",
+        "Name mapping: Field = Property, Goal & deadline = SLA, User = Operator, Team = Work Group.",
+        "Co-development pattern: a business architect designs views in App Studio, a system architect adds functionality and tests in Dev Studio."
+      ],
+      "table": {
+        "headers": [
+          "Studio",
+          "Primary audience",
+          "Typical work"
+        ],
+        "rows": [
+          [
+            "App Studio",
+            "Business architects, citizen developers, system architects",
+            "Case types, data, UX, personas, low-code configuration"
+          ],
+          [
+            "Dev Studio",
+            "System architects, QA",
+            "Rule forms, security, integration, class mapping, advanced SLA, reuse"
+          ],
+          [
+            "Prediction Studio",
+            "Data scientists",
+            "Adaptive, predictive and text ML models"
+          ],
+          [
+            "Admin Studio",
+            "IT system administrators",
+            "Runtime monitoring (also hosts Deployment Manager)"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Dev Studio is not the default best-practice place to build just because it is more powerful; start in App Studio.",
+        "Runtime monitoring belongs to Admin Studio, not Dev Studio.",
+        "A User in App Studio is an Operator in Dev Studio, not an access group; a Team is a Work Group.",
+        "Not being able to open Prediction Studio is an access group/portal issue, not a licensing of App Studio issue."
+      ]
+    },
+    {
+      "objective": "Explain how the Situational Layer Cake, prescriptive design, studio interoperability, and the Reuse Library support modular enterprise reuse",
+      "modules": [
+        "Modular architecture and enterprise reuse",
+        "Promoting rule reuse with relevant records"
+      ],
+      "summary": [
+        "The **Situational Layer Cake** lets an organization reuse common logic while still supporting variations, avoiding both tangled if-then-else logic and many near-duplicate applications. Rules are organized in layers: Enterprise (platform-wide and company-wide assets such as authentication), Division (assets reusable within a division, for example a claims flow), Application (app-specific), and Implementation (deployment-specific customization such as regional regulation or localization). At runtime Pega picks the most specific applicable rule, so upper layers can specialize without disturbing the shared layers beneath them. Reusable features can be packaged as module applications stacked as built-on applications. A well-known example is an insurer consolidating 52 claim systems into one claims platform.",
+        "Modular enterprise reuse pays off in every phase (design, development, testing, deployment, maintenance) and follows five principles: Interoperable, Updateable, Configurable, Modular and Governed (typically through a Center of Excellence). Prescriptive design means App Studio guides builders toward proven patterns (prescriptive, model-driven UI) instead of free-form coding.",
+        "**Studio interoperability**: Dev Studio is where advanced applications, reusable components and modules, traditional UI, and automated unit testing are built, and where rules are marked as relevant records. App Studio consumes that work without code through AI-assisted development, prescriptive UI, relevant records and Configuration Sets. The **Reuse Library** (App Studio Library) is a central repository of reusable assets, backed by governance: lifecycle management (centralized or federated), a reuse catalog with tagging and search, deployment and maintenance tracking, value measurement (usage/ROI dashboards), and education and advocacy."
+      ],
+      "keyFacts": [
+        "Layer cake layers, from shared to specific: Enterprise, Division, Application, Implementation.",
+        "Runtime selects the most specific rule available for the situation.",
+        "Regional regulation or localization variations belong in the Implementation layer.",
+        "Reusable features can be delivered as module applications used as built-on applications.",
+        "Five reuse principles: Interoperable, Updateable, Configurable, Modular, Governed.",
+        "Dev Studio: reusable components/modules, traditional UI, automated unit tests, marking relevant records.",
+        "App Studio: AI-assisted development, prescriptive UI, consuming relevant records, Configuration Sets.",
+        "Dev Studio can widen a rule's scope from a case type to the application, division or organization for reuse.",
+        "Reuse Library governance includes usage/ROI dashboards (value measurement) and a tagged, searchable reuse catalog."
+      ],
+      "table": {
+        "headers": [
+          "Layer",
+          "Contains",
+          "Example"
+        ],
+        "rows": [
+          [
+            "Enterprise",
+            "Platform and organization-wide assets",
+            "Authentication"
+          ],
+          [
+            "Division",
+            "Assets reusable across a division",
+            "A shared claims flow"
+          ],
+          [
+            "Application",
+            "Application-specific rules",
+            "One line-of-business app"
+          ],
+          [
+            "Implementation",
+            "Deployment-specific customization",
+            "Regional regulation, localization"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Handling variation with if-then-else conditions inside one rule is exactly what the layer cake avoids.",
+        "Copying an application per region is the other anti-pattern; specialize in an upper layer instead.",
+        "Configuration Sets and AI-assisted development are App Studio capabilities; building reusable modules and automated unit testing are Dev Studio work.",
+        "Know the Reuse Library governance aspects by purpose: catalog = find assets, value measurement = usage/ROI."
+      ]
+    },
+    {
+      "objective": "Describe the benefits of using the Center-out architecture",
+      "modules": [
+        "Pega Center-out architecture"
+      ],
+      "summary": [
+        "Traditional architectures fail in two ways. Top-down designs start at the channel, so logic gets duplicated in every channel. Bottom-up designs start at the data layer, producing siloed and duplicated data with no single view of the customer. **Center-out** puts the business logic layer at the center: the presentation layer responds dynamically to whichever channel is used, and the data access layer is insulated so that a change of system of record (for example moving from on-premises to cloud) requires no change to the business logic.",
+        "Five principles drive center-out: manage intelligence centrally; focus on outcomes and align the process (case management); connect up to the channels/experiences; connect down to the data while keeping logic nimble; and manage variations so the solution is scale-ready (the Situational Layer Cake). The benefits are efficiency (define once), agility (one change applies to all channels), governance (auditing and policy) and scalability (reuse logic for new channels). Model-driven UI completes the picture: the data model and rules generate the UI through reusable patterns, so the UI adapts automatically when rules change."
+      ],
+      "keyFacts": [
+        "Top-down = channel-first, logic duplicated per channel.",
+        "Bottom-up = data-first, siloed duplicated data, no single view.",
+        "Center-out = business logic in the middle, channels above, data access below.",
+        "Changing the system of record does not require changing business logic.",
+        "Benefits: efficiency, agility, governance, scalability.",
+        "The fifth principle (manage variations to be scale-ready) is delivered by the Situational Layer Cake.",
+        "Model-driven UI uses patterns (forms, lists, dashboards, case UIs) generated from the data model and rules; it is responsive."
+      ],
+      "table": {
+        "headers": [
+          "Approach",
+          "Starts from",
+          "Main weakness / strength"
+        ],
+        "rows": [
+          [
+            "Top-down",
+            "Channel / UI",
+            "Logic duplicated in each channel"
+          ],
+          [
+            "Bottom-up",
+            "Data layer",
+            "Siloed, duplicated data; no single view"
+          ],
+          [
+            "Center-out",
+            "Business logic",
+            "Define once, reuse across channels; data layer insulated"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Center-out does not mean the UI drives design; channels are connected up to central logic.",
+        "Agility in center-out means one change applies to every channel, not that each channel is changed independently.",
+        "A system-of-record move affects the data access layer only, not lifecycles or UI."
+      ]
+    },
+    {
+      "objective": "Describe the accessibility features included in Pega Platform",
+      "modules": [
+        "Pega Center-out architecture"
+      ],
+      "summary": [
+        "Because Pega generates UI centrally from patterns and templates, accessibility is implemented once and propagated everywhere. Pega supports WCAG 2.1 and Section 508. When a central component is updated, every application that uses it becomes compliant without per-screen edits. In Constellation, accessibility is built in by default, and templates handle concerns such as layout, responsiveness and accessibility.",
+        "Supporting tools reinforce this: the Themes landing page flags WCAG color-contrast failures, and UX designers on the project team focus on accessibility and consistency."
+      ],
+      "keyFacts": [
+        "Supported standards: WCAG 2.1 and Section 508.",
+        "Implement once in central UI components/patterns; changes propagate to all apps.",
+        "Accessibility is built in by default in Constellation.",
+        "Templates handle accessibility along with layout, breakpoints and responsiveness.",
+        "The Themes landing page highlights WCAG color-contrast failures.",
+        "UX designers are the project role responsible for accessibility and consistency."
+      ],
+      "examTraps": [
+        "Fixing accessibility screen by screen is the wrong answer; update the central component.",
+        "Accessibility is not an optional add-on to enable per view in Constellation; it is default."
+      ]
+    },
+    {
+      "objective": "Define the responsibilities of key roles involved in Pega project delivery",
+      "modules": [
+        "Team application development"
+      ],
+      "summary": [
+        "A Pega delivery team mixes client and implementation roles. The **Product Owner** (client business) owns scope and prioritizes requirements for sprints. The **Project Manager** leads the delivery team, handling governance, stakeholder liaison, schedule, budget and scope. The **Scrum Master** runs the ceremonies (sprint planning, sizing, backlog refinement, retrospectives) and removes impediments. **System Architects** (SA, SSA, LSA) configure the application; the LSA imports Blueprint files and configures functional and technical requirements and designs the class hierarchy with project leaders.",
+        "**Quality Analysts** build test scripts and scenario tests from user stories. **SMEs** supply operational knowledge and walkthroughs. The **Business Architect** translates needs into functional requirements, workflows, data models and UX. **UX Designers** cover user needs, accessibility and consistency. The **Solutions Consultant** works early in the sales cycle, co-designs a Blueprint with the client and hands it to delivery. Most roles work in App Studio; SAs and QAs use Dev Studio, data scientists use Prediction Studio and IT uses Admin Studio."
+      ],
+      "keyFacts": [
+        "Product Owner: client-side, defines scope and prioritizes requirements per sprint.",
+        "Project Manager: governance, liaison, schedule, budget, scope.",
+        "Scrum Master: ceremonies and removing impediments.",
+        "LSA: imports Blueprint files, configures functional and technical requirements, designs class hierarchy.",
+        "Quality Analyst: test scripts and scenario tests from user stories.",
+        "Business Architect: translates business needs into functional requirements, workflows, data models, UX.",
+        "Solutions Consultant: pre-sales, co-designs the Blueprint, then hands off.",
+        "SMEs provide client operational knowledge."
+      ],
+      "table": {
+        "headers": [
+          "Role",
+          "Key responsibility",
+          "Typical studio"
+        ],
+        "rows": [
+          [
+            "Product Owner",
+            "Scope and requirement priority",
+            "App Studio"
+          ],
+          [
+            "Project Manager",
+            "Governance, schedule, budget",
+            "App Studio (documentation)"
+          ],
+          [
+            "Scrum Master",
+            "Ceremonies, remove impediments",
+            "App Studio (user stories)"
+          ],
+          [
+            "System Architect / LSA",
+            "Configure app; LSA imports Blueprint",
+            "App Studio and Dev Studio"
+          ],
+          [
+            "Quality Analyst",
+            "Test scripts from user stories",
+            "Dev Studio"
+          ],
+          [
+            "Business Architect",
+            "Functional requirements, workflows",
+            "App Studio"
+          ],
+          [
+            "Solutions Consultant",
+            "Pre-sales Blueprint co-design",
+            "Blueprint"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Prioritizing requirements is the Product Owner, not the Scrum Master or Project Manager.",
+        "The Solutions Consultant co-designs the Blueprint but the LSA imports it.",
+        "Business Architect (requirements) is not the same as System Architect (configuration)."
+      ]
+    },
+    {
+      "objective": "Explain the roles of Workspaces and Branches in development",
+      "modules": [
+        "Team application development"
+      ],
+      "summary": [
+        "A **workspace** is a private development space tied to one operator (with developer access) and one application. Each operator gets one default workspace per application and can create more. Changes stay private until they are shared (pushed) into a branch. Workspaces are available in App Studio and Dev Studio, are enabled by the EnableWorkspace setting, and let you pick the application layer for new rules. The flow is Workspace, then Branch, then merge into the Application.",
+        "A **branch** is a container for rulesets that are changing rapidly; branch rulesets are based on another ruleset and hold rules in active development. Best practice is one branch per feature, merged only when the feature is complete, conflicts are resolved and approval is given. Before merge, the system checks for updated or missing rules. Branch quality metrics give a merge-readiness picture: guardrail score (weighted), total merge conflicts, test coverage (percentage of rules covered and test pass rate), and uncovered rules.",
+        "Collaboration is supported by Pulse (posts to users, teams and case stakeholders; developers open it through the developer collaboration toggle in the upper-right of App Studio; users through a Pulse widget the developer adds to the portal or case) with email notifications for mentions, likes and comments, and by hashtags that a Tags widget can display."
+      ],
+      "keyFacts": [
+        "Workspace = one operator + one application; private until pushed to a branch.",
+        "Default one workspace per operator per application; more can be created.",
+        "Workspaces are switched on with the EnableWorkspace setting.",
+        "Promotion path: Workspace to Branch to Application merge.",
+        "One branch per feature; merge after completion, conflict resolution and approval.",
+        "Branch quality metrics: guardrail score, merge conflicts, rules covered % and test pass rate, uncovered rules.",
+        "Branch rulesets are based on an existing ruleset.",
+        "Replying to a Pulse email notification posts the reply as a comment."
+      ],
+      "table": {
+        "headers": [
+          "Branch quality metric",
+          "What it shows"
+        ],
+        "rows": [
+          [
+            "Guardrails",
+            "Weighted guardrail compliance score"
+          ],
+          [
+            "Merge conflicts",
+            "Total conflicts to resolve before merge"
+          ],
+          [
+            "Test coverage & unit tests",
+            "Percentage of rules covered and test pass rate"
+          ],
+          [
+            "Uncovered rules",
+            "Rules not exercised by any test"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Workspace changes are not visible to teammates until shared to a branch.",
+        "A workspace is not shared by a team; it belongs to one operator and one application.",
+        "Long-lived per-developer or per-release branches violate the one-branch-per-feature practice."
+      ]
+    },
+    {
+      "objective": "Manage application development with Agile Workbench: user stories, feedback, bugs",
+      "modules": [
+        "Application development management",
+        "Collaboration with users"
+      ],
+      "summary": [
+        "Agile Workbench lives in App Studio (Application profile and the Developer Assistant pane, whose tabs are Guidance, Knowledge, Work and Checklists). It organizes the application into a feature map of features and subfeatures; creating a case type automatically creates a feature with the same name.",
+        "Work items are Stories (user stories, which can be bulk-uploaded from Excel), Bugs and Feedback. Items move between To do, Doing and Done by dragging. During playback sessions with stakeholders, the team records bugs and feedback directly. Agile Workbench integrates with Agile Studio, Jira and CA Agile Central, and is recommended after a Blueprint import to generate the backlog."
+      ],
+      "keyFacts": [
+        "Developer Assistant tabs: Guidance, Knowledge, Work, Checklists.",
+        "Creating a case type auto-creates a feature of the same name.",
+        "Work item types: Stories, Bugs, Feedback.",
+        "Statuses: To do, Doing, Done (drag to change).",
+        "User stories can be bulk-uploaded from Excel.",
+        "Integrates with Agile Studio, Jira and CA Agile Central.",
+        "Use playback sessions to capture bugs and feedback from stakeholders."
+      ],
+      "examTraps": [
+        "Agile Workbench is an App Studio tool, not Admin Studio.",
+        "A defect found in playback is a Bug; a suggestion is Feedback; new scope is a Story.",
+        "It integrates with more than just Agile Studio (also Jira, CA Agile Central)."
+      ]
+    },
+    {
+      "objective": "Create and maintain rules and rulesets",
+      "modules": [
+        "Creating a Rule"
+      ],
+      "summary": [
+        "A rule is an instance of a rule type (a Flow rule models a process). App Studio creates rules automatically: a case type produces a work class, a pyDefault case type rule, a data page and properties; a process becomes a Flow rule; a view becomes a Section rule; a data object produces list, lookup and savable data pages. Modular rules provide versioning (history and revert), delegation (business users change values such as an approval threshold) and reuse; parameterization increases reuse further.",
+        "A **ruleset** groups rules (like an album groups songs) and can be shared. Its version is Name:MM-mm-pp (major, minor, patch, each 01–99, starting at 01-01-01). Major versions add substantial functionality (and are created for major platform upgrades), minor versions add enhancements, patch versions fix bugs; older versions should be locked. The ruleset stack is the order Pega searches; each listed version also includes lower minor and patch versions within the same major version, and every application version has its own stack. Names should be meaningful and start with the company plus purpose, must not use a Pega prefix, contain no spaces or special characters, and are at most 32 characters. Develop only in the topmost layer and keep built-on applications locked.",
+        "In Dev Studio, rules are created via the Create menu, the App Explorer, a rule reference, Save As or the Records explorer. Save As pre-fills everything but you must change the identifier, the class or the ruleset, otherwise saving fails. Every rule's `.pzInsKey` is built from the rule type's internal name, applies-to class, identifier and creation timestamp in GMT; rule resolution then chooses the right rule at runtime."
+      ],
+      "keyFacts": [
+        "Ruleset version format: MM-mm-pp, each segment 01–99, first version 01-01-01.",
+        "Patch = bug fix, minor = enhancement, major = substantial new functionality or major upgrade.",
+        "Lock older ruleset versions; develop in the topmost layer only.",
+        "Ruleset names: company + purpose, no Pega prefix, no spaces or special characters, max 32 characters.",
+        "A new ruleset's top-level class inherits from @baseclass.",
+        "`.pzInsKey` = rule type + applies-to class + identifier + GMT create timestamp (some types add keys, e.g., Correspondence type).",
+        "Save As errors unless identifier, class or ruleset is changed.",
+        "The Label entered on a new record generates the identifier.",
+        "App Studio view = Section rule; process = Flow rule; case type = work class + pyDefault + data page.",
+        "Delegation lets business users change rule values (e.g., an auto-approve threshold) in production."
+      ],
+      "table": {
+        "headers": [
+          "Version segment",
+          "Increment when",
+          "Example from 02-03-04"
+        ],
+        "rows": [
+          [
+            "Patch (pp)",
+            "Bug fixes",
+            "02-03-05"
+          ],
+          [
+            "Minor (mm)",
+            "Enhancements / interim releases",
+            "02-04-01"
+          ],
+          [
+            "Major (MM)",
+            "Substantial new functionality, major upgrade",
+            "03-01-01"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Abbreviated names such as UPTC are discouraged; use descriptive names like UPlusTelcoContracts.",
+        "Listing a version in the stack includes lower minor/patch versions of the same major only, never a different major version.",
+        "The .pzInsKey does not include the ruleset version or the creating operator.",
+        "Unlocking a locked version to fix a bug is wrong; create the next patch version."
+      ]
+    },
+    {
+      "objective": "Classes, inheritance, and relevant records",
+      "modules": [
+        "Creating a Rule",
+        "Promoting rule reuse with relevant records"
+      ],
+      "summary": [
+        "Classes group rules by purpose: Work classes for case processing, Integration (Int) classes for connectors, and Data classes for data types. A child class inherits its parent's rules; case type classes sit under Work, and a child case type gets a class under its parent's. The hierarchy runs from most to least specific: case type classes, Work, Application, Division/Unit (optional, only when necessary), Organization, other (framework) applications, and Pega base classes. A hyphen separates levels, so TGB-IT-Work is a child of TGB-IT, which is a child of TGB.",
+        "**Pattern inheritance** is automatic and based on the class-name prefix; it reuses rules by business suitability. **Directed inheritance** is set explicitly as the parent on the class rule form and is used to reuse Pega standard classes (Work-, Data-) or other applications by functional suitability. Rule resolution searches pattern parents first, then the directed parent (and its pattern parents), repeating up to @baseclass; if nothing is found, an error results. Place reusable rules as high as sensible and parameterize instead of duplicating.",
+        "**Relevant records** make Dev Studio rules available to App Studio builders. Fields, views, processes and user actions created in App Studio are marked automatically; others are marked in Dev Studio via Actions > Mark as relevant record, after confirming the rule is guardrail-compliant. Markable types include properties, flows, flow actions, SLAs, data transforms, decision tables and trees, when rules, validate rules, correspondence, paragraphs, notifications, Pulse feed rules, sections, harnesses, views, strategies and proposition filters. The inventory is at Configure > Application > Inventory > Relevant Records, with Show inactive and Show inherited options; relevant records inherit down the class hierarchy."
+      ],
+      "keyFacts": [
+        "Three class groups: Work (cases), Integration/Int (connectors), Data (data types).",
+        "The Division/Unit class layer is optional and used only when necessary.",
+        "Pattern = name prefix, automatic; Directed = explicit parent on the class form.",
+        "Search order: pattern parents first, then directed parent, repeat to @baseclass.",
+        "Example: .pxCreateOpName in Work-Cover- is reached through directed inheritance.",
+        "App Studio-created fields, views, processes and user actions are relevant records automatically.",
+        "Manual marking: Actions > Mark as relevant record; verify guardrail compliance first.",
+        "An existing Dev Studio SLA appears in App Studio's dropdown only if marked relevant.",
+        "Relevant records inherit downward (Insurance-Claims to Insurance-Claims-Auto and -Home).",
+        "A relevant proposition filter needs its properties, strategies and when rules relevant for the primary context class."
+      ],
+      "table": {
+        "headers": [
+          "",
+          "Pattern inheritance",
+          "Directed inheritance"
+        ],
+        "rows": [
+          [
+            "How set",
+            "Automatically from the class name prefix",
+            "Explicitly on the class rule form"
+          ],
+          [
+            "Reuse basis",
+            "Business suitability (org/division/app)",
+            "Functional suitability (Pega Work-, Data-, other apps)"
+          ],
+          [
+            "Search order",
+            "Searched first",
+            "Searched after pattern parents"
+          ],
+          [
+            "End point",
+            "Both continue up to @baseclass",
+            "Both continue up to @baseclass"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Directed is not searched first; pattern parents come first.",
+        "App Studio-created fields do not need manual marking as relevant.",
+        "Marking as relevant should follow a guardrail check, not precede it blindly.",
+        "Division layer is optional, Organization is not."
+      ]
+    },
+    {
+      "objective": "Debug application errors",
+      "modules": [
+        "Debugging application errors"
+      ],
+      "summary": [
+        "**Tracer** captures runtime events for troubleshooting; it is not for performance analysis because it has heavy impact. Open it from the App Studio runtime toolbar (lower-right toggle) or the Dev Studio developer toolbar. Event colors: gray for activities, orange for flows, decisions and declaratives, light blue for database and cache. Each event shows Good or Fail, and the real root cause may sit before the final failed step. In Constellation, events are grouped by request ID because the DX API is stateless. One Tracer can run per operator per node.",
+        "The toolbar offers Pause, Clear and Save, plus Settings (event types, rulesets, break conditions, number of lines, filters such as removing View rules), Breakpoints (pause the thread on an activity; resume with Play or automatically after one hour), Watch (track property value changes, shown in the Property Inspector with old and current values and a yellow highlight) and Remote Tracer. Breakpoints and Watch are not supported for Service rules or Constellation applications.",
+        "For Constellation front ends, other tools help: view rule metadata (JSON when the pxEnableC11nDev when rule is true), browser F12 tools (Console, Network for DX API payloads, Application storage), React DevTools, Redux DevTools (actions, state, time travel), XRay toggled with `PCore.getDebugger().toggleXRay(true)`, the DebugPegaAPI setting for verbose DX API logs, `PCore.getDataPageUtils()` for client-side data pages, and UI Inspector. PCore/PConnect are not available inside the App Studio shell, so launch the portal from Dev Studio."
+      ],
+      "keyFacts": [
+        "Tracer is for troubleshooting, not performance analysis.",
+        "Colors: gray = activity, orange = flow/decision/declarative, light blue = database and cache.",
+        "Root cause can occur before the last failed event.",
+        "Constellation events are grouped by request ID.",
+        "One Tracer per operator per node.",
+        "Breakpoints pause the thread; resume on Play or after one hour.",
+        "Watch shows old vs current values in the Property Inspector with yellow highlight.",
+        "Breakpoints and Watch are unsupported for Service rules and Constellation apps.",
+        "XRay: `PCore.getDebugger().toggleXRay(true/false)`; DebugPegaAPI = true gives verbose DX API logs.",
+        "PCore/PConnect are unavailable in the App Studio shell; launch the portal from Dev Studio."
+      ],
+      "table": {
+        "headers": [
+          "Tracer color",
+          "Event types"
+        ],
+        "rows": [
+          [
+            "Gray",
+            "Activities"
+          ],
+          [
+            "Orange",
+            "Flows, decisions, declaratives"
+          ],
+          [
+            "Light blue",
+            "Database and cache"
+          ]
+        ]
+      },
+      "examTraps": [
+        "Using Tracer to measure performance is wrong; it adds heavy overhead.",
+        "Breakpoints do not wait forever; they resume after one hour.",
+        "Do not expect Breakpoints/Watch to work for a Constellation app.",
+        "The final red Fail line is not necessarily the root cause."
+      ]
+    },
+    {
+      "objective": "Configuration Sets (supporting topic)",
+      "modules": [
+        "Creating and setting application variables"
+      ],
+      "summary": [
+        "Configuration sets and settings provide a unified framework for parameters that control application behavior, reducing the need for rule overrides and replacing Dynamic System Settings. Typical uses: toggling features (disable outbound email until the integration is finished), steering process paths (an approval monetary limit) and UI behavior (show instructions for a new process). They are managed in App Studio on the Settings tab, Configurations landing page, and referenced via the Condition Builder.",
+        "Settings are instances of Data-Configuration-Setting; sets live in the Pega-Configuration class. A set does not appear until it holds at least one setting, and its name (pyLabel) can be up to 64 characters. Access: SysAdm4 can read, write and delete both sets and settings; WorkMgr4 can read/write/delete sets but only read settings; User4 can only read both. They travel in the product file when Include associated data is selected."
+      ],
+      "keyFacts": [
+        "Configuration settings replace Dynamic System Settings for app behavior parameters.",
+        "Location: App Studio Settings tab > Configurations landing page.",
+        "Settings = Data-Configuration-Setting; sets = Pega-Configuration class.",
+        "A set is hidden until it contains at least one setting.",
+        "Set name (pyLabel) max 64 characters.",
+        "Roles: SysAdm4 full on both; WorkMgr4 full on sets, read settings; User4 read only.",
+        "Packaged when Include associated data is checked on the product file.",
+        "Referenced in logic through the Condition Builder."
+      ],
+      "examTraps": [
+        "A newly created empty set not showing is expected behavior, not a bug.",
+        "Do not reach for Dynamic System Settings; configuration settings replace them.",
+        "WorkMgr4 cannot edit settings, only sets."
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "ad-001",
+      "objective": 0,
+      "type": "single",
+      "stem": "A citizen developer and a system architect are building a claims case type. Most requirements are standard, but the business also needs an SLA that measures time using a business-days calendar and reassigns the case when the deadline passes. Which approach follows Pega best practice?",
+      "options": [
+        "Build the entire case type in Dev Studio, since one requirement needs Dev Studio and mixing studios causes conflicts.",
+        "Build the case type in App Studio and switch to Dev Studio only to configure the advanced SLA options App Studio does not expose.",
+        "Configure the SLA in Admin Studio, which manages runtime timing and escalations for all applications.",
+        "Build the case type in App Studio and model the business-day calendar with a decision table referenced from a calculated field."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Best practice is to build in App Studio and use Dev Studio only for capabilities App Studio lacks; business-day calendars and escalation actions such as reassignment are advanced SLA options in Dev Studio. Building everything in Dev Studio discards the low-code benefits and the studios are designed to interoperate. Admin Studio is for runtime monitoring by IT, not SLA design. A decision table in a calculated field does not create SLA timing or escalation behavior.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-002",
+      "objective": 0,
+      "type": "multi",
+      "stem": "A business architect reads App Studio documentation while a developer works in Dev Studio. Which two term mappings between App Studio and Dev Studio are correct? (Choose two.)",
+      "options": [
+        "A Team in App Studio is a Work Group in Dev Studio.",
+        "A Field in App Studio is a Property in Dev Studio.",
+        "A User in App Studio is an Access Group in Dev Studio.",
+        "A Goal & deadline in App Studio is a When rule in Dev Studio.",
+        "A Process in App Studio is a Section rule in Dev Studio."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Team maps to Work Group and Field maps to Property. A User is an Operator (the access group is a separate record that grants authorization). Goal & deadline maps to an SLA rule, not a When rule. A Process becomes a Flow rule; Section rules come from Views.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-003",
+      "objective": 1,
+      "type": "single",
+      "stem": "An insurer runs one claims application in three countries. Authentication is shared across the company, the claims intake flow is shared across the claims division, and each country must apply its own regulatory rules. Using the Situational Layer Cake, where should the country-specific regulatory rules be placed?",
+      "options": [
+        "In the Enterprise layer, so every application in the company can evaluate the regulations.",
+        "In the Division layer, alongside the shared claims intake flow.",
+        "In the Implementation layer, as deployment-specific specializations for each country.",
+        "In the Application layer, using conditional logic in each rule that checks the country."
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The Implementation layer holds deployment-specific customization such as regional regulation or localization; runtime chooses the most specific rule. The Enterprise layer is for organization-wide assets like authentication, not one country's rules. The Division layer holds assets reusable across the division, which regional rules are not. Putting if-then-else country checks inside shared rules is exactly the tangled logic the layer cake is designed to avoid.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-004",
+      "objective": 1,
+      "type": "multi",
+      "stem": "A Center of Excellence is deciding which work its professional developers do in Dev Studio versus what citizen developers do in App Studio. In Pega's studio interoperability model, which two activities belong in Dev Studio? (Choose two.)",
+      "options": [
+        "Building reusable components and module applications",
+        "Creating automated unit tests",
+        "Configuring application behavior through Configuration Sets",
+        "Using AI-assisted development to generate case lifecycles",
+        "Assembling forms with prescriptive UI"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Dev Studio is where reusable components and modules, traditional UI and automated unit testing are built, and where rules are marked relevant. Configuration Sets, AI-assisted development and prescriptive UI are the App Studio side of interoperability, letting citizen developers consume Dev Studio work without code.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-005",
+      "objective": 1,
+      "type": "single",
+      "stem": "Leadership asks the reuse team to prove that the components published in the Reuse Library are worth the investment by showing how often each one is used and the return it produces. Which Reuse Library governance aspect addresses this?",
+      "options": [
+        "Reuse catalog",
+        "Value measurement",
+        "Lifecycle management",
+        "Education and advocacy"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Value measurement covers usage and ROI dashboards. The reuse catalog is about tagging and searching so builders can find assets. Lifecycle management decides whether assets are governed centrally or federated. Education and advocacy promotes reuse but does not measure it.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-006",
+      "objective": 2,
+      "type": "single",
+      "stem": "A bank built its loan application using a center-out architecture. The customer system of record is moving from an on-premises database to a cloud service. What is the expected impact?",
+      "options": [
+        "The business logic remains unchanged because the data access layer insulates it; only the data connection needs updating.",
+        "Each channel's UI must be rebuilt because the presentation layer reads directly from the system of record.",
+        "The case lifecycle must be redesigned, since stages depend on where data is stored.",
+        "The business rules must be duplicated into the cloud service so both systems stay consistent."
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "In center-out, the data access layer is insulated from the central business logic, so a system-of-record change does not change the logic. The presentation layer connects to central logic, not directly to the SOR, so channels are not rebuilt. Lifecycles are business logic and do not depend on data location. Duplicating logic into data systems is the bottom-up anti-pattern.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-007",
+      "objective": 2,
+      "type": "single",
+      "stem": "A retailer has separate web, mobile and chat applications, each with its own copy of the discount rules. A discount change took three releases to roll out. Which statement best describes the problem and the center-out remedy?",
+      "options": [
+        "It is a bottom-up problem; center-out fixes it by creating one data warehouse per channel.",
+        "It is a top-down problem; center-out fixes it by defining the discount logic once in the central layer so one change applies to all channels.",
+        "It is a top-down problem; center-out fixes it by moving discount logic into the presentation layer of each channel.",
+        "It is a bottom-up problem; center-out fixes it by having each channel query the system of record directly."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Channel-first (top-down) design duplicates logic in every channel. Center-out puts logic at the center, giving agility: one change applies everywhere. A data warehouse per channel would worsen silos (the bottom-up weakness). Moving logic into each presentation layer keeps duplication. Channels querying the SOR directly bypasses the insulated data layer and central logic.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-008",
+      "objective": 3,
+      "type": "single",
+      "stem": "An organization runs 30 Constellation applications that must comply with WCAG 2.1 and Section 508. A new accessibility requirement affects how a common input pattern behaves. What approach minimizes effort?",
+      "options": [
+        "Audit every view in each application and edit the affected fields individually.",
+        "Create a custom stylesheet per portal that overrides the input pattern.",
+        "Update the central UI component or pattern once so the change propagates to every application using it.",
+        "Enable the accessibility add-on on each view that contains the input pattern."
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Pega generates UI from central patterns, so accessibility is implemented once and propagates everywhere. Per-view edits defeat that model and multiply effort. Per-portal custom styling duplicates work and diverges from the design system. Accessibility in Constellation is built in by default, not an add-on enabled per view.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-009",
+      "objective": 4,
+      "type": "single",
+      "stem": "During a pre-sales engagement, a team co-designed a Blueprint with the client. The project is now won and a delivery team is assembled. Who is responsible for importing the Blueprint file and configuring the functional and technical requirements?",
+      "options": [
+        "The Solutions Consultant who co-designed the Blueprint",
+        "The Lead System Architect",
+        "The Business Architect",
+        "The Product Owner"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "The LSA imports Blueprint files and configures functional and technical requirements. The Solutions Consultant works in the sales phase and hands the Blueprint to delivery. The Business Architect translates needs into functional requirements but does not import the build. The Product Owner owns scope and priority on the client side.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-010",
+      "objective": 4,
+      "type": "single",
+      "stem": "Midway through a sprint, developers are blocked waiting for test environment access, and backlog refinement keeps getting skipped. Which project role should address both issues?",
+      "options": [
+        "Product Owner",
+        "Project Manager",
+        "Scrum Master",
+        "Quality Analyst"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The Scrum Master runs Scrum ceremonies such as backlog refinement and removes impediments. The Product Owner prioritizes requirements but does not run ceremonies. The Project Manager handles governance, schedule, budget and scope at the delivery level, not day-to-day Scrum ceremonies. The Quality Analyst writes tests from user stories.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-011",
+      "objective": 5,
+      "type": "single",
+      "stem": "Two developers share an application. Developer A configured a new view in her workspace yesterday. Developer B, working in his own workspace, cannot see it. What is the most likely explanation?",
+      "options": [
+        "Developer B must be added as a member of Developer A's workspace.",
+        "Workspaces are available only in Dev Studio, so the view was not saved.",
+        "Developer A has not yet shared (pushed) her workspace changes to a branch.",
+        "Developer A's changes must first be merged directly from the workspace into the locked base ruleset."
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Workspace changes remain private until they are shared to a branch. A workspace is tied to a single operator, so there is no workspace membership to add. Workspaces exist in both App Studio and Dev Studio. The flow is Workspace to Branch to Application; changes are not merged straight from a workspace into locked rulesets.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-012",
+      "objective": 5,
+      "type": "multi",
+      "stem": "A team lead reviews a feature branch before approving its merge. Which two items are reported as branch quality metrics? (Choose two.)",
+      "options": [
+        "A weighted guardrail compliance score",
+        "The percentage of rules covered by tests and the test pass rate",
+        "The number of user stories completed in the sprint",
+        "The count of Tracer failures captured during development",
+        "Average page load time for views in the branch"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Branch quality metrics include the guardrail score (weighted), merge conflicts, test coverage (rules covered and pass rate) and uncovered rules. User story counts are tracked in Agile Workbench, not branch quality. Tracer captures runtime events and is not a branch metric. Page load performance is not part of branch quality metrics.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-013",
+      "objective": 6,
+      "type": "single",
+      "stem": "During a playback, a stakeholder notices that the Submit button on the address form saves an incorrect postal code. How should the team record this in Agile Workbench?",
+      "options": [
+        "Create a Bug work item",
+        "Create a Feedback work item",
+        "Create a new Story under a new feature",
+        "Post the issue to Pulse and tag it #defect"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "A defect in existing behavior is recorded as a Bug. Feedback is for comments or suggestions rather than defects. A Story represents new requirements, not broken functionality. Pulse is a collaboration feed; tags there do not create tracked work items.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-014",
+      "objective": 6,
+      "type": "multi",
+      "stem": "A new Scrum team is adopting Agile Workbench. Which two statements about it are accurate? (Choose two.)",
+      "options": [
+        "Creating a case type automatically creates a feature with the same name.",
+        "User stories can be bulk-uploaded from an Excel file.",
+        "It integrates only with Agile Studio.",
+        "Work items move through New, In Progress and Closed statuses.",
+        "It is opened from Admin Studio."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "A case type auto-creates a matching feature, and stories can be bulk-uploaded from Excel. Integration also covers Jira and CA Agile Central, not only Agile Studio. Statuses are To do, Doing and Done. Agile Workbench is part of App Studio (Application profile and Developer Assistant pane), not Admin Studio.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-015",
+      "objective": 7,
+      "type": "single",
+      "stem": "The latest version of ruleset ClaimsMain is 02-03-04 and it is locked. A defect in a calculation must be fixed with no new functionality. Which version should the fix go into?",
+      "options": [
+        "Unlock 02-03-04 and edit the rule in place",
+        "02-03-05",
+        "02-04-01",
+        "03-01-01"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Bug fixes increment the patch segment, giving 02-03-05. Older versions should stay locked, so unlocking 02-03-04 is poor practice. 02-04-01 is a minor version for enhancements. 03-01-01 is a major version for substantial new functionality or major upgrades.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-016",
+      "objective": 7,
+      "type": "single",
+      "stem": "A developer opens an existing decision table, clicks Save As, leaves every pre-filled value unchanged, and clicks Create and open. The system reports an error. What must the developer do?",
+      "options": [
+        "Nothing; wait a second and retry so a new creation timestamp produces a unique key.",
+        "Change at least one of the identifier, the applies-to class or the ruleset.",
+        "Use the Create menu instead, because Save As cannot copy decision tables.",
+        "Change the rule type, because a copy cannot share the original's type."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Save As pre-fills all values, and you must change the identifier, class or ruleset or an error occurs. Although the timestamp is part of .pzInsKey, retrying does not satisfy this requirement. Save As works for decision tables. Changing rule type is not how Save As works; a copy keeps the type.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-017",
+      "objective": 7,
+      "type": "multi",
+      "stem": "A developer inspects the .pzInsKey of an SLA rule while troubleshooting. Which two values are part of that key? (Choose two.)",
+      "options": [
+        "The rule's applies-to class",
+        "The rule's creation timestamp in GMT",
+        "The ruleset version that contains the rule",
+        "The operator ID of the rule's author",
+        "The name of the application"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "The .pzInsKey combines the rule type's internal name, the applies-to class, the identifier and the creation timestamp in GMT. The ruleset version, the author's operator ID and the application name are not components of the key.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-018",
+      "objective": 7,
+      "type": "multi",
+      "stem": "UPlus Telco is creating organization-level rulesets. Which two proposed names follow Pega naming best practices? (Choose two.)",
+      "options": [
+        "UPlusTelcoContracts",
+        "UPlusTelcoBilling",
+        "UPTC",
+        "Pega-UPlusContracts",
+        "UPlus Telco Claims"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Organization rulesets should be meaningful, beginning with the company name plus purpose, with no spaces, no special characters and at most 32 characters. UPTC is an opaque abbreviation. Names must not start with Pega or Pega-, and the hyphen is a disallowed special character. Spaces are not allowed.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-019",
+      "objective": 8,
+      "type": "single",
+      "stem": "Class TGB-HR-Work-Relocation uses pattern inheritance and has Work-Cover- as its directed parent. A flow references property .pxCreateOpName, which is defined only in Work-Cover-. How does rule resolution find it?",
+      "options": [
+        "It searches Work-Cover- first because directed inheritance always takes precedence.",
+        "It searches the pattern parents TGB-HR-Work, TGB-HR and TGB first, then the directed parent Work-Cover-, where it finds the property.",
+        "It returns an error, because pattern inheritance cannot reach a class that does not share the TGB prefix.",
+        "It skips directly to @baseclass and then works downward to Work-Cover-."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Pega checks pattern parents first, then the directed parent (and its pattern parents), repeating to @baseclass, so it finds the property in Work-Cover-. Directed is not searched first. Directed inheritance exists precisely to reach classes outside the prefix, so no error occurs. Search moves upward toward @baseclass, not downward from it.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-020",
+      "objective": 8,
+      "type": "multi",
+      "stem": "A senior developer created an SLA rule in Dev Studio. A citizen developer configuring a step in App Studio cannot select it from the existing SLA dropdown. Which two statements are correct? (Choose two.)",
+      "options": [
+        "Mark the SLA as a relevant record using Actions > Mark as relevant record in Dev Studio.",
+        "Confirm the SLA is guardrail-compliant before marking it.",
+        "Fields created in App Studio must also be marked manually before they appear.",
+        "Move the SLA to @baseclass so App Studio can find it.",
+        "Relevant records apply only to the exact class and never to its subclasses."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "An existing Dev Studio SLA shows in App Studio only when marked relevant, which is done via Actions > Mark as relevant record after verifying guardrail compliance. App Studio-created fields are marked automatically. Moving the rule to @baseclass is not how App Studio visibility works. Relevant records inherit down the class hierarchy to subclasses.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-021",
+      "objective": 8,
+      "type": "single",
+      "stem": "An LSA is designing the class hierarchy for a mid-size company with a single line of business. Which layer of the hierarchy should be added only when necessary?",
+      "options": [
+        "Organization",
+        "Division/Unit",
+        "Application",
+        "Work"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "The Division/Unit layer is optional and used only when necessary. Organization, Application and Work are standard layers of the hierarchy; Work is where case type classes live and the organization layer anchors pattern inheritance.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "ad-022",
+      "objective": 9,
+      "type": "single",
+      "stem": "A developer is debugging a Constellation application and wants Tracer to pause on a specific activity and track how a property value changes. What should the developer expect?",
+      "options": [
+        "Breakpoints and Watch work normally, but only from the App Studio runtime toolbar.",
+        "Breakpoints and Watch are not supported for Constellation applications, so the developer must rely on other events and tools such as request-ID grouping, browser tools or XRay.",
+        "Breakpoints work, but the thread stays paused indefinitely until the developer clicks Play.",
+        "Tracer cannot be used at all in Constellation; only Redux DevTools is available."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Breakpoints and Watch are not supported for Service rules or Constellation apps; Tracer still groups Constellation events by request ID, and front-end tools help. The toolbar used does not change that limitation. Where breakpoints are supported, they resume automatically after one hour, not indefinitely. Tracer is available for Constellation apps, just without breakpoints and watch.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-023",
+      "objective": 9,
+      "type": "multi",
+      "stem": "A developer is reviewing a Tracer session. Which two statements are accurate? (Choose two.)",
+      "options": [
+        "Light blue rows represent database and cache events.",
+        "Only one Tracer can run per operator per node.",
+        "Orange rows represent activity events.",
+        "Tracer is the recommended tool for measuring application performance.",
+        "The last row marked Fail always contains the root cause."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Light blue marks database and cache events, and one Tracer runs per operator per node. Activities are gray; orange is for flows, decisions and declaratives. Tracer has heavy impact and is meant for troubleshooting, not performance analysis. The root cause can occur earlier than the final failed step.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "ad-024",
+      "objective": 10,
+      "type": "single",
+      "stem": "A developer creates a configuration set named EmailControls to switch off outbound email until an integration is ready, but the set does not appear on the Configurations landing page. What is the most likely reason?",
+      "options": [
+        "Configuration sets are visible only in Dev Studio.",
+        "The set has no configuration settings yet, and a set is not shown until it contains at least one.",
+        "The product file was built without Include associated data.",
+        "The developer must first create a Dynamic System Setting with the same name."
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "A configuration set is not displayed until it has at least one setting. Sets are managed in App Studio on the Settings tab Configurations landing page. Include associated data affects packaging for deployment, not visibility in the development system. Configuration settings replace Dynamic System Settings, so no matching DSS is required.",
+      "difficulty": "hard"
+    }
+  ]
+}
